@@ -2,11 +2,12 @@ import { extension_settings } from "/scripts/extensions.js";
 import { saveSettingsDebounced } from "/script.js";
 import { getCurrentLocale } from "/scripts/i18n.js";
 import { openai_settings, openai_setting_names } from "/scripts/openai.js";
-import { getCurrentLocale } from "../../../i18n.js";
-import { openai_settings, openai_setting_names } from "../../../openai.js";
 
-const EXTENSION_NAME = "yablochny-preset";
+// Определяем путь к папке расширения автоматически
 const SCRIPT_PATH = import.meta.url.substring(0, import.meta.url.lastIndexOf('/'));
+const EXTENSION_NAME = "yablochny-preset";
+
+// Пресет читаем из той же папки, где лежит скрипт
 const PRESET_URL = `${SCRIPT_PATH}/%F0%9F%8D%8EYablochny%20Preset.json`;
 const DEFAULT_PRESET_NAME = "🍎 Yablochny Preset";
 
