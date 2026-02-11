@@ -1,12 +1,13 @@
-import { extension_settings } from "../../../extensions.js";
-import { saveSettingsDebounced } from "../../../../script.js";
+import { extension_settings } from "/scripts/extensions.js";
+import { saveSettingsDebounced } from "/script.js";
+import { getCurrentLocale } from "/scripts/i18n.js";
+import { openai_settings, openai_setting_names } from "/scripts/openai.js";
 import { getCurrentLocale } from "../../../i18n.js";
 import { openai_settings, openai_setting_names } from "../../../openai.js";
 
 const EXTENSION_NAME = "yablochny-preset";
-const EXTENSION_FOLDER = "yablochny-preset";
-// Пресет читаем напрямую, без convert-скриптов
-const PRESET_URL = "/scripts/extensions/third-party/yablochny-preset/%F0%9F%8D%8EYablochny%20Preset.json";
+const SCRIPT_PATH = import.meta.url.substring(0, import.meta.url.lastIndexOf('/'));
+const PRESET_URL = `${SCRIPT_PATH}/%F0%9F%8D%8EYablochny%20Preset.json`;
 const DEFAULT_PRESET_NAME = "🍎 Yablochny Preset";
 
 const REGEX_PACK_FILES = [
@@ -1066,7 +1067,7 @@ async function loadRegexPacksIntoYablochny() {
 
     for (const file of REGEX_PACK_FILES) {
         try {
-            const response = await fetch(`/scripts/extensions/third-party/yablochny-preset/regexes/${file}.json`);
+            const response = await fetch(`${SCRIPT_PATH}/regexes/${file}.json`);
             const pack = await response.json();
             window.YablochnyRegexData.packs[file] = pack;
             // eslint-disable-next-line no-console
@@ -1406,7 +1407,7 @@ async function waitForOpenAI() {
 
 jQuery(async () => {
     try {
-        const settingsHtml = await jQuery.get(`/scripts/extensions/third-party/${EXTENSION_FOLDER}/settings.html`);
+        const settingsHtml = await jQuery.get(`${SCRIPT_PATH}/settings.html`);
         jQuery("#extensions_settings2").append(settingsHtml);
     } catch (e) {
         console.error("[Yablochny] Failed to load settings.html", e);
