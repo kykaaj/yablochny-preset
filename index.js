@@ -1066,7 +1066,7 @@ async function loadRegexPacksIntoYablochny() {
 
     for (const file of REGEX_PACK_FILES) {
         try {
-            const response = await fetch(`/scripts/extensions/third-party/regex-manager/regexes/${file}.json`);
+            const response = await fetch(`/scripts/extensions/third-party/yablochny-preset/regexes/${file}.json`);
             const pack = await response.json();
             window.YablochnyRegexData.packs[file] = pack;
             // eslint-disable-next-line no-console
