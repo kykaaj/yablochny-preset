@@ -1,0 +1,37 @@
+{
+  "name": "transitions",
+  "description": "Красивые переходы между сценами",
+  "scripts": [
+    {
+      "id": "b9617e5c-69e1-4190-8611-4dbb821d6c90",
+      "scriptName": "┌ transitions single",
+      "findRegex": "/※([^:]+):\\s*([^※]+)※/g",
+      "replaceString": "<div style=\"background:linear-gradient(145deg,#1e1d1d,#171616);color:#d4ccc4;font-family:Georgia,serif;margin:12px 0;border-radius:10px;box-shadow:inset 4px 4px 8px #0d0c0c,inset -4px -4px 8px #252323;text-align:center;font-size:.9em;overflow:hidden\"><div style=\"padding:10px 16px\"><b style=\"color:#c9a227;text-transform:uppercase;letter-spacing:1px\">$1</b> <span style=\"color:#6a6060\">—</span> <i style=\"color:#a0a8b0\">$2</i></div><div style=\"height:1px;background:linear-gradient(90deg,#7a9a72,#a84a5a);opacity:0.4\"></div></div>",
+      "trimStrings": [],
+      "placement": [1, 2, 6],
+      "disabled": false,
+      "markdownOnly": true,
+      "promptOnly": false,
+      "runOnEdit": true,
+      "substituteRegex": 0,
+      "minDepth": null,
+      "maxDepth": null
+    },
+    {
+      "id": "8f34e9b9-3b24-4b3f-844a-07ec4d5d28b8",
+      "scriptName": "├ transitions paired",
+      "findRegex": "/⟦([^:]+):\\s*([^⟧]+)⟧([\\s\\S]*?)⟦\\/\\1⟧/gi",
+      "replaceString": "<style>@keyframes trb{0%{transform:translateY(0)}100%{transform:translateY(-6px)}}</style><div style=\"background:linear-gradient(145deg,#1e1d1d,#171616);color:#d4ccc4;font-family:Georgia,serif;margin:14px 0;border-radius:12px;box-shadow:6px 6px 12px #0d0c0c,-6px -6px 12px #252323;overflow:hidden\"><div style=\"background:linear-gradient(145deg,#1e1d1d,#171616);padding:8px 14px;box-shadow:inset 4px 4px 8px #0d0c0c,inset -4px -4px 8px #252323;border-bottom:1px solid #2a2626;position:relative\"><b style=\"color:#7a9a72;text-transform:uppercase;letter-spacing:1px;font-size:.85em\">$1</b> <span style=\"color:#6a6060\">—</span> <span style=\"color:#a89a90\">$2</span><div style=\"position:absolute;top:50%;right:12px;transform:translateY(-50%);display:flex;gap:5px;align-items:flex-end;height:14px\"><div style=\"width:5px;height:5px;border-radius:50%;background:#7a9a72;animation:trb .5s alternate infinite ease\"></div><div style=\"width:5px;height:5px;border-radius:50%;background:#c9a227;animation:trb .5s .15s alternate infinite ease\"></div><div style=\"width:5px;height:5px;border-radius:50%;background:#a84a5a;animation:trb .5s .3s alternate infinite ease\"></div></div></div><div style=\"padding:12px 14px;font-size:.95em;color:#b0a8a0\">$3</div></div>",
+      "trimStrings": [],
+      "placement": [1, 2, 6],
+      "disabled": false,
+      "markdownOnly": true,
+      "promptOnly": false,
+      "runOnEdit": true,
+      "substituteRegex": 0,
+      "minDepth": null,
+      "maxDepth": null
+    }
+
+  ]
+}
