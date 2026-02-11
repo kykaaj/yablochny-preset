@@ -1,0 +1,11 @@
+{
+    "display_name": "🍎 Yablochny Preset",
+    "loading_order": 5,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "kykaaj",
+    "version": "1.0.0"
+}
+

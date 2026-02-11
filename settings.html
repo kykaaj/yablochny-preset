@@ -1,0 +1,181 @@
+<div class="yablochny-settings">
+  <div class="inline-drawer">
+    <div class="inline-drawer-toggle inline-drawer-header">
+      <div class="yablochny-header">
+        <div class="yablochny-title">
+          <span>🍎</span>
+          <span id="yp-title-text">Yablochny Preset</span>
+        </div>
+        <a href="https://kykaaj.github.io/yablochny-preset/" target="_blank" class="yablochny-link">
+          yablochny-preset.site
+        </a>
+      </div>
+      <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+    </div>
+    <div class="inline-drawer-content">
+      <div class="yablochny-desc" id="yp-desc-text">
+        Managed chat-completion preset. The extension creates/updates a normal preset in the list and keeps your toggle state and custom prompts.
+      </div>
+
+      <div class="yablochny-controls">
+        <button id="yp-sync" class="menu_button primary">
+          <i class="fa-solid fa-rotate"></i>
+          <span id="yp-sync-label">Sync preset</span>
+        </button>
+
+        <div class="yablochny-inline">
+          <input type="checkbox" id="yp-auto-sync">
+          <label for="yp-auto-sync" id="yp-auto-label">Sync on SillyTavern start</label>
+        </div>
+      </div>
+
+      <div class="yablochny-row">
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-lang-label">Language prompt</div>
+          <select id="yp-language" class="yablochny-select">
+            <option value="custom">Custom / don't touch</option>
+            <option value="auto">Auto (match ST language)</option>
+            <option value="ru">Russian</option>
+            <option value="en">English</option>
+            <option value="uk">Ukrainian</option>
+          </select>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-length-label">Length</div>
+          <select id="yp-length" class="yablochny-select">
+            <option value="custom">Custom / don't touch</option>
+            <option value="200-400">200–400 words</option>
+            <option value="400-600">400–600 words (default)</option>
+            <option value="600-800">600–800 words</option>
+            <option value="adaptive">Adaptive</option>
+          </select>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-prose-label">Prose style</div>
+          <select id="yp-prose" class="yablochny-select">
+            <option value="custom">Custom / don't touch</option>
+            <option value="ao3">AO3 (default)</option>
+            <option value="anne_rice">Anne Rice</option>
+            <option value="donna_tartt">Donna Tartt</option>
+            <option value="pratchett">Terry Pratchett</option>
+            <option value="salinger">J.D. Salinger</option>
+            <option value="le_guin">Ursula K. Le Guin</option>
+            <option value="backman">Fredrik Backman</option>
+          </select>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-speech-label">Speech style</div>
+          <select id="yp-speech" class="yablochny-select">
+            <option value="none">Custom / don't touch</option>
+            <option value="salinger">cigarette confessions (Salinger)</option>
+            <option value="pratchett">warm cynicism (Pratchett)</option>
+            <option value="le_guin">earthsea wisdom (Le Guin)</option>
+            <option value="wilde">velvet daggers (Wilde)</option>
+          </select>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-theme-label">HTML theme</div>
+          <select id="yp-theme" class="yablochny-select">
+            <option value="custom">Custom / don't touch</option>
+            <option value="dark">Dark (default)</option>
+            <option value="light">Light</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="yablochny-meta">
+        <div id="yp-preset-name-row">
+          <strong>Preset:</strong> <span id="yp-preset-name">—</span>
+        </div>
+        <div id="yp-last-sync-row">
+          <strong>Last sync:</strong> <span id="yp-last-sync">—</span>
+        </div>
+        <div class="yablochny-inline">
+          <input type="checkbox" id="yp-dev-mode">
+          <label for="yp-dev-mode" id="yp-dev-label">Developer mode (log sync to console)</label>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Things (collapsible) -->
+      <div class="inline-drawer yablochny-subdrawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+          <div class="yablochny-subtitle" id="yp-things-title">✎ Things & extras</div>
+          <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
+        </div>
+        <div class="inline-drawer-content">
+          <div class="yablochny-things" id="yp-things">
+            <div class="yablochny-things-note" id="yp-things-note">
+              Дополнительные «штуки» для тогла ◦︎ ✎ things (sample). Некоторые можно смешивать, другие — только по одному варианту.
+            </div>
+            <div class="yablochny-inline">
+              <input type="checkbox" id="yp-things-managed" checked>
+              <label for="yp-things-managed" id="yp-things-managed-label">Управлять содержимым тогла отсюда (иначе — не трогаем)</label>
+            </div>
+
+            <div class="yablochny-things-group">
+              <div class="yablochny-things-group-title">◇ Можно смешивать</div>
+              <div id="yp-things-mix" class="yablochny-things-list"></div>
+            </div>
+
+            <div class="yablochny-things-group">
+              <div class="yablochny-things-group-title">👁 Скрытые блоки</div>
+              <div id="yp-things-hidden" class="yablochny-things-list"></div>
+            </div>
+
+            <div class="yablochny-things-group">
+              <div class="yablochny-things-group-title">✧ CYOA (только один)</div>
+              <div id="yp-things-cyoa" class="yablochny-things-list"></div>
+            </div>
+
+            <div class="yablochny-things-group">
+              <div class="yablochny-things-group-title">✧ Fancy UI (только один)</div>
+              <div id="yp-things-fancy" class="yablochny-things-list"></div>
+            </div>
+
+            <div class="yablochny-things-group">
+              <div class="yablochny-things-group-title">✧ Комментарии (только один)</div>
+              <div id="yp-things-comments" class="yablochny-things-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Regex packs, merged here (collapsible) -->
+      <div class="inline-drawer yablochny-subdrawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+          <div class="yablochny-subtitle" id="yp-regex-title">Regex packs for Yablochny</div>
+          <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
+        </div>
+        <div class="inline-drawer-content">
+          <div class="regex-manager-section">
+            <div class="yablochny-controls">
+              <button id="yp-regex-toggle" class="menu_button secondary">
+                <i class="fa-solid fa-power-off"></i>
+                <span id="yp-regex-toggle-label">Regex ON</span>
+              </button>
+              <button id="yp-regex-debug" class="menu_button secondary">
+                <i class="fa-solid fa-bug"></i>
+                <span id="yp-regex-debug-label">Debug</span>
+              </button>
+            </div>
+
+            <div class="regex-manager-desc">
+              <span id="yp-regex-desc">
+                Packs of regex helpers for formatting Yablochny preset output. Enable only what you use.
+              </span>
+            </div>
+
+            <div id="yp-regex-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
