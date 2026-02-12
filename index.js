@@ -987,43 +987,57 @@ function applyThingsVariant(master, cfg, existingPreset) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
+    const existingContent = getContentFromExisting(existingPreset, id) || "";
+
     if (!cfg.thingsManaged) {
-        const existingContent = getContentFromExisting(existingPreset, id);
-        if (existingContent !== null) {
+        if (existingContent) {
             prompt.content = existingContent;
         }
         return;
     }
 
+    // Identify all possible contents from DEFINITIONS to strip them
+    const allKnownContents = new Set();
+    Object.values(THINGS_DEFS).forEach(group => {
+        group.forEach(item => {
+            if (item.content) allKnownContents.add(item.content.trim());
+        });
+    });
+
+    // Extract User Part: Split existing into blocks, and remove any that match known contents
+    const existingBlocks = existingContent.split("\n\n").map(b => b.trim()).filter(b => b.length > 0);
+    const userPartBlocks = existingBlocks.filter(block => !allKnownContents.has(block));
+
+    // Construct New Extension Part
     const sel = cfg.thingsSelected || {};
-    const parts = [];
+    const extensionParts = [];
 
-    for (const itemId of sel.mix || []) {
-        const def = THINGS_DEFS.mix.find(x => x.id === itemId);
-        if (def) parts.push(def.content);
-    }
+    const addFromGroup = (items, selectedIds) => {
+        if (!Array.isArray(selectedIds)) return;
+        selectedIds.forEach(sid => {
+            const def = items.find(x => x.id === sid);
+            if (def && def.content) extensionParts.push(def.content.trim());
+        });
+    };
 
-    for (const itemId of sel.hidden || []) {
-        const def = THINGS_DEFS.hidden.find(x => x.id === itemId);
-        if (def) parts.push(def.content);
-    }
-
+    addFromGroup(THINGS_DEFS.mix, sel.mix);
+    addFromGroup(THINGS_DEFS.hidden, sel.hidden);
     if (sel.cyoa) {
         const def = THINGS_DEFS.cyoa.find(x => x.id === sel.cyoa);
-        if (def) parts.push(def.content);
+        if (def && def.content) extensionParts.push(def.content.trim());
     }
-
     if (sel.fancy) {
         const def = THINGS_DEFS.fancy.find(x => x.id === sel.fancy);
-        if (def) parts.push(def.content);
+        if (def && def.content) extensionParts.push(def.content.trim());
     }
-
     if (sel.comments) {
         const def = THINGS_DEFS.comments.find(x => x.id === sel.comments);
-        if (def) parts.push(def.content);
+        if (def && def.content) extensionParts.push(def.content.trim());
     }
 
-    prompt.content = parts.join("\n\n");
+    // Final Merge: Extension Parts + User Parts
+    const finalBlocks = [...extensionParts, ...userPartBlocks];
+    prompt.content = finalBlocks.join("\n\n");
 }
 
 function applyImageVariant(preset, mode, existingPreset) {
