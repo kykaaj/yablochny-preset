@@ -1382,7 +1382,7 @@ function updateMetaUi() {
 }
 
 function renderThingsUI(cfg) {
-    const sel = cfg.thingsSelected || { mix: [], fancy: null, comments: null };
+    const sel = cfg.thingsSelected || { mix: [], hidden: [], fancy: null, comments: null };
     const lang = getUiLang();
     const dict = UI_TEXT[lang] || UI_TEXT.en;
 
@@ -1393,7 +1393,7 @@ function renderThingsUI(cfg) {
         for (const def of defs) {
             const inputId = `yp-thing-${groupKey}-${def.id}`;
             const checked =
-                groupKey === "mix"
+                (groupKey === "mix" || groupKey === "hidden")
                     ? (sel[groupKey] || []).includes(def.id)
                     : sel[groupKey] === def.id;
 
@@ -1619,16 +1619,6 @@ function initControls() {
         syncPreset(true);
     });
 
-
-
-    jQuery("#yp-auto-sync").on("change", function () {
-        setConfig("autoSyncOnStart", this.checked);
-    });
-
-    jQuery("#yp-auto-sync").on("change", function () {
-        setConfig("autoSyncOnStart", this.checked);
-    });
-
     jQuery("#yp-auto-sync").on("change", function () {
         setConfig("autoSyncOnStart", this.checked);
     });
@@ -1638,157 +1628,151 @@ function initControls() {
         cfg.devMode = jQuery(this).is(":checked");
         saveSettingsDebounced();
     });
-}
 
-function onPresetOptionChanged(updater) {
-    updater();
-    saveSettingsDebounced();
-    // Автоматически пересинхронизируем пресет при смене варианта
-    syncPreset(true);
-}
+    function onPresetOptionChanged(updater) {
+        updater();
+        saveSettingsDebounced();
+        // Автоматически пересинхронизируем пресет при смене варианта
+        syncPreset(true);
+    }
 
-jQuery("#yp-language").on("change", function () {
-    const value = String(jQuery(this).val());
-    onPresetOptionChanged(() => {
-        const cfg = getConfig();
-        cfg.languageMode = value;
+    jQuery("#yp-language").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.languageMode = value;
+        });
     });
-});
 
-jQuery("#yp-length").on("change", function () {
-    const value = String(jQuery(this).val());
-    onPresetOptionChanged(() => {
-        const cfg = getConfig();
-        cfg.lengthMode = value;
+    jQuery("#yp-length").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.lengthMode = value;
+        });
     });
-});
 
-jQuery("#yp-pov").on("change", function () {
-    const value = String(jQuery(this).val());
-    onPresetOptionChanged(() => {
-        const cfg = getConfig();
-        cfg.POVMode = value;
+    jQuery("#yp-pov").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.POVMode = value;
+        });
     });
-});
-jQuery("#yp-tense").on("change", function () {
-    const value = String(jQuery(this).val());
-    onPresetOptionChanged(() => {
-        const cfg = getConfig();
-        cfg.TENSEMode = value;
-    });
-});
-jQuery("#yp-prose").on("change", function () {
-    const value = String(jQuery(this).val());
-    onPresetOptionChanged(() => {
-        const cfg = getConfig();
-        cfg.proseStyle = value;
-    });
-});
 
-jQuery("#yp-speech").on("change", function () {
-    const value = String(jQuery(this).val());
-    onPresetOptionChanged(() => {
-        const cfg = getConfig();
-        cfg.speechStyle = value;
+    jQuery("#yp-tense").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.TENSEMode = value;
+        });
     });
-});
 
-jQuery("#yp-image-mode").on("change", function () {
-    const value = String(jQuery(this).val());
-    onPresetOptionChanged(() => {
-        const cfg = getConfig();
-        cfg.imageMode = value;
+    jQuery("#yp-prose").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.proseStyle = value;
+        });
     });
-});
 
-jQuery("#yp-theme").on("change", function () {
-    const value = String(jQuery(this).val());
-    onPresetOptionChanged(() => {
-        const cfg = getConfig();
-        cfg.htmlTheme = value;
+    jQuery("#yp-speech").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.speechStyle = value;
+        });
     });
-});
 
-// Things: delegated handler
-jQuery("#yp-things").on("change", "input[data-things-group]", function () {
-    const group = String(jQuery(this).data("things-group"));
-    const id = String(jQuery(this).data("things-id"));
-    const checked = jQuery(this).is(":checked");
-    const cfg = getConfig();
-    const sel = cfg.thingsSelected || { mix: [], hidden: [], cyoa: null, fancy: null, comments: null };
+    jQuery("#yp-image-mode").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.imageMode = value;
+        });
+    });
 
-    const updateSelection = () => {
-        if (group === "mix" || group === "hidden") {
-            const arr = Array.isArray(sel[group]) ? [...sel[group]] : [];
-            if (checked) {
-                if (!arr.includes(id)) arr.push(id);
+    // Things: delegated handler
+    jQuery("#yp-things").on("change", "input[data-things-group]", function () {
+        const group = String(jQuery(this).data("things-group"));
+        const id = String(jQuery(this).data("things-id"));
+        const checked = jQuery(this).is(":checked");
+        const cfg = getConfig();
+        const sel = cfg.thingsSelected || { mix: [], hidden: [], cyoa: null, fancy: null, comments: null };
+
+        const updateSelection = () => {
+            if (group === "mix" || group === "hidden") {
+                const arr = Array.isArray(sel[group]) ? [...sel[group]] : [];
+                if (checked) {
+                    if (!arr.includes(id)) arr.push(id);
+                } else {
+                    const idx = arr.indexOf(id);
+                    if (idx !== -1) arr.splice(idx, 1);
+                }
+                sel[group] = arr;
             } else {
-                const idx = arr.indexOf(id);
-                if (idx !== -1) arr.splice(idx, 1);
+                if (checked) {
+                    // снять остальные в этой группе
+                    jQuery(`#yp-things input[data-things-group="${group}"]`).not(this).prop("checked", false);
+                    sel[group] = id;
+                } else {
+                    sel[group] = null;
+                }
             }
-            sel[group] = arr;
+            cfg.thingsSelected = sel;
+        };
+
+        onPresetOptionChanged(updateSelection);
+    });
+
+    // Regex controls
+    jQuery("#yp-regex-toggle").on("click", async () => {
+        const cfg = getConfig();
+        cfg.regexActive = !cfg.regexActive;
+        window.YablochnyRegexData = window.YablochnyRegexData || { packs: {}, enabled: [], active: true };
+        window.YablochnyRegexData.active = cfg.regexActive;
+
+        if (cfg.regexActive) {
+            for (const packId of window.YablochnyRegexData.enabled) {
+                injectRegexPack(packId);
+            }
+            if (window.toastr) {
+                const lang = getUiLang();
+                const dict = UI_TEXT[lang] || UI_TEXT.en;
+                window.toastr.success(dict.toastRegexEnabled);
+            }
         } else {
-            if (checked) {
-                // снять остальные в этой группе
-                jQuery(`#yp-things input[data-things-group="${group}"]`).not(this).prop("checked", false);
-                sel[group] = id;
-            } else {
-                sel[group] = null;
+            for (const packId of window.YablochnyRegexData.enabled) {
+                removeRegexPack(packId);
+            }
+            if (window.toastr) {
+                const lang = getUiLang();
+                const dict = UI_TEXT[lang] || UI_TEXT.en;
+                window.toastr.info(dict.toastRegexDisabled);
             }
         }
-        cfg.thingsSelected = sel;
-    };
 
-    onPresetOptionChanged(updateSelection);
-});
+        saveRegexSettings();
+        updateRegexToggleButton();
 
-// Regex controls
-jQuery("#yp-regex-toggle").on("click", async () => {
-    const cfg = getConfig();
-    cfg.regexActive = !cfg.regexActive;
-    window.YablochnyRegexData = window.YablochnyRegexData || { packs: {}, enabled: [], active: true };
-    window.YablochnyRegexData.active = cfg.regexActive;
-
-    if (cfg.regexActive) {
-        for (const packId of window.YablochnyRegexData.enabled) {
-            injectRegexPack(packId);
+        const ctx = window.SillyTavern?.getContext?.();
+        if (ctx?.reloadCurrentChat) {
+            await ctx.reloadCurrentChat();
         }
-        if (window.toastr) {
+    });
+
+    jQuery("#yp-regex-debug").on("click", () => {
+        if (window.RegexManager?.debug) {
+            window.RegexManager.debug();
+        } else {
             const lang = getUiLang();
             const dict = UI_TEXT[lang] || UI_TEXT.en;
-            window.toastr.success(dict.toastRegexEnabled);
+            if (window.toastr) {
+                window.toastr.info(dict.toastRegexDebugNote);
+            }
         }
-    } else {
-        for (const packId of window.YablochnyRegexData.enabled) {
-            removeRegexPack(packId);
-        }
-        if (window.toastr) {
-            const lang = getUiLang();
-            const dict = UI_TEXT[lang] || UI_TEXT.en;
-            window.toastr.info(dict.toastRegexDisabled);
-        }
-    }
-
-    saveRegexSettings();
-    updateRegexToggleButton();
-
-    const ctx = window.SillyTavern?.getContext?.();
-    if (ctx?.reloadCurrentChat) {
-        await ctx.reloadCurrentChat();
-    }
-});
-
-jQuery("#yp-regex-debug").on("click", () => {
-    if (window.RegexManager?.debug) {
-        window.RegexManager.debug();
-    } else {
-        const lang = getUiLang();
-        const dict = UI_TEXT[lang] || UI_TEXT.en;
-        if (window.toastr) {
-            window.toastr.info(dict.toastRegexDebugNote);
-        }
-    }
-});
+    });
+}
 
 async function waitForOpenAI() {
     const start = Date.now();
