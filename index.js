@@ -893,45 +893,69 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
     }
 
+    // prompt_order: сохраняем пользовательский порядок для кастомных, но форсируем мастер-порядок для «наших» промптов
     const masterOrder = Array.isArray(master.prompt_order) ? master.prompt_order : [];
     const existingOrder = Array.isArray(existingPreset?.prompt_order) ? JSON.parse(JSON.stringify(existingPreset.prompt_order)) : [];
 
-    const newPromptOrder = JSON.parse(JSON.stringify(existingOrder));
+    const newPromptOrder = [];
+    const masterCharIds = new Set(masterOrder.map(g => String(g.character_id)));
 
-    // DEBUG: Trace POV identifier
-    const POV_ID = "5907aad3-0519-45e9-b6f7-40d9e434ef28";
-
+    // Сначала обрабатываем все группы из мастера (и мержим их с пользовательскими)
     for (const masterGroup of masterOrder) {
         const charId = masterGroup.character_id;
-        let userGroup = newPromptOrder.find(g => String(g.character_id) === String(charId));
-
-        // DEBUG
-        if (masterGroup.order.find(x => x.identifier === POV_ID)) {
-            console.log("[Yablochny] Merge: Found POV in master group", charId);
-            if (userGroup) {
-                console.log("[Yablochny] Merge: Found matching user group", charId);
-                const uPov = userGroup.order.find(x => x.identifier === POV_ID);
-                console.log("[Yablochny] Merge: POV in user group?", !!uPov, uPov);
-            } else {
-                console.log("[Yablochny] Merge: NO matching user group for", charId);
-            }
-        }
+        let userGroup = existingOrder.find(g => String(g.character_id) === String(charId));
 
         if (!userGroup) {
-            // у юзера такой группы не было — просто клонируем мастер-группу
             newPromptOrder.push(JSON.parse(JSON.stringify(masterGroup)));
             continue;
         }
 
-        const userIds = new Set(userGroup.order.map(o => o.identifier));
+        // Собираем новый порядок для этой группы
+        const masterIdentifiers = masterGroup.order.map(o => o.identifier);
+        const masterIdSet = new Set(masterIdentifiers);
 
-        for (const item of masterGroup.order) {
-            if (!userIds.has(item.identifier)) {
-                userGroup.order.push({ identifier: item.identifier, enabled: item.enabled });
-                if (dev && mergeLog) {
-                    mergeLog.push({ id: item.identifier, name: "", action: "order-added", variant: false });
+        // Кастомные промпты (которых нет в мастере) привязываем к «якорному» промпту перед ними
+        const customAfter = new Map(); // identifier of anchor -> array of custom items
+        const customAtStart = [];
+
+        let lastAnchor = null;
+        for (const item of userGroup.order) {
+            if (masterIdSet.has(item.identifier)) {
+                lastAnchor = item.identifier;
+            } else {
+                if (lastAnchor) {
+                    if (!customAfter.has(lastAnchor)) customAfter.set(lastAnchor, []);
+                    customAfter.get(lastAnchor).push(item);
+                } else {
+                    customAtStart.push(item);
                 }
             }
+        }
+
+        const mergedOrder = [];
+        mergedOrder.push(...customAtStart);
+
+        for (const mItem of masterGroup.order) {
+            const uItem = userGroup.order.find(o => o.identifier === mItem.identifier);
+            mergedOrder.push({
+                identifier: mItem.identifier,
+                enabled: uItem ? uItem.enabled : mItem.enabled,
+            });
+
+            const following = customAfter.get(mItem.identifier);
+            if (following) mergedOrder.push(...following);
+        }
+
+        newPromptOrder.push({
+            character_id: charId,
+            order: mergedOrder,
+        });
+    }
+
+    // Добавляем группы, которые были у пользователя, но которых нет в мастере (например, другие персонажи)
+    for (const userGroup of existingOrder) {
+        if (!masterCharIds.has(String(userGroup.character_id))) {
+            newPromptOrder.push(userGroup);
         }
     }
 
