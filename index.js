@@ -1412,10 +1412,7 @@ function initControls() {
         syncPreset(true);
     });
 
-    jQuery("#yp-image-mode").on("change", function () {
-        setConfig("imageMode", this.value);
-        syncPreset(true);
-    });
+
 
     jQuery("#yp-auto-sync").on("change", function () {
         setConfig("autoSyncOnStart", this.checked);
@@ -1484,6 +1481,14 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.speechStyle = value;
+        });
+    });
+
+    jQuery("#yp-image-mode").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.imageMode = value;
         });
     });
 
