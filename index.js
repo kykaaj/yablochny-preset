@@ -9,7 +9,7 @@ const EXTENSION_NAME = "yablochny-preset";
 
 // Пресет читаем из той же папки, где лежит скрипт
 const PRESET_URL = `${SCRIPT_PATH}/%F0%9F%8D%8EYablochny%20Preset.json`;
-const DEFAULT_PRESET_NAME = "🍎Yablochny Preset";
+const DEFAULT_PRESET_NAME = "🍎 Yablochny Preset";
 
 const REGEX_PACK_FILES = [
     "hide-reasoning",
