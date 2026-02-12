@@ -840,12 +840,24 @@ function hashPrompt(prompt) {
     return String(hash);
 }
 
-function applyLanguageVariant(master, cfg, uiLang) {
+function getContentFromExisting(existingPreset, identifier) {
+    if (!existingPreset || !Array.isArray(existingPreset.prompts)) return null;
+    const p = existingPreset.prompts.find(x => x.identifier === identifier);
+    return p ? p.content : null;
+}
+
+function applyLanguageVariant(master, cfg, uiLang, existingPreset) {
     const id = "28ec4454-b3c2-4c06-8fd0-52cb123b778f";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
     const mode = cfg.languageMode || "auto";
-    if (mode === "custom") return;
+    if (mode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
     let targetName;
 
     if (mode === "auto") {
@@ -868,53 +880,83 @@ function applyLanguageVariant(master, cfg, uiLang) {
     }
 }
 
-function applyLengthVariant(master, cfg) {
+function applyLengthVariant(master, cfg, existingPreset) {
     const id = "9adda56b-6f32-416a-b947-9aa9f41564eb";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
-    if (cfg.lengthMode === "custom") return;
+    if (cfg.lengthMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
     const text = LENGTH_VARIANTS[cfg.lengthMode || "400-600"];
     if (text) {
         prompt.content = text;
     }
 }
-function applyPOVVariant(master, cfg) {
+function applyPOVVariant(master, cfg, existingPreset) {
     const id = "5907aad3-0519-45e9-b6f7-40d9e434ef28";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
-    if (cfg.POVMode === "custom") return;
+    if (cfg.POVMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
     const text = POV_VARIANTS[cfg.POVMode || "3rd"];
     if (text) {
         prompt.content = text;
     }
 }
-function applyTENSEVariant(master, cfg) {
+function applyTENSEVariant(master, cfg, existingPreset) {
     const id = "e0ce2a23-98e3-4772-8984-5e9aa4c5c551";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
-    if (cfg.TENSEMode === "custom") return;
+    if (cfg.TENSEMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
     const text = TENSE_VARIANTS[cfg.TENSEMode || "3rd"];
     if (text) {
         prompt.content = text;
     }
 }
 
-function applySpeechVariant(master, cfg) {
+function applySpeechVariant(master, cfg, existingPreset) {
     const id = "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
-    if (cfg.speechStyle === "none") return;
+    if (cfg.speechStyle === "none") {
+        // we could potentially clear it, but maybe better to pull existing?
+        // if mode is "none", usually we want it disabled/empty in our system.
+        // but if user manually edited it while it was in "none" (unlikely but possible), 
+        // we might want to adopt it.
+        return;
+    }
     const text = SPEECH_VARIANTS[cfg.speechStyle];
     if (text) {
         prompt.content = text;
     }
 }
 
-function applyProseVariant(master, cfg) {
+function applyProseVariant(master, cfg, existingPreset) {
     const id = "92f96f89-c01d-4a91-bea3-c8abb75b995a";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
-    if (cfg.proseStyle === "custom") return;
+    if (cfg.proseStyle === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
     const key = cfg.proseStyle || "ao3";
     const text = PROSE_VARIANTS[key];
     if (text) {
@@ -922,11 +964,17 @@ function applyProseVariant(master, cfg) {
     }
 }
 
-function applyHtmlTheme(master, cfg) {
+function applyHtmlTheme(master, cfg, existingPreset) {
     const id = "14bf3aa5-73cf-4112-8aca-437c48978663";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
-    if (cfg.htmlTheme === "custom") return;
+    if (cfg.htmlTheme === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
     const themeKey = cfg.htmlTheme || "dark";
     const text = HTML_THEME[themeKey];
     if (text) {
@@ -934,12 +982,16 @@ function applyHtmlTheme(master, cfg) {
     }
 }
 
-function applyThingsVariant(master, cfg) {
+function applyThingsVariant(master, cfg, existingPreset) {
     const id = "6b235beb-7de9-4f84-9b09-6f20210eae6d";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
     if (!cfg.thingsManaged) {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
         return;
     }
 
@@ -974,42 +1026,43 @@ function applyThingsVariant(master, cfg) {
     prompt.content = parts.join("\n\n");
 }
 
-function applyImageVariant(preset, mode) {
-    if (!mode) return; // default is 'silly' but if undefined we do nothing (or fallback)
-    const p = (preset.prompts || []).find(x => x.identifier === "e12784ea-de67-48a7-99ef-3b0c1c45907c");
+function applyImageVariant(preset, mode, existingPreset) {
+    if (!mode) return;
+    const id = "e12784ea-de67-48a7-99ef-3b0c1c45907c";
+    const p = (preset.prompts || []).find(x => x.identifier === id);
     if (p) {
-        if (IMAGE_VARIANTS[mode]) {
-            p.content = IMAGE_VARIANTS[mode];
-        } else if (mode === "custom") {
-            // Если выбран режим custom, можно либо очистить, либо оставить как есть. 
-            // Но мы договорились, что в коде 'custom' просто имеет дефолт или пустую строку.
-            // Если мы хотим НЕ трогать контент (дать юзеру писать), то в buildMaster мы берем базу,
-            // и если в базе плейсхолдер - он и останется. 
-            // Если `IMAGE_VARIANTS["custom"]` задан, используем его.
-            if (IMAGE_VARIANTS["custom"]) {
+        if (mode === "custom") {
+            const existingContent = getContentFromExisting(existingPreset, id);
+            if (existingContent !== null) {
+                p.content = existingContent;
+            } else if (IMAGE_VARIANTS["custom"]) {
                 p.content = IMAGE_VARIANTS["custom"];
             }
+            return;
+        }
+
+        if (IMAGE_VARIANTS[mode]) {
+            p.content = IMAGE_VARIANTS[mode];
         }
     }
 }
 
-function buildMasterWithVariants(basePreset, cfg, uiLang) {
+function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null) {
     // Клонируем исходный пресет как есть
     const master = structuredClone(basePreset);
 
-    applyLanguageVariant(master, cfg, uiLang);
-    applyLengthVariant(master, cfg);
-    applyPOVVariant(master, cfg);
-    applyTENSEVariant(master, cfg);
-    applySpeechVariant(master, cfg);
-    applyProseVariant(master, cfg);
-    applyHtmlTheme(master, cfg);
-    applyThingsVariant(master, cfg);
+    applyLanguageVariant(master, cfg, uiLang, existingPreset);
+    applyLengthVariant(master, cfg, existingPreset);
+    applyPOVVariant(master, cfg, existingPreset);
+    applyTENSEVariant(master, cfg, existingPreset);
+    applySpeechVariant(master, cfg, existingPreset);
+    applyProseVariant(master, cfg, existingPreset);
+    applyHtmlTheme(master, cfg, existingPreset);
+    applyThingsVariant(master, cfg, existingPreset);
 
     // Apply Image Generation Style
-    // Default to 'silly' if not set
     const imgMode = cfg.imageMode || "silly";
-    applyImageVariant(master, imgMode);
+    applyImageVariant(master, imgMode, existingPreset);
 
     return master;
 }
@@ -1182,13 +1235,12 @@ async function syncPreset(showToasts = true) {
         const cfg = getConfig();
         const uiLang = getUiLang();
         const basePreset = await loadBasePreset();
-        const master = buildMasterWithVariants(basePreset, cfg, uiLang);
 
         const name = cfg.presetName || DEFAULT_PRESET_NAME;
         const index = findPresetIndexByName(name);
-        // Compatibility fix: use JSON parse/stringify instead of structuredClone
         const existingPreset = index !== null ? JSON.parse(JSON.stringify(openai_settings[index])) : null;
 
+        const master = buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset);
         const { preset, syncMeta } = buildMergedPreset(existingPreset, master, cfg);
 
         const ctx = window.SillyTavern?.getContext?.();
