@@ -9,7 +9,7 @@ const EXTENSION_NAME = "yablochny-preset";
 
 // Пресет читаем из той же папки, где лежит скрипт
 const PRESET_URL = `${SCRIPT_PATH}/%F0%9F%8D%8EYablochny%20Preset.json`;
-const DEFAULT_PRESET_NAME = "🍎 Yablochny Preset";
+const DEFAULT_PRESET_NAME = "🍎Yablochny Preset";
 
 const REGEX_PACK_FILES = [
     "hide-reasoning",
@@ -35,6 +35,8 @@ const VARIANT_PROMPT_IDS = new Set([
     "9adda56b-6f32-416a-b947-9aa9f41564eb",
     // ◈︎ pov (change)
     "5907aad3-0519-45e9-b6f7-40d9e434ef28",
+    // ◈︎ pov (change)
+    "e0ce2a23-98e3-4772-8984-5e9aa4c5c551",
     // ◦︎ speech style (sample)
     "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c",
     // ◈︎ prose style (change)
