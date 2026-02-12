@@ -1130,8 +1130,15 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
     }
 
+    const DEPRECATED_IDS = [
+        "222af4fb-56e0-4c44-83e0-258cdba11d85", // ◈︎ →︎ Gemini prefill
+    ];
+
     const customPrompts = [];
     for (const p of existingPrompts) {
+        // Skip deprecated prompts!
+        if (p.identifier && DEPRECATED_IDS.includes(p.identifier)) continue;
+
         if (!p.identifier || !masterById.has(p.identifier)) {
             customPrompts.push(p);
         }
