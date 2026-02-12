@@ -811,20 +811,6 @@
             "forbid_overrides": false
         },
         {
-            "identifier": "222af4fb-56e0-4c44-83e0-258cdba11d85",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "◈︎ →︎ Gemini prefill",
-            "role": "assistant",
-            "content": "\n",
-            "injection_position": 0,
-            "injection_depth": 0,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
             "identifier": "6c0ab122-aa65-4c14-ae20-199c2010df2f",
             "system_prompt": false,
             "enabled": false,
