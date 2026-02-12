@@ -897,16 +897,18 @@ function buildMergedPreset(existingPreset, master, cfg) {
 
     // prompt_order: сохраняем пользовательский порядок для кастомных, но форсируем мастер-порядок для «наших» промптов
     const masterOrder = Array.isArray(master.prompt_order) ? master.prompt_order : [];
-    const existingOrder = Array.isArray(existingPreset?.prompt_order) ? structuredClone(existingPreset.prompt_order) : [];
+    const existingOrder = Array.isArray(existingPreset?.prompt_order) ? JSON.parse(JSON.stringify(existingPreset.prompt_order)) : [];
 
     const newPromptOrder = [];
+    const masterCharIds = new Set(masterOrder.map(g => g.character_id));
 
+    // Сначала обрабатываем все группы из мастера (и мержим их с пользовательскими)
     for (const masterGroup of masterOrder) {
         const charId = masterGroup.character_id;
         let userGroup = existingOrder.find(g => g.character_id === charId);
 
         if (!userGroup) {
-            newPromptOrder.push(structuredClone(masterGroup));
+            newPromptOrder.push(JSON.parse(JSON.stringify(masterGroup)));
             continue;
         }
 
@@ -933,29 +935,30 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
 
         const mergedOrder = [];
-        // Вставляем кастомные в начале, если были
         mergedOrder.push(...customAtStart);
 
-        // Идем по мастер-порядку
         for (const mItem of masterGroup.order) {
-            // Ищем, был ли такой у юзера (чтобы сохранить состояние enabled)
             const uItem = userGroup.order.find(o => o.identifier === mItem.identifier);
             mergedOrder.push({
                 identifier: mItem.identifier,
                 enabled: uItem ? uItem.enabled : mItem.enabled,
             });
 
-            // Вставляем кастомные, которые шли после этого якоря
             const following = customAfter.get(mItem.identifier);
-            if (following) {
-                mergedOrder.push(...following);
-            }
+            if (following) mergedOrder.push(...following);
         }
 
         newPromptOrder.push({
             character_id: charId,
             order: mergedOrder,
         });
+    }
+
+    // Добавляем группы, которые были у пользователя, но которых нет в мастере (например, другие персонажи)
+    for (const userGroup of existingOrder) {
+        if (!masterCharIds.has(userGroup.character_id)) {
+            newPromptOrder.push(userGroup);
+        }
     }
 
     const result = existingPreset ? structuredClone(existingPreset) : structuredClone(master);
@@ -1486,4 +1489,48 @@ function initControls() {
         } else {
             const lang = getUiLang();
             const msg = lang === "ru"
-                ? "Открой старый Re
+                ? "Открой старый Regex Manager, чтобы использовать дебаг."
+                : lang === "uk"
+                    ? "Відкрий старий Regex Manager, щоб використати debug."
+                    : "Open legacy Regex Manager extension to use debug.";
+            if (window.toastr) {
+                window.toastr.info(msg);
+            }
+        }
+    });
+}
+
+async function waitForOpenAI() {
+    const start = Date.now();
+    while (Date.now() - start < 15000) {
+        if (Array.isArray(openai_settings) && openai_settings.length >= 0 && openai_setting_names) {
+            return;
+        }
+        await new Promise(r => setTimeout(r, 250));
+    }
+}
+
+jQuery(async () => {
+    try {
+        const settingsHtml = await jQuery.get(`${SCRIPT_PATH}/settings.html`);
+        jQuery("#extensions_settings2").append(settingsHtml);
+    } catch (e) {
+        console.error("[Yablochny] Failed to load settings.html", e);
+        return;
+    }
+
+    applyLocaleToUi();
+    initControls();
+
+    await waitForOpenAI();
+
+    // Загрузить и отрисовать regex-паки (объединённый менеджер)
+    await loadRegexPacksIntoYablochny();
+
+    const cfg = getConfig();
+    if (cfg.autoSyncOnStart) {
+        // тихий автосинк при старте
+        syncPreset(false);
+    }
+});
+
