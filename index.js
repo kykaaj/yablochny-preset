@@ -893,35 +893,73 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
     }
 
-    // prompt_order: сохраняем пользовательский порядок как есть, только добавляем новые id из мастера
+    // prompt_order: сохраняем пользовательский порядок для кастомных, но форсируем мастер-порядок для «наших» промптов
     const masterOrder = Array.isArray(master.prompt_order) ? master.prompt_order : [];
-    const existingOrder = Array.isArray(existingPreset?.prompt_order) ? structuredClone(existingPreset.prompt_order) : [];
+    const existingOrder = Array.isArray(existingPreset?.prompt_order) ? JSON.parse(JSON.stringify(existingPreset.prompt_order)) : [];
 
-    const newPromptOrder = structuredClone(existingOrder);
+    const newPromptOrder = [];
+    const masterCharIds = new Set(masterOrder.map(g => String(g.character_id)));
 
+    // Сначала обрабатываем все группы из мастера (и мержим их с пользовательскими)
     for (const masterGroup of masterOrder) {
         const charId = masterGroup.character_id;
-        let userGroup = newPromptOrder.find(g => g.character_id === charId);
+        let userGroup = existingOrder.find(g => String(g.character_id) === String(charId));
 
         if (!userGroup) {
-            // у юзера такой группы не было — просто клонируем мастер-группу
-            newPromptOrder.push(structuredClone(masterGroup));
+            newPromptOrder.push(JSON.parse(JSON.stringify(masterGroup)));
             continue;
         }
 
-        const userIds = new Set(userGroup.order.map(o => o.identifier));
+        // Собираем новый порядок для этой группы
+        const masterIdentifiers = masterGroup.order.map(o => o.identifier);
+        const masterIdSet = new Set(masterIdentifiers);
 
-        for (const item of masterGroup.order) {
-            if (!userIds.has(item.identifier)) {
-                userGroup.order.push({ identifier: item.identifier, enabled: item.enabled });
-                if (dev && mergeLog) {
-                    mergeLog.push({ id: item.identifier, name: "", action: "order-added", variant: false });
+        // Кастомные промпты (которых нет в мастере) привязываем к «якорному» промпту перед ними
+        const customAfter = new Map(); // identifier of anchor -> array of custom items
+        const customAtStart = [];
+
+        let lastAnchor = null;
+        for (const item of userGroup.order) {
+            if (masterIdSet.has(item.identifier)) {
+                lastAnchor = item.identifier;
+            } else {
+                if (lastAnchor) {
+                    if (!customAfter.has(lastAnchor)) customAfter.set(lastAnchor, []);
+                    customAfter.get(lastAnchor).push(item);
+                } else {
+                    customAtStart.push(item);
                 }
             }
         }
+
+        const mergedOrder = [];
+        mergedOrder.push(...customAtStart);
+
+        for (const mItem of masterGroup.order) {
+            const uItem = userGroup.order.find(o => o.identifier === mItem.identifier);
+            mergedOrder.push({
+                identifier: mItem.identifier,
+                enabled: uItem ? uItem.enabled : mItem.enabled,
+            });
+
+            const following = customAfter.get(mItem.identifier);
+            if (following) mergedOrder.push(...following);
+        }
+
+        newPromptOrder.push({
+            character_id: charId,
+            order: mergedOrder,
+        });
     }
 
-    const result = existingPreset ? structuredClone(existingPreset) : structuredClone(master);
+    // Добавляем группы, которые были у пользователя, но которых нет в мастере (например, другие персонажи)
+    for (const userGroup of existingOrder) {
+        if (!masterCharIds.has(String(userGroup.character_id))) {
+            newPromptOrder.push(userGroup);
+        }
+    }
+
+    const result = existingPreset ? JSON.parse(JSON.stringify(existingPreset)) : JSON.parse(JSON.stringify(master));
 
     if (!existingPreset) {
         Object.assign(result, master);
@@ -931,7 +969,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
     result.prompt_order = newPromptOrder.length ? newPromptOrder : masterOrder;
 
     if (!result.extensions && master.extensions) {
-        result.extensions = structuredClone(master.extensions);
+        result.extensions = JSON.parse(JSON.stringify(master.extensions));
     }
 
     if (dev && mergeLog) {
@@ -982,21 +1020,32 @@ async function syncPreset(showToasts = true) {
         const actualName = data.name;
 
         // Обновляем локальные структуры так же, как это делает saveOpenAIPreset
-        if (Object.prototype.hasOwnProperty.call(openai_setting_names, actualName)) {
-            const value = openai_setting_names[actualName];
-            Object.assign(openai_settings[value], preset);
-            const optionSelector = `#settings_preset_openai option[value="${value}"]`;
+        let newIndex = findPresetIndexByName(actualName);
+
+        if (newIndex !== null) {
+            // Update existing
+            Object.assign(openai_settings[newIndex], preset);
+            const optionSelector = `#settings_preset_openai option[value="${newIndex}"]`;
             jQuery(optionSelector).prop("selected", true);
-            jQuery("#settings_preset_openai").trigger("change");
         } else {
+            // Add new
             openai_settings.push(preset);
-            openai_setting_names[actualName] = openai_settings.length - 1;
+            newIndex = openai_settings.length - 1;
+
+            if (Array.isArray(openai_setting_names)) {
+                openai_setting_names.push(actualName);
+            } else {
+                openai_setting_names[actualName] = newIndex;
+            }
+
             const option = document.createElement("option");
             option.selected = true;
-            option.value = String(openai_settings.length - 1);
+            option.value = String(newIndex);
             option.innerText = actualName;
-            jQuery("#settings_preset_openai").append(option).trigger("change");
+            jQuery("#settings_preset_openai").append(option);
         }
+
+        jQuery("#settings_preset_openai").trigger("change");
 
         cfg.presetName = actualName;
         cfg.promptSyncMeta = syncMeta;
