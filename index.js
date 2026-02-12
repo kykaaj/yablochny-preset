@@ -1254,6 +1254,8 @@ function updateMetaUi() {
 
 function renderThingsUI(cfg) {
     const sel = cfg.thingsSelected || { mix: [], hidden: [], cyoa: null, fancy: null, comments: null };
+    const lang = getUiLang();
+    const dict = UI_TEXT[lang] || UI_TEXT.en;
 
     function renderGroup(containerSelector, defs, groupKey, isExclusive) {
         const container = jQuery(containerSelector);
@@ -1353,6 +1355,8 @@ function renderRegexPackList() {
     container.empty();
 
     const data = window.YablochnyRegexData || { packs: {}, enabled: [], active: true };
+    const lang = getUiLang();
+    const dict = UI_TEXT[lang] || UI_TEXT.en;
 
     for (const [id, pack] of Object.entries(data.packs)) {
         const enabled = data.enabled.includes(id);
