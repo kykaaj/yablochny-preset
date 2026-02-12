@@ -9,7 +9,7 @@ const EXTENSION_NAME = "yablochny-preset";
 
 // Пресет читаем из той же папки, где лежит скрипт
 const PRESET_URL = `${SCRIPT_PATH}/%F0%9F%8D%8EYablochny%20Preset.json`;
-const DEFAULT_PRESET_NAME = "🍎 Yablochny Preset";
+const DEFAULT_PRESET_NAME = "🍎Yablochny Preset";
 
 const REGEX_PACK_FILES = [
     "hide-reasoning",
@@ -33,6 +33,8 @@ const VARIANT_PROMPT_IDS = new Set([
     "28ec4454-b3c2-4c06-8fd0-52cb123b778f",
     // ◈︎ length (change)
     "9adda56b-6f32-416a-b947-9aa9f41564eb",
+    // ◈︎ pov (change)
+    "5907aad3-0519-45e9-b6f7-40d9e434ef28",
     // ◦︎ speech style (sample)
     "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c",
     // ◈︎ prose style (change)
@@ -68,6 +70,8 @@ const UI_TEXT = {
         auto: "Sync on SillyTavern start",
         langLabel: "Language prompt",
         lengthLabel: "Length",
+        POVLabel: "POV",
+        tenseLabel: "Tense",
         proseLabel: "Prose style",
         speechLabel: "Speech style",
         themeLabel: "HTML theme",
@@ -80,6 +84,8 @@ const UI_TEXT = {
         auto: "Синхронизировать при запуске SillyTavern",
         langLabel: "Промпт языка",
         lengthLabel: "Длина ответа",
+        POVLabel: "Лицо повествования",
+        tenseLabel: "Время",
         proseLabel: "Стиль прозы",
         speechLabel: "Манера речи",
         themeLabel: "HTML тема",
@@ -92,6 +98,8 @@ const UI_TEXT = {
         auto: "Синхронізувати при запуску SillyTavern",
         langLabel: "Промпт мови",
         lengthLabel: "Довжина відповіді",
+        POVLabel: "Обличчя оповідання",
+        tenseLabel: "Час оповідання",
         proseLabel: "Стиль прози",
         speechLabel: "Манера мовлення",
         themeLabel: "HTML тема",
@@ -127,6 +135,18 @@ Exclude HTML/CSS, info‑blocks, code, or non‑narrative elements from word cou
     adaptive: `<word_count>
 Adaptively scale response length to match needs, energy, context and mood.
 </word_count>`,
+};
+
+const POV_VARIANTS = {
+    "1st": `{{setvar::pov::- 1st person}}`,
+    "2nd": `{{setvar::pov::- 2nd person}}`,
+    "3rd": `{{setvar::pov::- 3rd person}}`,
+};
+
+const TENSE_VARIANTS = {
+    "Present": `{{setvar::tense::- Present tense.}}`,
+    "Past": `{{setvar::tense::- Past tense.}}`,
+    "Future": `{{setvar::tense::- Future tense.}}`,
 };
 
 const SPEECH_VARIANTS = {
@@ -603,6 +623,8 @@ function getConfig() {
             autoSyncOnStart: true,
             languageMode: "auto",
             lengthMode: "400-600",
+            POVMode: "3rd",
+            TENSEMode: "Present",
             proseStyle: "ao3",
             speechStyle: "none",
             htmlTheme: "dark",
@@ -628,6 +650,8 @@ function getConfig() {
     cfg.autoSyncOnStart ??= true;
     cfg.languageMode ??= "auto";
     cfg.lengthMode ??= "400-600";
+    cfg.POVMode ??= "3rd";
+    cfg.TENSEMode ??= "Present";
     cfg.proseStyle ??= "ao3";
     cfg.speechStyle ??= "none";
     cfg.htmlTheme ??= "dark";
@@ -708,6 +732,26 @@ function applyLengthVariant(master, cfg) {
     if (!prompt) return;
     if (cfg.lengthMode === "custom") return;
     const text = LENGTH_VARIANTS[cfg.lengthMode || "400-600"];
+    if (text) {
+        prompt.content = text;
+    }
+}
+function applyPOVVariant(master, cfg) {
+    const id = "5907aad3-0519-45e9-b6f7-40d9e434ef28";
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+    if (cfg.POVMode === "custom") return;
+    const text = POV_VARIANTS[cfg.POVMode || "3rd"];
+    if (text) {
+        prompt.content = text;
+    }
+}
+function applyTENSEVariant(master, cfg) {
+    const id = "e0ce2a23-98e3-4772-8984-5e9aa4c5c551";
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+    if (cfg.TENSEMode === "custom") return;
+    const text = TENSE_VARIANTS[cfg.TENSEMode || "3rd"];
     if (text) {
         prompt.content = text;
     }
@@ -794,6 +838,8 @@ function buildMasterWithVariants(basePreset, cfg, uiLang) {
 
     applyLanguageVariant(master, cfg, uiLang);
     applyLengthVariant(master, cfg);
+    applyPOVVariant(master, cfg);
+    applyTENSEVariant(master, cfg);
     applySpeechVariant(master, cfg);
     applyProseVariant(master, cfg);
     applyHtmlTheme(master, cfg);
@@ -847,35 +893,73 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
     }
 
-    // prompt_order: сохраняем пользовательский порядок как есть, только добавляем новые id из мастера
+    // prompt_order: сохраняем пользовательский порядок для кастомных, но форсируем мастер-порядок для «наших» промптов
     const masterOrder = Array.isArray(master.prompt_order) ? master.prompt_order : [];
-    const existingOrder = Array.isArray(existingPreset?.prompt_order) ? structuredClone(existingPreset.prompt_order) : [];
+    const existingOrder = Array.isArray(existingPreset?.prompt_order) ? JSON.parse(JSON.stringify(existingPreset.prompt_order)) : [];
 
-    const newPromptOrder = structuredClone(existingOrder);
+    const newPromptOrder = [];
+    const masterCharIds = new Set(masterOrder.map(g => String(g.character_id)));
 
+    // Сначала обрабатываем все группы из мастера (и мержим их с пользовательскими)
     for (const masterGroup of masterOrder) {
         const charId = masterGroup.character_id;
-        let userGroup = newPromptOrder.find(g => g.character_id === charId);
+        let userGroup = existingOrder.find(g => String(g.character_id) === String(charId));
 
         if (!userGroup) {
-            // у юзера такой группы не было — просто клонируем мастер-группу
-            newPromptOrder.push(structuredClone(masterGroup));
+            newPromptOrder.push(JSON.parse(JSON.stringify(masterGroup)));
             continue;
         }
 
-        const userIds = new Set(userGroup.order.map(o => o.identifier));
+        // Собираем новый порядок для этой группы
+        const masterIdentifiers = masterGroup.order.map(o => o.identifier);
+        const masterIdSet = new Set(masterIdentifiers);
 
-        for (const item of masterGroup.order) {
-            if (!userIds.has(item.identifier)) {
-                userGroup.order.push({ identifier: item.identifier, enabled: item.enabled });
-                if (dev && mergeLog) {
-                    mergeLog.push({ id: item.identifier, name: "", action: "order-added", variant: false });
+        // Кастомные промпты (которых нет в мастере) привязываем к «якорному» промпту перед ними
+        const customAfter = new Map(); // identifier of anchor -> array of custom items
+        const customAtStart = [];
+
+        let lastAnchor = null;
+        for (const item of userGroup.order) {
+            if (masterIdSet.has(item.identifier)) {
+                lastAnchor = item.identifier;
+            } else {
+                if (lastAnchor) {
+                    if (!customAfter.has(lastAnchor)) customAfter.set(lastAnchor, []);
+                    customAfter.get(lastAnchor).push(item);
+                } else {
+                    customAtStart.push(item);
                 }
             }
         }
+
+        const mergedOrder = [];
+        mergedOrder.push(...customAtStart);
+
+        for (const mItem of masterGroup.order) {
+            const uItem = userGroup.order.find(o => o.identifier === mItem.identifier);
+            mergedOrder.push({
+                identifier: mItem.identifier,
+                enabled: uItem ? uItem.enabled : mItem.enabled,
+            });
+
+            const following = customAfter.get(mItem.identifier);
+            if (following) mergedOrder.push(...following);
+        }
+
+        newPromptOrder.push({
+            character_id: charId,
+            order: mergedOrder,
+        });
     }
 
-    const result = existingPreset ? structuredClone(existingPreset) : structuredClone(master);
+    // Добавляем группы, которые были у пользователя, но которых нет в мастере (например, другие персонажи)
+    for (const userGroup of existingOrder) {
+        if (!masterCharIds.has(String(userGroup.character_id))) {
+            newPromptOrder.push(userGroup);
+        }
+    }
+
+    const result = existingPreset ? JSON.parse(JSON.stringify(existingPreset)) : JSON.parse(JSON.stringify(master));
 
     if (!existingPreset) {
         Object.assign(result, master);
@@ -885,7 +969,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
     result.prompt_order = newPromptOrder.length ? newPromptOrder : masterOrder;
 
     if (!result.extensions && master.extensions) {
-        result.extensions = structuredClone(master.extensions);
+        result.extensions = JSON.parse(JSON.stringify(master.extensions));
     }
 
     if (dev && mergeLog) {
@@ -936,21 +1020,32 @@ async function syncPreset(showToasts = true) {
         const actualName = data.name;
 
         // Обновляем локальные структуры так же, как это делает saveOpenAIPreset
-        if (Object.prototype.hasOwnProperty.call(openai_setting_names, actualName)) {
-            const value = openai_setting_names[actualName];
-            Object.assign(openai_settings[value], preset);
-            const optionSelector = `#settings_preset_openai option[value="${value}"]`;
+        let newIndex = findPresetIndexByName(actualName);
+
+        if (newIndex !== null) {
+            // Update existing
+            Object.assign(openai_settings[newIndex], preset);
+            const optionSelector = `#settings_preset_openai option[value="${newIndex}"]`;
             jQuery(optionSelector).prop("selected", true);
-            jQuery("#settings_preset_openai").trigger("change");
         } else {
+            // Add new
             openai_settings.push(preset);
-            openai_setting_names[actualName] = openai_settings.length - 1;
+            newIndex = openai_settings.length - 1;
+
+            if (Array.isArray(openai_setting_names)) {
+                openai_setting_names.push(actualName);
+            } else {
+                openai_setting_names[actualName] = newIndex;
+            }
+
             const option = document.createElement("option");
             option.selected = true;
-            option.value = String(openai_settings.length - 1);
+            option.value = String(newIndex);
             option.innerText = actualName;
-            jQuery("#settings_preset_openai").append(option).trigger("change");
+            jQuery("#settings_preset_openai").append(option);
         }
+
+        jQuery("#settings_preset_openai").trigger("change");
 
         cfg.presetName = actualName;
         cfg.promptSyncMeta = syncMeta;
@@ -987,6 +1082,8 @@ function applyLocaleToUi() {
     jQuery("#yp-auto-label").text(dict.auto);
     jQuery("#yp-lang-label").text(dict.langLabel);
     jQuery("#yp-length-label").text(dict.lengthLabel);
+    jQuery("#yp-pov-label").text(dict.POVLabel);
+    jQuery("#yp-tense-label").text(dict.POVLabel);
     jQuery("#yp-prose-label").text(dict.proseLabel);
     jQuery("#yp-speech-label").text(dict.speechLabel);
     jQuery("#yp-theme-label").text(dict.themeLabel);
@@ -1231,6 +1328,8 @@ function initControls() {
 
     jQuery("#yp-language").val(cfg.languageMode || "auto");
     jQuery("#yp-length").val(cfg.lengthMode || "400-600");
+    jQuery("#yp-pov").val(cfg.POVMode || "3rd");
+    jQuery("#yp-tense").val(cfg.TENSEMode || "Present");
     jQuery("#yp-prose").val(cfg.proseStyle || "ao3");
     jQuery("#yp-speech").val(cfg.speechStyle || "none");
     jQuery("#yp-theme").val(cfg.htmlTheme || "dark");
@@ -1286,6 +1385,20 @@ function initControls() {
         });
     });
 
+    jQuery("#yp-pov").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.POVMode = value;
+        });
+    });
+    jQuery("#yp-tense").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.TENSEMode = value;
+        });
+    });
     jQuery("#yp-prose").on("change", function () {
         const value = String(jQuery(this).val());
         onPresetOptionChanged(() => {

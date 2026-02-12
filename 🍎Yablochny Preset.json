@@ -257,7 +257,7 @@
             "marker": false,
             "name": "◈︎ length (change)",
             "role": "system",
-            "content": "<word_count>\nWORD COUNT FOR EVERY MESSAGE:\n- Minimum words = 200\n- Maximum words = 400.\n- 4-6 paragraphs.\nExclude HTML/CSS, info‑blocks, code, or non‑narrative elements from word count. No more or less.\n</word_count>\n{{setvar::word_count::- WORD COUNT: minimum 200/maximum 400 words per message. 4-6 paragraphs. No less or more.}}",
+            "content": "<word_count>\nWORD COUNT FOR EVERY MESSAGE:\n- Minimum words = 200\n- Maximum words = 400\n- 4-6 paragraphs.\nExclude HTML/CSS, info‑blocks, code, or non‑narrative elements from word count. No more or less.\n</word_count>\n{{setvar::word_count::- WORD COUNT: minimum 200/maximum 400 words per message. 4-6 paragraphs. No less or more.}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -285,7 +285,7 @@
             "marker": false,
             "name": "◈︎ writing rules",
             "role": "system",
-            "content": "<writing_rules>\n[FORMAT]{{getvar::spaces}}\n- Dialogue in straight quotation marks (U+0022) \"like this\". NEVER use em-dashes (—) for dialogue.{{getvar::thoughts}}{{getvar::more_thoughts}}\n- Parallel narrative or major time skip: separate with ___\n{{getvar::perspective}}\n\n[PROSE ADAPTATION]\n- The style of the narrative MUST exclude metaphors, bookish fillers and complex comparisons.\n- Prose should flow and read well.{{getvar::drawn_out}}{{getvar::descriptios}}\n- The characters' speech is realistic, without exaggerating personality archetypes.\n- Don't point out the obvious, just let it tacitly be. Show, don't tell.\n- No bad spelling or punctuation.\n- Link clauses through rhythm: pauses, rephrasing, perspective shifts replace conjunctions.{{getvar::focus}}\n\n[PARAGRAPH STRUCTURE]\n- Max 2–3 contrast/sensory sources per paragraph (action, thought, sound)\n- Sensory elements may transform across paragraphs, not just replace\n- New paragraph after thought climax — continue inertia, don't close scene\n- Each paragraph resumes from emotional/physical residue of previous\n\n[CONTINUITY]\n- Track object states: door left open stays open, wound untreated stays bleeding\n- Spatial consistency: if A faces B's left, B feels gaze from their RIGHT\n- Physical consequences persist: exhaustion, fluids, damage, position changes\n- Before acting on object/state — verify last known condition\n\n[CONTENT]\n- Never invent unmentioned clothing, anatomy, or objects\n- No plot armor: characters hit, take damage, get injured, die\n- World alive; characters independent of Human{{getvar::profanity}}\n</writing_rules>\n{{setvar::writing_check::- Check `<writing_rules>`. Identify the main rules are there and follow them: list}}",
+            "content": "<writing_rules>\n[FORMAT]{{getvar::spaces}}\n- Dialogue in straight quotation marks (U+0022) \"like this\". NEVER use em-dashes (—) for dialogue.{{getvar::thoughts}}{{getvar::more_thoughts}}\n- Parallel narrative or major time skip: separate with ___\n\n[PERSPECTIVE]\n{{getvar::pov}}\n{{getvar::tense}}\n\n[PROSE ADAPTATION]\n- The style of the narrative MUST exclude metaphors, bookish fillers and complex comparisons.\n- Prose should flow and read well.{{getvar::drawn_out}}{{getvar::descriptios}}\n- The characters' speech is realistic, without exaggerating personality archetypes.\n- Don't point out the obvious, just let it tacitly be. Show, don't tell.\n- No bad spelling or punctuation.\n- Link clauses through rhythm: pauses, rephrasing, perspective shifts replace conjunctions.{{getvar::focus}}\n\n[PARAGRAPH STRUCTURE]\n- Max 2–3 contrast/sensory sources per paragraph (action, thought, sound)\n- Sensory elements may transform across paragraphs, not just replace\n- New paragraph after thought climax — continue inertia, don't close scene\n- Each paragraph resumes from emotional/physical residue of previous\n\n[CONTINUITY]\n- Track object states: door left open stays open, wound untreated stays bleeding\n- Spatial consistency: if A faces B's left, B feels gaze from their RIGHT\n- Physical consequences persist: exhaustion, fluids, damage, position changes\n- Before acting on object/state — verify last known condition\n\n[CONTENT]\n- Never invent unmentioned clothing, anatomy, or objects\n- No plot armor: characters hit, take damage, get injured, die\n- World alive; characters independent of Human{{getvar::profanity}}\n</writing_rules>\n{{setvar::writing_check::- Check `<writing_rules>`. Identify the main rules are there and follow them: list}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -313,7 +313,7 @@
             "marker": false,
             "name": "┌︎ ◦︎ speech style (sample)",
             "role": "system",
-            "content": "",
+            "content": "{{setvar::speech_author::\n\n[AUTHOR-METHOD ADAPTATION (SPEECH STYLE)]\nApply author's METHOD to character voice — not their prose style.\n- Flynn's forensic psychology → character cuts with clinical precision\n- Pratchett's absurdist warmth → character carries observational wit\nQuestion: how would this author write THIS character?\n\n[TERRY PRATCHETT]\nDialogue warm, humane, laced with gentle absurdity—wise fools and foolish wisdom. Thoughts are compassionate observations finding humor in human flaws.\n\n[BALANCE]\nSecondary influences ENHANCE primary author, never replace.\nBlend organically — innate, not showcased.\nTargets: character voice or comedic tone, not narration.}}\n{{setvar::speech_style::\n- SPEECH STYLE: author method in character voice, blends with main style?}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -635,7 +635,7 @@
             "marker": false,
             "name": "◦︎ ✎ things (sample)",
             "role": "system",
-            "content": "",
+            "content": "[TYPOGRAPHICS]\nFor worded textual use! Signature Styled Embedded Micro-Text: Unique font/styling for physical elements observed in the environment and embedded directly within the prose (e.g., an engraved word on a weapon, a single line of graffiti, a short warning label on a container, words etched in walls, a name tag, etc.). Subsume more distinct font-family, color, and/or font-style to provide a quick visual cue about the text's nature, age, and origin. Use Google Font family libraries.",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -663,7 +663,7 @@
             "marker": false,
             "name": "⠀└︎ ◦︎ html theme",
             "role": "system",
-            "content": "HTML THEME:\nAlways apply DARK THEME styling for all HTML visual renderings. Use backgrounds in deep shades of #0d0d0d–#1a1a1a range (matte blacks, charcoal, deep navy, dark gray gradients), with light text colors (#f5f5f5–#dcdcdc) and subtle accent hues (neon cyan, magenta, amber, violet) to enhance readability and aesthetic impact.\nAvoid pure white (#fff) or blinding highlights; instead, use off-white or light gray tones. Never use bright backgrounds.\n",
+            "content": "HTML THEME:\nAlways apply DARK THEME styling for all HTML visual renderings. Use backgrounds in deep shades of #0d0d0d–#1a1a1a range (matte blacks, charcoal, deep navy, dark gray gradients), with light text colors (#f5f5f5–#dcdcdc) and subtle accent hues (neon cyan, magenta, amber, violet) to enhance readability and aesthetic impact.\nAvoid pure white (#fff) or blinding highlights; instead, use off-white or light gray tones. Never use bright backgrounds.",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -1097,7 +1097,7 @@
             "marker": false,
             "name": "◈︎ setvars",
             "role": "system",
-            "content": "{{setvar::softban::}}{{setvar::drawn_out::}}{{setvar::banwords::}}{{setvar::speech_author::}}{{setvar::profanity::}}{{setvar::banned::}}{{setvar::anti-loop::}}{{setvar::lang_check::}}{{setvar::role_check::}}{{setvar::word_count::}}{{setvar::writing_check::}}{{setvar::prose_check::}}{{setvar::speech_style::}}{{setvar::pace_check::}}{{setvar::focus::}}{{setvar::char_check::}}{{setvar::world_engine::}}{{setvar::npc_check::}}{{setvar::world_check::}}{{setvar::speech_check::}}{{setvar::anti_echo::}}{{setvar::largecothtml::}}{{setvar::momentum_check::}}{{setvar::thoughts::}}{{setvar::simple::}}{{setvar::descriptios::}}{{setvar::tweaks::}}{{setvar::sounds::}}{{setvar::no_horny::}}{{setvar::ooc_rules::}}{{setvar::attachment::}}{{setvar::character_autonomy::}}{{setvar::persistent_world::}}{{setvar::npc_autonomy::}}{{setvar::engine::}}{{setvar::spaces::}}{{setvar::speech_enhance::}}{{setvar::scene_momentum::}}{{setvar::echo::}}{{setvar::antiloop_guide::}}{{setvar::drama_diet::}}{{setvar::anti_pronouns::}}{{setvar::antirobot::}}{{setvar::largedeco::}}{{setvar::minideco::}}{{setvar::checklist::}}{{setvar::gore::}}{{setvar::dirtytalk::}}{{setvar::antirepet::}}{{setvar::structure::}}{{setvar::prehistory::}}{{setvar::adult::}}{{setvar::explicit::}}{{setvar::ultraecho::}}{{setvar::more_thoughts::}}{{setvar::sillyimages::}}{{setvar::naistera::}}{{setvar::poli::}}{{setvar::world_grounding::}}{{setvar::chardiary::}}{{setvar::gptsex::}}{{setvar::phonechar::}}{{setvar::perspective::}}{{setvar::cssphone::}}{{setvar::extralang::}}{{setvar::rutweakscheck::}}{{setvar::uatweakscheck::}}",
+            "content": "{{setvar::softban::}}{{setvar::drawn_out::}}{{setvar::banwords::}}{{setvar::speech_author::}}{{setvar::profanity::}}{{setvar::banned::}}{{setvar::anti-loop::}}{{setvar::lang_check::}}{{setvar::role_check::}}{{setvar::word_count::}}{{setvar::writing_check::}}{{setvar::prose_check::}}{{setvar::speech_style::}}{{setvar::pace_check::}}{{setvar::focus::}}{{setvar::char_check::}}{{setvar::world_engine::}}{{setvar::npc_check::}}{{setvar::world_check::}}{{setvar::speech_check::}}{{setvar::anti_echo::}}{{setvar::largecothtml::}}{{setvar::momentum_check::}}{{setvar::thoughts::}}{{setvar::simple::}}{{setvar::descriptios::}}{{setvar::tweaks::}}{{setvar::sounds::}}{{setvar::no_horny::}}{{setvar::ooc_rules::}}{{setvar::attachment::}}{{setvar::character_autonomy::}}{{setvar::persistent_world::}}{{setvar::npc_autonomy::}}{{setvar::engine::}}{{setvar::spaces::}}{{setvar::speech_enhance::}}{{setvar::scene_momentum::}}{{setvar::echo::}}{{setvar::antiloop_guide::}}{{setvar::drama_diet::}}{{setvar::anti_pronouns::}}{{setvar::antirobot::}}{{setvar::largedeco::}}{{setvar::minideco::}}{{setvar::checklist::}}{{setvar::gore::}}{{setvar::dirtytalk::}}{{setvar::antirepet::}}{{setvar::structure::}}{{setvar::prehistory::}}{{setvar::adult::}}{{setvar::explicit::}}{{setvar::ultraecho::}}{{setvar::more_thoughts::}}{{setvar::sillyimages::}}{{setvar::naistera::}}{{setvar::poli::}}{{setvar::world_grounding::}}{{setvar::chardiary::}}{{setvar::gptsex::}}{{setvar::phonechar::}}{{setvar::perspective::}}{{setvar::cssphone::}}{{setvar::extralang::}}{{setvar::rutweakscheck::}}{{setvar::uatweakscheck::}}{{setvar::pov::}}{{setvar::tense::}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -1291,9 +1291,9 @@
             "system_prompt": false,
             "enabled": false,
             "marker": false,
-            "name": "┌︎ ◈︎ POV & tense (change)",
+            "name": "┌︎ ◈︎ tense (change)",
             "role": "system",
-            "content": "{{setvar::perspective::\n\n[PERSPECTIVE]\n- 3rd person\n- Present tense.\n}}",
+            "content": "{{setvar::tense::- Present tense.}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -1439,6 +1439,20 @@
             "injection_order": 100,
             "injection_trigger": [],
             "forbid_overrides": false
+        },
+        {
+            "identifier": "5907aad3-0519-45e9-b6f7-40d9e434ef28",
+            "system_prompt": false,
+            "enabled": false,
+            "marker": false,
+            "name": "┌︎ ◈︎ pov (change)",
+            "role": "system",
+            "content": "{{setvar::pov::- 3rd person}}",
+            "injection_position": 0,
+            "injection_depth": 4,
+            "injection_order": 100,
+            "injection_trigger": [],
+            "forbid_overrides": false
         }
     ],
     "prompt_order": [
@@ -1532,6 +1546,10 @@
                 },
                 {
                     "identifier": "842947dc-fd0d-4207-94dd-3a35af7027c4",
+                    "enabled": true
+                },
+                {
+                    "identifier": "5907aad3-0519-45e9-b6f7-40d9e434ef28",
                     "enabled": true
                 },
                 {
