@@ -898,9 +898,24 @@ function buildMergedPreset(existingPreset, master, cfg) {
 
     const newPromptOrder = JSON.parse(JSON.stringify(existingOrder));
 
+    // DEBUG: Trace POV identifier
+    const POV_ID = "5907aad3-0519-45e9-b6f7-40d9e434ef28";
+
     for (const masterGroup of masterOrder) {
         const charId = masterGroup.character_id;
         let userGroup = newPromptOrder.find(g => String(g.character_id) === String(charId));
+
+        // DEBUG
+        if (masterGroup.order.find(x => x.identifier === POV_ID)) {
+            console.log("[Yablochny] Merge: Found POV in master group", charId);
+            if (userGroup) {
+                console.log("[Yablochny] Merge: Found matching user group", charId);
+                const uPov = userGroup.order.find(x => x.identifier === POV_ID);
+                console.log("[Yablochny] Merge: POV in user group?", !!uPov, uPov);
+            } else {
+                console.log("[Yablochny] Merge: NO matching user group for", charId);
+            }
+        }
 
         if (!userGroup) {
             // у юзера такой группы не было — просто клонируем мастер-группу
