@@ -164,7 +164,9 @@ const UI_TEXT = {
         groupCyoa: "✧ CYOA (тільки один)",
         groupFancy: "✧ Fancy UI (тільки один)",
         groupComments: "✧ Коментарі (тільки один)",
-        exclusiveTag: "[1 варіант]",
+        groupUi: "◈︎ Fancy elements (Штуки)",
+        groupSupport: "◈︎ Support (Мова допів)",
+        exclusiveTag: "exclusive",
         regexTitle: "Регекс-паки для Yablochny",
         regexToggleOn: "Регекси УВІМК",
         regexToggleOff: "Регекси ВИМК",
@@ -603,7 +605,72 @@ You must always generate information about the day, date and year in the format:
 Thoughts, in the form of blocks. No large fonts!! Never use *asterisks* inside. Be sure to include the name of the person who owns the thoughts, use KAOMOJI's next to their name to show their mood.`,
         },
     ],
+    ui_elements: [
+        {
+            id: "clocks",
+            label: "↗ clocks",
+            content: `
+[CLOCKS]
+Start EVERY response with clock block.
+<info>
+DD.MM.YY | Short day of the week (Mo, Tu, etc.) | LOCATION | Weather emoji and temparature in Celsius° | HH:MM
+§Name: Outfit
+§Name: Outfit
+¶Scene: Status
+</info>`,
+        },
+        {
+            id: "clocksmin",
+            label: "↘︎ clocks minimal",
+            content: `
+[CLOCKS]
+Start EVERY response with info block in roleplay language.
+<info>DD.MM.YY | Short day of the week (Mo, Tu, etc.) | LOCATION | Weather emoji and temparature in Celsius° | HH:MM</info>`,
+        },
+        {
+            id: "phone",
+            label: "phone",
+            content: `[PHONE BLOCK]
+Use {{char}}'s phone screen. It's not just a visual - it's part of the story.`,
+        },
+        {
+            id: "diary",
+            label: "diary",
+            content: `[DIARY]
+{{char}} writes diary every evening before sleep. This is part of their personality — a private ritual of reflection.`,
+        },
+        {
+            id: "transitions",
+            label: "transitions",
+            content: `[TRANSITIONS]
+ALWAYS use the transitions system actively to shape the story. Every message must include at least 1 transitions.`,
+        },
+        {
+            id: "music",
+            label: "music player",
+            content: `[MUSIC PLAYER]
+At the very end of EVERY message, choose a song that fits the scene and create a player block.`,
+        },
+        {
+            id: "infoblock",
+            label: "infoblock",
+            content: `[MEMO BLOCK]
+At END of EVERY response, write ONE status block in roleplay language.`,
+        },
+        {
+            id: "portraits",
+            label: "psycholgical portraits",
+            content: `[PSYCHOLOGICAL PORTRAITS]
+ONE block at END of response for ALL scene characters.`,
+        },
+    ],
     comments: [
+        {
+            id: "renette_comments",
+            label: "Comments (on)",
+            content: `[The Living Comments]
+At the end of your message, generate a "Comments" section with 9 unique users.`,
+        },
         {
             id: "commentsv1",
             label: "Комменты V1",
@@ -1266,7 +1333,7 @@ function updateMetaUi() {
 }
 
 function renderThingsUI(cfg) {
-    const sel = cfg.thingsSelected || { mix: [], hidden: [], cyoa: null, fancy: null, comments: null };
+    const sel = cfg.thingsSelected || { mix: [], fancy: null, comments: null };
     const lang = getUiLang();
     const dict = UI_TEXT[lang] || UI_TEXT.en;
 
@@ -1277,7 +1344,7 @@ function renderThingsUI(cfg) {
         for (const def of defs) {
             const inputId = `yp-thing-${groupKey}-${def.id}`;
             const checked =
-                groupKey === "mix" || groupKey === "hidden"
+                groupKey === "mix"
                     ? (sel[groupKey] || []).includes(def.id)
                     : sel[groupKey] === def.id;
 
