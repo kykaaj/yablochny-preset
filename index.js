@@ -82,7 +82,6 @@ const UI_TEXT = {
         lastSyncLabel: "Last sync:",
         thingsTitle: "Things / Toggles",
         thingsNote: "Sync after checking/unchecking!",
-        thingsManagedLabel: "◦︎ manage 'things' from here (otherwise preserved)",
         groupMix: "◇ Mixable",
         groupHidden: "👁 Hidden blocks",
         groupCyoa: "✧ CYOA (only one)",
@@ -120,7 +119,6 @@ const UI_TEXT = {
         lastSyncLabel: "Синхронизация:",
         thingsTitle: "Дополнения (Things)",
         thingsNote: "Не забудьте синхронизировать после выбора!",
-        thingsManagedLabel: "◦︎ управлять 'things' отсюда (иначе ручные правки сохраняются)",
         groupMix: "◇ Можно смешивать",
         groupHidden: "👁 Скрытые блоки",
         groupCyoa: "✧ CYOA (только один)",
@@ -780,7 +778,6 @@ function getConfig() {
                 fancy: null,
                 comments: null,
             },
-            thingsManaged: true,
             devMode: false,
         };
     }
@@ -807,7 +804,6 @@ function getConfig() {
         fancy: null,
         comments: null,
     };
-    cfg.thingsManaged ??= true;
     cfg.devMode ??= false;
 
     promptSyncMetaCache = cfg.promptSyncMeta;
@@ -989,13 +985,6 @@ function applyThingsVariant(master, cfg, existingPreset) {
 
     const existingContent = getContentFromExisting(existingPreset, id) || "";
 
-    if (!cfg.thingsManaged) {
-        if (existingContent) {
-            prompt.content = existingContent;
-        }
-        return;
-    }
-
     // Identify all possible contents from DEFINITIONS to strip them
     const allKnownContents = new Set();
     Object.values(THINGS_DEFS).forEach(group => {
@@ -1035,8 +1024,8 @@ function applyThingsVariant(master, cfg, existingPreset) {
         if (def && def.content) extensionParts.push(def.content.trim());
     }
 
-    // Final Merge: Extension Parts + User Parts
-    const finalBlocks = [...extensionParts, ...userPartBlocks];
+    // Final Merge: User Parts + Extension Parts
+    const finalBlocks = [...userPartBlocks, ...extensionParts];
     prompt.content = finalBlocks.join("\n\n");
 }
 
@@ -1615,9 +1604,9 @@ function initControls() {
     jQuery("#yp-speech").val(cfg.speechStyle || "none");
     jQuery("#yp-theme").val(cfg.htmlTheme || "dark");
     jQuery("#yp-image-mode").val(cfg.imageMode || "silly");
+    window.YablochnyThingsSelection = cfg.thingsSelected || {};
     jQuery("#yp-auto-sync").prop("checked", !!cfg.autoSyncOnStart);
     jQuery("#yp-dev-mode").prop("checked", !!cfg.devMode);
-    jQuery("#yp-things-managed").prop("checked", cfg.thingsManaged !== false);
 
     updateMetaUi();
 
@@ -1636,11 +1625,12 @@ function initControls() {
         setConfig("autoSyncOnStart", this.checked);
     });
 
-    jQuery("#yp-things-managed").on("change", function () {
-        const cfg = getConfig();
-        cfg.thingsManaged = jQuery(this).is(":checked");
-        saveSettingsDebounced();
-        // если выключили управление штуками — не перетираем содержимое things при синке
+    jQuery("#yp-auto-sync").on("change", function () {
+        setConfig("autoSyncOnStart", this.checked);
+    });
+
+    jQuery("#yp-auto-sync").on("change", function () {
+        setConfig("autoSyncOnStart", this.checked);
     });
 
     jQuery("#yp-dev-mode").on("change", function () {
@@ -1648,157 +1638,157 @@ function initControls() {
         cfg.devMode = jQuery(this).is(":checked");
         saveSettingsDebounced();
     });
+}
 
-    function onPresetOptionChanged(updater) {
-        updater();
-        saveSettingsDebounced();
-        // Автоматически пересинхронизируем пресет при смене варианта
-        syncPreset(true);
-    }
+function onPresetOptionChanged(updater) {
+    updater();
+    saveSettingsDebounced();
+    // Автоматически пересинхронизируем пресет при смене варианта
+    syncPreset(true);
+}
 
-    jQuery("#yp-language").on("change", function () {
-        const value = String(jQuery(this).val());
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.languageMode = value;
-        });
-    });
-
-    jQuery("#yp-length").on("change", function () {
-        const value = String(jQuery(this).val());
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.lengthMode = value;
-        });
-    });
-
-    jQuery("#yp-pov").on("change", function () {
-        const value = String(jQuery(this).val());
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.POVMode = value;
-        });
-    });
-    jQuery("#yp-tense").on("change", function () {
-        const value = String(jQuery(this).val());
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.TENSEMode = value;
-        });
-    });
-    jQuery("#yp-prose").on("change", function () {
-        const value = String(jQuery(this).val());
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.proseStyle = value;
-        });
-    });
-
-    jQuery("#yp-speech").on("change", function () {
-        const value = String(jQuery(this).val());
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.speechStyle = value;
-        });
-    });
-
-    jQuery("#yp-image-mode").on("change", function () {
-        const value = String(jQuery(this).val());
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.imageMode = value;
-        });
-    });
-
-    jQuery("#yp-theme").on("change", function () {
-        const value = String(jQuery(this).val());
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.htmlTheme = value;
-        });
-    });
-
-    // Things: delegated handler
-    jQuery("#yp-things").on("change", "input[data-things-group]", function () {
-        const group = String(jQuery(this).data("things-group"));
-        const id = String(jQuery(this).data("things-id"));
-        const checked = jQuery(this).is(":checked");
+jQuery("#yp-language").on("change", function () {
+    const value = String(jQuery(this).val());
+    onPresetOptionChanged(() => {
         const cfg = getConfig();
-        const sel = cfg.thingsSelected || { mix: [], hidden: [], cyoa: null, fancy: null, comments: null };
+        cfg.languageMode = value;
+    });
+});
 
-        const updateSelection = () => {
-            if (group === "mix" || group === "hidden") {
-                const arr = Array.isArray(sel[group]) ? [...sel[group]] : [];
-                if (checked) {
-                    if (!arr.includes(id)) arr.push(id);
-                } else {
-                    const idx = arr.indexOf(id);
-                    if (idx !== -1) arr.splice(idx, 1);
-                }
-                sel[group] = arr;
+jQuery("#yp-length").on("change", function () {
+    const value = String(jQuery(this).val());
+    onPresetOptionChanged(() => {
+        const cfg = getConfig();
+        cfg.lengthMode = value;
+    });
+});
+
+jQuery("#yp-pov").on("change", function () {
+    const value = String(jQuery(this).val());
+    onPresetOptionChanged(() => {
+        const cfg = getConfig();
+        cfg.POVMode = value;
+    });
+});
+jQuery("#yp-tense").on("change", function () {
+    const value = String(jQuery(this).val());
+    onPresetOptionChanged(() => {
+        const cfg = getConfig();
+        cfg.TENSEMode = value;
+    });
+});
+jQuery("#yp-prose").on("change", function () {
+    const value = String(jQuery(this).val());
+    onPresetOptionChanged(() => {
+        const cfg = getConfig();
+        cfg.proseStyle = value;
+    });
+});
+
+jQuery("#yp-speech").on("change", function () {
+    const value = String(jQuery(this).val());
+    onPresetOptionChanged(() => {
+        const cfg = getConfig();
+        cfg.speechStyle = value;
+    });
+});
+
+jQuery("#yp-image-mode").on("change", function () {
+    const value = String(jQuery(this).val());
+    onPresetOptionChanged(() => {
+        const cfg = getConfig();
+        cfg.imageMode = value;
+    });
+});
+
+jQuery("#yp-theme").on("change", function () {
+    const value = String(jQuery(this).val());
+    onPresetOptionChanged(() => {
+        const cfg = getConfig();
+        cfg.htmlTheme = value;
+    });
+});
+
+// Things: delegated handler
+jQuery("#yp-things").on("change", "input[data-things-group]", function () {
+    const group = String(jQuery(this).data("things-group"));
+    const id = String(jQuery(this).data("things-id"));
+    const checked = jQuery(this).is(":checked");
+    const cfg = getConfig();
+    const sel = cfg.thingsSelected || { mix: [], hidden: [], cyoa: null, fancy: null, comments: null };
+
+    const updateSelection = () => {
+        if (group === "mix" || group === "hidden") {
+            const arr = Array.isArray(sel[group]) ? [...sel[group]] : [];
+            if (checked) {
+                if (!arr.includes(id)) arr.push(id);
             } else {
-                if (checked) {
-                    // снять остальные в этой группе
-                    jQuery(`#yp-things input[data-things-group="${group}"]`).not(this).prop("checked", false);
-                    sel[group] = id;
-                } else {
-                    sel[group] = null;
-                }
+                const idx = arr.indexOf(id);
+                if (idx !== -1) arr.splice(idx, 1);
             }
-            cfg.thingsSelected = sel;
-        };
-
-        onPresetOptionChanged(updateSelection);
-    });
-
-    // Regex controls
-    jQuery("#yp-regex-toggle").on("click", async () => {
-        const cfg = getConfig();
-        cfg.regexActive = !cfg.regexActive;
-        window.YablochnyRegexData = window.YablochnyRegexData || { packs: {}, enabled: [], active: true };
-        window.YablochnyRegexData.active = cfg.regexActive;
-
-        if (cfg.regexActive) {
-            for (const packId of window.YablochnyRegexData.enabled) {
-                injectRegexPack(packId);
-            }
-            if (window.toastr) {
-                const lang = getUiLang();
-                const dict = UI_TEXT[lang] || UI_TEXT.en;
-                window.toastr.success(dict.toastRegexEnabled);
-            }
+            sel[group] = arr;
         } else {
-            for (const packId of window.YablochnyRegexData.enabled) {
-                removeRegexPack(packId);
-            }
-            if (window.toastr) {
-                const lang = getUiLang();
-                const dict = UI_TEXT[lang] || UI_TEXT.en;
-                window.toastr.info(dict.toastRegexDisabled);
+            if (checked) {
+                // снять остальные в этой группе
+                jQuery(`#yp-things input[data-things-group="${group}"]`).not(this).prop("checked", false);
+                sel[group] = id;
+            } else {
+                sel[group] = null;
             }
         }
+        cfg.thingsSelected = sel;
+    };
 
-        saveRegexSettings();
-        updateRegexToggleButton();
+    onPresetOptionChanged(updateSelection);
+});
 
-        const ctx = window.SillyTavern?.getContext?.();
-        if (ctx?.reloadCurrentChat) {
-            await ctx.reloadCurrentChat();
+// Regex controls
+jQuery("#yp-regex-toggle").on("click", async () => {
+    const cfg = getConfig();
+    cfg.regexActive = !cfg.regexActive;
+    window.YablochnyRegexData = window.YablochnyRegexData || { packs: {}, enabled: [], active: true };
+    window.YablochnyRegexData.active = cfg.regexActive;
+
+    if (cfg.regexActive) {
+        for (const packId of window.YablochnyRegexData.enabled) {
+            injectRegexPack(packId);
         }
-    });
-
-    jQuery("#yp-regex-debug").on("click", () => {
-        if (window.RegexManager?.debug) {
-            window.RegexManager.debug();
-        } else {
+        if (window.toastr) {
             const lang = getUiLang();
             const dict = UI_TEXT[lang] || UI_TEXT.en;
-            if (window.toastr) {
-                window.toastr.info(dict.toastRegexDebugNote);
-            }
+            window.toastr.success(dict.toastRegexEnabled);
         }
-    });
-}
+    } else {
+        for (const packId of window.YablochnyRegexData.enabled) {
+            removeRegexPack(packId);
+        }
+        if (window.toastr) {
+            const lang = getUiLang();
+            const dict = UI_TEXT[lang] || UI_TEXT.en;
+            window.toastr.info(dict.toastRegexDisabled);
+        }
+    }
+
+    saveRegexSettings();
+    updateRegexToggleButton();
+
+    const ctx = window.SillyTavern?.getContext?.();
+    if (ctx?.reloadCurrentChat) {
+        await ctx.reloadCurrentChat();
+    }
+});
+
+jQuery("#yp-regex-debug").on("click", () => {
+    if (window.RegexManager?.debug) {
+        window.RegexManager.debug();
+    } else {
+        const lang = getUiLang();
+        const dict = UI_TEXT[lang] || UI_TEXT.en;
+        if (window.toastr) {
+            window.toastr.info(dict.toastRegexDebugNote);
+        }
+    }
+});
 
 async function waitForOpenAI() {
     const start = Date.now();
