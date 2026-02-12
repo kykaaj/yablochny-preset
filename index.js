@@ -1192,17 +1192,16 @@ async function syncPreset(showToasts = true) {
 
         if (showToasts && window.toastr) {
             const lang = getUiLang();
-            const text = lang === "ru"
-                ? "Яблочный пресет синхронизирован."
-                : lang === "uk"
-                    ? "Яблучний пресет синхронізовано."
-                    : "Yablochny preset synchronized.";
+            const dict = UI_TEXT[lang] || UI_TEXT.en;
+            const text = dict.toastSyncSuccess;
             window.toastr.success(text);
         }
     } catch (err) {
         console.error("[Yablochny] Sync error", err);
         if (showToasts && window.toastr) {
-            window.toastr.error("Ошибка синхронизации: " + err.message);
+            const lang = getUiLang();
+            const dict = UI_TEXT[lang] || UI_TEXT.en;
+            window.toastr.error((dict.toastSyncError || "Sync error: ") + err.message);
         }
     }
 }
