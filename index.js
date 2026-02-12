@@ -35,6 +35,8 @@ const VARIANT_PROMPT_IDS = new Set([
     "9adda56b-6f32-416a-b947-9aa9f41564eb",
     // ◈︎ pov (change)
     "5907aad3-0519-45e9-b6f7-40d9e434ef28",
+    // ◈︎ tense (change)
+    "e0ce2a23-98e3-4772-8984-5e9aa4c5c551",
     // ◦︎ speech style (sample)
     "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c",
     // ◈︎ prose style (change)
@@ -751,7 +753,7 @@ function applyTENSEVariant(master, cfg) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
     if (cfg.TENSEMode === "custom") return;
-    const text = TENSE_VARIANTS[cfg.TENSEMode || "3rd"];
+    const text = TENSE_VARIANTS[cfg.TENSEMode || "Present"];
     if (text) {
         prompt.content = text;
     }
@@ -834,7 +836,7 @@ function applyThingsVariant(master, cfg) {
 
 function buildMasterWithVariants(basePreset, cfg, uiLang) {
     // Клонируем исходный пресет как есть
-    const master = structuredClone(basePreset);
+    const master = JSON.parse(JSON.stringify(basePreset));
 
     applyLanguageVariant(master, cfg, uiLang);
     applyLengthVariant(master, cfg);
@@ -893,35 +895,73 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
     }
 
-    // prompt_order: сохраняем пользовательский порядок как есть, только добавляем новые id из мастера
+    // prompt_order: сохраняем пользовательский порядок для кастомных, но форсируем мастер-порядок для «наших» промптов
     const masterOrder = Array.isArray(master.prompt_order) ? master.prompt_order : [];
-    const existingOrder = Array.isArray(existingPreset?.prompt_order) ? structuredClone(existingPreset.prompt_order) : [];
+    const existingOrder = Array.isArray(existingPreset?.prompt_order) ? JSON.parse(JSON.stringify(existingPreset.prompt_order)) : [];
 
-    const newPromptOrder = structuredClone(existingOrder);
+    const newPromptOrder = [];
+    const masterCharIds = new Set(masterOrder.map(g => g.character_id));
 
+    // Сначала обрабатываем все группы из мастера (и мержим их с пользовательскими)
     for (const masterGroup of masterOrder) {
         const charId = masterGroup.character_id;
-        let userGroup = newPromptOrder.find(g => g.character_id === charId);
+        let userGroup = existingOrder.find(g => g.character_id === charId);
 
         if (!userGroup) {
-            // у юзера такой группы не было — просто клонируем мастер-группу
-            newPromptOrder.push(structuredClone(masterGroup));
+            newPromptOrder.push(JSON.parse(JSON.stringify(masterGroup)));
             continue;
         }
 
-        const userIds = new Set(userGroup.order.map(o => o.identifier));
+        // Собираем новый порядок для этой группы
+        const masterIdentifiers = masterGroup.order.map(o => o.identifier);
+        const masterIdSet = new Set(masterIdentifiers);
 
-        for (const item of masterGroup.order) {
-            if (!userIds.has(item.identifier)) {
-                userGroup.order.push({ identifier: item.identifier, enabled: item.enabled });
-                if (dev && mergeLog) {
-                    mergeLog.push({ id: item.identifier, name: "", action: "order-added", variant: false });
+        // Кастомные промпты (которых нет в мастере) привязываем к «якорному» промпту перед ними
+        const customAfter = new Map(); // identifier of anchor -> array of custom items
+        const customAtStart = [];
+
+        let lastAnchor = null;
+        for (const item of userGroup.order) {
+            if (masterIdSet.has(item.identifier)) {
+                lastAnchor = item.identifier;
+            } else {
+                if (lastAnchor) {
+                    if (!customAfter.has(lastAnchor)) customAfter.set(lastAnchor, []);
+                    customAfter.get(lastAnchor).push(item);
+                } else {
+                    customAtStart.push(item);
                 }
             }
         }
+
+        const mergedOrder = [];
+        mergedOrder.push(...customAtStart);
+
+        for (const mItem of masterGroup.order) {
+            const uItem = userGroup.order.find(o => o.identifier === mItem.identifier);
+            mergedOrder.push({
+                identifier: mItem.identifier,
+                enabled: uItem ? uItem.enabled : mItem.enabled,
+            });
+
+            const following = customAfter.get(mItem.identifier);
+            if (following) mergedOrder.push(...following);
+        }
+
+        newPromptOrder.push({
+            character_id: charId,
+            order: mergedOrder,
+        });
     }
 
-    const result = existingPreset ? structuredClone(existingPreset) : structuredClone(master);
+    // Добавляем группы, которые были у пользователя, но которых нет в мастере (например, другие персонажи)
+    for (const userGroup of existingOrder) {
+        if (!masterCharIds.has(userGroup.character_id)) {
+            newPromptOrder.push(userGroup);
+        }
+    }
+
+    const result = existingPreset ? JSON.parse(JSON.stringify(existingPreset)) : JSON.parse(JSON.stringify(master));
 
     if (!existingPreset) {
         Object.assign(result, master);
@@ -931,7 +971,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
     result.prompt_order = newPromptOrder.length ? newPromptOrder : masterOrder;
 
     if (!result.extensions && master.extensions) {
-        result.extensions = structuredClone(master.extensions);
+        result.extensions = JSON.parse(JSON.stringify(master.extensions));
     }
 
     if (dev && mergeLog) {
@@ -953,7 +993,7 @@ async function syncPreset(showToasts = true) {
 
         const name = cfg.presetName || DEFAULT_PRESET_NAME;
         const index = findPresetIndexByName(name);
-        const existingPreset = index !== null ? structuredClone(openai_settings[index]) : null;
+        const existingPreset = index !== null ? JSON.parse(JSON.stringify(openai_settings[index])) : null;
 
         const { preset, syncMeta } = buildMergedPreset(existingPreset, master, cfg);
 
@@ -1034,7 +1074,7 @@ function applyLocaleToUi() {
     jQuery("#yp-lang-label").text(dict.langLabel);
     jQuery("#yp-length-label").text(dict.lengthLabel);
     jQuery("#yp-pov-label").text(dict.POVLabel);
-    jQuery("#yp-tense-label").text(dict.POVLabel);
+    jQuery("#yp-tense-label").text(dict.tenseLabel);
     jQuery("#yp-prose-label").text(dict.proseLabel);
     jQuery("#yp-speech-label").text(dict.speechLabel);
     jQuery("#yp-theme-label").text(dict.themeLabel);
