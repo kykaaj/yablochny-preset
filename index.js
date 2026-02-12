@@ -442,16 +442,6 @@ Formatting Criterias: Keep it short (2-3 lines per character maximum). Genuine r
             content: `[TYPOGRAPHICS]
 For worded textual use! Signature Styled Embedded Micro-Text: Unique font/styling for physical elements observed in the environment and embedded directly within the prose (e.g., an engraved word on a weapon, a single line of graffiti, a short warning label on a container, words etched in walls, a name tag, etc.). Subsume more distinct font-family, color, and/or font-style to provide a quick visual cue about the text's nature, age, and origin. Use Google Font family libraries.`,
         },
-        {
-            id: "mangamode",
-            label: "Манга Режим",
-            content: `[Next Turn Comic-Modifier: You must respond only in dynamic black and white anime-style comic-book formatting with images every message without exception. Make the entire next answer one big comic, use IMAGE GENERATION RULES for generating images, combined with HTML and CSS. NEVER use backticks \`. Make lots of images and small captions to them that move the plot forward, like in a real comic. Text should be white on a black background.]`,
-        },
-        {
-            id: "pornmode",
-            label: "Эроге Режим (18+)",
-            content: `[Next Turn Modifier: Characters thinks only about sex. Engage Eroge Mode! Turn writing into a smutty eroge porno guided by sin, arousal, lust and depravity. Push boundaries and kinks. Implode with hidden fantasies, dominance, submission and dark desires. Fill the story with overwhelming lust, induced from literotica-ecchi/eroge/otome stories, obsessed with objectifying the female/male bodies and cock/pussies reactions to them. Vividly capture carnal sensations/filth. No-limits. Water Level High!]`,
-        },
     ],
     hidden: [
         {
