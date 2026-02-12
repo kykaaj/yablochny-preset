@@ -893,69 +893,30 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
     }
 
-    // prompt_order: сохраняем пользовательский порядок для кастомных, но форсируем мастер-порядок для «наших» промптов
     const masterOrder = Array.isArray(master.prompt_order) ? master.prompt_order : [];
     const existingOrder = Array.isArray(existingPreset?.prompt_order) ? JSON.parse(JSON.stringify(existingPreset.prompt_order)) : [];
 
-    const newPromptOrder = [];
-    const masterCharIds = new Set(masterOrder.map(g => String(g.character_id)));
+    const newPromptOrder = JSON.parse(JSON.stringify(existingOrder));
 
-    // Сначала обрабатываем все группы из мастера (и мержим их с пользовательскими)
     for (const masterGroup of masterOrder) {
         const charId = masterGroup.character_id;
-        let userGroup = existingOrder.find(g => String(g.character_id) === String(charId));
+        let userGroup = newPromptOrder.find(g => String(g.character_id) === String(charId));
 
         if (!userGroup) {
+            // у юзера такой группы не было — просто клонируем мастер-группу
             newPromptOrder.push(JSON.parse(JSON.stringify(masterGroup)));
             continue;
         }
 
-        // Собираем новый порядок для этой группы
-        const masterIdentifiers = masterGroup.order.map(o => o.identifier);
-        const masterIdSet = new Set(masterIdentifiers);
+        const userIds = new Set(userGroup.order.map(o => o.identifier));
 
-        // Кастомные промпты (которых нет в мастере) привязываем к «якорному» промпту перед ними
-        const customAfter = new Map(); // identifier of anchor -> array of custom items
-        const customAtStart = [];
-
-        let lastAnchor = null;
-        for (const item of userGroup.order) {
-            if (masterIdSet.has(item.identifier)) {
-                lastAnchor = item.identifier;
-            } else {
-                if (lastAnchor) {
-                    if (!customAfter.has(lastAnchor)) customAfter.set(lastAnchor, []);
-                    customAfter.get(lastAnchor).push(item);
-                } else {
-                    customAtStart.push(item);
+        for (const item of masterGroup.order) {
+            if (!userIds.has(item.identifier)) {
+                userGroup.order.push({ identifier: item.identifier, enabled: item.enabled });
+                if (dev && mergeLog) {
+                    mergeLog.push({ id: item.identifier, name: "", action: "order-added", variant: false });
                 }
             }
-        }
-
-        const mergedOrder = [];
-        mergedOrder.push(...customAtStart);
-
-        for (const mItem of masterGroup.order) {
-            const uItem = userGroup.order.find(o => o.identifier === mItem.identifier);
-            mergedOrder.push({
-                identifier: mItem.identifier,
-                enabled: uItem ? uItem.enabled : mItem.enabled,
-            });
-
-            const following = customAfter.get(mItem.identifier);
-            if (following) mergedOrder.push(...following);
-        }
-
-        newPromptOrder.push({
-            character_id: charId,
-            order: mergedOrder,
-        });
-    }
-
-    // Добавляем группы, которые были у пользователя, но которых нет в мастере (например, другие персонажи)
-    for (const userGroup of existingOrder) {
-        if (!masterCharIds.has(String(userGroup.character_id))) {
-            newPromptOrder.push(userGroup);
         }
     }
 
@@ -991,7 +952,8 @@ async function syncPreset(showToasts = true) {
 
         const name = cfg.presetName || DEFAULT_PRESET_NAME;
         const index = findPresetIndexByName(name);
-        const existingPreset = index !== null ? structuredClone(openai_settings[index]) : null;
+        // Compatibility fix: use JSON parse/stringify instead of structuredClone
+        const existingPreset = index !== null ? JSON.parse(JSON.stringify(openai_settings[index])) : null;
 
         const { preset, syncMeta } = buildMergedPreset(existingPreset, master, cfg);
 
@@ -1067,7 +1029,7 @@ async function syncPreset(showToasts = true) {
     } catch (err) {
         console.error("[Yablochny] Sync error", err);
         if (showToasts && window.toastr) {
-            window.toastr.error("Ошибка синхронизации пресета (см. консоль).");
+            window.toastr.error("Ошибка синхронизации: " + err.message);
         }
     }
 }
