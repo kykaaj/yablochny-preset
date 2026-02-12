@@ -76,6 +76,7 @@ const UI_TEXT = {
         speechLabel: "Speech style",
         themeLabel: "HTML theme",
         lastSyncNever: "never",
+        guide: "Guide",
     },
     ru: {
         title: "Яблочный пресет",
@@ -90,6 +91,7 @@ const UI_TEXT = {
         speechLabel: "Манера речи",
         themeLabel: "HTML тема",
         lastSyncNever: "ещё ни разу",
+        guide: "Гайд",
     },
     uk: {
         title: "Яблучний пресет",
@@ -104,6 +106,7 @@ const UI_TEXT = {
         speechLabel: "Манера мовлення",
         themeLabel: "HTML тема",
         lastSyncNever: "ще жодного разу",
+        guide: "Гайд",
     },
 };
 
@@ -1150,6 +1153,7 @@ function applyLocaleToUi() {
     jQuery("#yp-prose-label").text(dict.proseLabel);
     jQuery("#yp-speech-label").text(dict.speechLabel);
     jQuery("#yp-theme-label").text(dict.themeLabel);
+    jQuery("#yp-guide-link").text(dict.guide);
     const devLabel =
         lang === "ru"
             ? "Режим разработчика (лог синка в консоль)"
