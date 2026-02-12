@@ -217,3 +217,37 @@
   opacity: 0.5;
 }
 
+.yablochny-info-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.yablochny-info-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #ddd;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.yablochny-info-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  text-decoration: none;
+}
+
+.yablochny-info-link i {
+  color: #7a9a72;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
