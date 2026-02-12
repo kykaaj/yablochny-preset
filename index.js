@@ -983,20 +983,37 @@ function applyThingsVariant(master, cfg, existingPreset) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
-    const existingContent = getContentFromExisting(existingPreset, id) || "";
-    const normalize = (s) => (s || "").replace(/\r/g, "").split("\n").map(l => l.trim()).join("\n").trim();
+    let existingContent = getContentFromExisting(existingPreset, id) || "";
 
-    // Identify all possible contents from DEFINITIONS to strip them
-    const allKnownContents = new Set();
+    // Helper to escape regex special characters
+    const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // Collect all known content strings
+    const allKnownContents = [];
     Object.values(THINGS_DEFS).forEach(group => {
         group.forEach(item => {
-            if (item.content) allKnownContents.add(normalize(item.content));
+            if (item.content) allKnownContents.push(item.content.trim());
         });
     });
 
-    // Extract User Part: Split existing into blocks, and remove any that match known contents
-    const existingBlocks = existingContent.split(/\n\s*\n/).filter(b => b.trim().length > 0);
-    const userPartBlocks = existingBlocks.filter(block => !allKnownContents.has(normalize(block)));
+    // Sort by length (descending) to match longest blocks first (e.g. fancyfull vs fancybase)
+    allKnownContents.sort((a, b) => b.length - a.length);
+
+    // Remove known contents from existingContent using fuzzy regex (ignoring whitespace differences)
+    allKnownContents.forEach(known => {
+        // Create a regex that matches the content but allows any whitespace sequence where the original had whitespace
+        const fuzzyPattern = escapeRegExp(known).replace(/\\s\+/g, '[\\s\\r\\n]*');
+        // We need to handle the case where escapeRegExp escapes spaces. 
+        // Actually, just replacing literal spaces with whitespace matcher is better.
+        // Let's re-do the regex construction:
+        const parts = known.split(/\s+/);
+        const regexString = parts.map(escapeRegExp).join('[\\s\\r\\n]+');
+        const regex = new RegExp(regexString, 'g');
+        existingContent = existingContent.replace(regex, "");
+    });
+
+    // User part is what remains
+    const userPart = existingContent.trim();
 
     // Construct New Extension Part
     const sel = cfg.thingsSelected || {};
@@ -1026,7 +1043,7 @@ function applyThingsVariant(master, cfg, existingPreset) {
     }
 
     // Final Merge: User Parts + Extension Parts
-    const finalBlocks = [...userPartBlocks, ...extensionParts];
+    const finalBlocks = [userPart, ...extensionParts].filter(b => b.length > 0);
     prompt.content = finalBlocks.join("\n\n");
 }
 
