@@ -35,7 +35,7 @@ const VARIANT_PROMPT_IDS = new Set([
     "9adda56b-6f32-416a-b947-9aa9f41564eb",
     // ◈︎ pov (change)
     "5907aad3-0519-45e9-b6f7-40d9e434ef28",
-    // ◈︎ pov (change)
+    // ◈︎ tense (change)
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551",
     // ◦︎ speech style (sample)
     "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c",
@@ -753,7 +753,7 @@ function applyTENSEVariant(master, cfg) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
     if (cfg.TENSEMode === "custom") return;
-    const text = TENSE_VARIANTS[cfg.TENSEMode || "3rd"];
+    const text = TENSE_VARIANTS[cfg.TENSEMode || "Present"];
     if (text) {
         prompt.content = text;
     }
@@ -1036,7 +1036,7 @@ function applyLocaleToUi() {
     jQuery("#yp-lang-label").text(dict.langLabel);
     jQuery("#yp-length-label").text(dict.lengthLabel);
     jQuery("#yp-pov-label").text(dict.POVLabel);
-    jQuery("#yp-tense-label").text(dict.POVLabel);
+    jQuery("#yp-tense-label").text(dict.tenseLabel);
     jQuery("#yp-prose-label").text(dict.proseLabel);
     jQuery("#yp-speech-label").text(dict.speechLabel);
     jQuery("#yp-theme-label").text(dict.themeLabel);
