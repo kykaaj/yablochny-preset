@@ -2,13 +2,13 @@
  * Yablochny Preset Extension for SillyTavern
  * Copyright (c) 2026 Kykaaj
  *
- * This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/ 
+ * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+ * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/ 
  * or see the LICENSE file in this directory.
  *
- * Attribution: You must give appropriate credit to Kykaaj if you redistribute or adapt this work.
+ * Attribution: You must give appropriate credit to Kykaaj if you redistribute this work.
  * NonCommercial: You may not use this material for commercial purposes.
- * ShareAlike: If you remix, transform, or build upon the material, you must distribute your contributions under the same license.
+ * NoDerivatives: If you remix, transform, or build upon the material, you may NOT distribute the modified material without explicit permission from the author.
  */
 
 import { extension_settings } from "/scripts/extensions.js";
