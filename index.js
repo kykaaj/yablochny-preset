@@ -78,6 +78,28 @@ const UI_TEXT = {
         lastSyncNever: "never",
         siteLabel: "Project Site",
         guideLabel: "Full Instructions",
+        presetLabel: "Preset:",
+        lastSyncLabel: "Last sync:",
+        thingsTitle: "✎ Things & extras",
+        thingsNote: "Extra 'things' for the ◦︎ ✎ things (sample) toggle. Some can be mixed, others are exclusive.",
+        thingsManagedLabel: "Manage toggle content from here (otherwise preserved)",
+        groupMix: "◇ Mixable",
+        groupHidden: "👁 Hidden blocks",
+        groupCyoa: "✧ CYOA (only one)",
+        groupFancy: "✧ Fancy UI (only one)",
+        groupComments: "✧ Comments (only one)",
+        exclusiveTag: "[1 variant]",
+        regexTitle: "Regex packs for Yablochny",
+        regexToggleOn: "Regex ON",
+        regexToggleOff: "Regex OFF",
+        regexDebug: "Debug",
+        regexDesc: "Packs of regex helpers for formatting Yablochny preset output. Enable only what you use.",
+        regexCount: "regexes",
+        toastSyncSuccess: "Yablochny preset synchronized.",
+        toastSyncError: "Sync error: ",
+        toastRegexEnabled: "Regex Manager enabled",
+        toastRegexDisabled: "Regex Manager disabled",
+        toastRegexDebugNote: "Open legacy Regex Manager extension to use debug.",
     },
     ru: {
         title: "Яблочный пресет",
@@ -94,6 +116,28 @@ const UI_TEXT = {
         lastSyncNever: "ещё ни разу",
         siteLabel: "Сайт проекта",
         guideLabel: "Полная инструкция",
+        presetLabel: "Пресет:",
+        lastSyncLabel: "Синхронизация:",
+        thingsTitle: "✎ Штуки и экстра",
+        thingsNote: "Дополнительные «штуки» для тогла ◦︎ ✎ things. Некоторые можно смешивать, другие — по одному.",
+        thingsManagedLabel: "Управлять содержимым тогла отсюда (иначе — не трогаем)",
+        groupMix: "◇ Можно смешивать",
+        groupHidden: "👁 Скрытые блоки",
+        groupCyoa: "✧ CYOA (только один)",
+        groupFancy: "✧ Fancy UI (только один)",
+        groupComments: "✧ Комментарии (только один)",
+        exclusiveTag: "[1 вариант]",
+        regexTitle: "Регекс-паки для Yablochny",
+        regexToggleOn: "Регексы ВКЛ",
+        regexToggleOff: "Регексы ВЫКЛ",
+        regexDebug: "Отладка",
+        regexDesc: "Наборы регексов для форматирования вывода пресета. Включайте только то, что используете.",
+        regexCount: "регексов",
+        toastSyncSuccess: "Яблочный пресет синхронизирован.",
+        toastSyncError: "Ошибка синхронизации: ",
+        toastRegexEnabled: "Regex Manager включён",
+        toastRegexDisabled: "Regex Manager выключен",
+        toastRegexDebugNote: "Открой старый Regex Manager, чтобы использовать дебаг.",
     },
     uk: {
         title: "Яблучний пресет",
@@ -110,6 +154,28 @@ const UI_TEXT = {
         lastSyncNever: "ще жодного разу",
         siteLabel: "Сайт проєкту",
         guideLabel: "Повна інструкція",
+        presetLabel: "Пресет:",
+        lastSyncLabel: "Синхронізація:",
+        thingsTitle: "✎ Штуки та екстра",
+        thingsNote: "Додаткові «штуки» для тогла ◦︎ ✎ things. Деякі можна змішувати, інші — по одному.",
+        thingsManagedLabel: "Керувати вмістом тогла звідси (інакше — не чіпаємо)",
+        groupMix: "◇ Можна змішувати",
+        groupHidden: "👁 Приховані блоки",
+        groupCyoa: "✧ CYOA (тільки один)",
+        groupFancy: "✧ Fancy UI (тільки один)",
+        groupComments: "✧ Коментарі (тільки один)",
+        exclusiveTag: "[1 варіант]",
+        regexTitle: "Регекс-паки для Yablochny",
+        regexToggleOn: "Регекси УВІМК",
+        regexToggleOff: "Регекси ВИМК",
+        regexDebug: "Відладка",
+        regexDesc: "Набору регексів для форматування виводу пресета. Вмикайте тільки те, що використовуєте.",
+        regexCount: "регексів",
+        toastSyncSuccess: "Яблучний пресет синхронізовано.",
+        toastSyncError: "Помилка синхронізації: ",
+        toastRegexEnabled: "Regex Manager увімкнений",
+        toastRegexDisabled: "Regex Manager вимкнений",
+        toastRegexDebugNote: "Відкрий старий Regex Manager, щоб використати debug.",
     },
 };
 
@@ -1158,6 +1224,20 @@ function applyLocaleToUi() {
     jQuery("#yp-theme-label").text(dict.themeLabel);
     jQuery("#yp-site-label").text(dict.siteLabel);
     jQuery("#yp-guide-label").text(dict.guideLabel);
+    jQuery("#yp-preset-label").text(dict.presetLabel);
+    jQuery("#yp-last-sync-label").text(dict.lastSyncLabel);
+    jQuery("#yp-things-title").text(dict.thingsTitle);
+    jQuery("#yp-things-note").text(dict.thingsNote);
+    jQuery("#yp-things-managed-label").text(dict.thingsManagedLabel);
+    jQuery("#yp-things-group-mix").text(dict.groupMix);
+    jQuery("#yp-things-group-hidden").text(dict.groupHidden);
+    jQuery("#yp-things-group-cyoa").text(dict.groupCyoa);
+    jQuery("#yp-things-group-fancy").text(dict.groupFancy);
+    jQuery("#yp-things-group-comments").text(dict.groupComments);
+    jQuery("#yp-regex-title").text(dict.regexTitle);
+    jQuery("#yp-regex-debug-label").text(dict.regexDebug);
+    jQuery("#yp-regex-desc").text(dict.regexDesc);
+    updateRegexToggleButton();
     const devLabel =
         lang === "ru"
             ? "Режим разработчика (лог синка в консоль)"
@@ -1206,7 +1286,7 @@ function renderThingsUI(cfg) {
           <label for="${inputId}">
             <input type="checkbox" id="${inputId}" data-things-group="${groupKey}" data-things-id="${def.id}" ${checked ? "checked" : ""}>
             <span>${def.label}</span>
-            ${isExclusive ? '<span class="yablochny-thing-tag">[1 вариант]</span>' : ""}
+            ${isExclusive ? `<span class="yablochny-thing-tag">${dict.exclusiveTag}</span>` : ""}
           </label>
         </div>
       `;
@@ -1259,9 +1339,9 @@ async function loadRegexPacksIntoYablochny() {
 function updateRegexToggleButton() {
     const btn = jQuery("#yp-regex-toggle");
     const cfg = getConfig();
-    const lang = getUiLang();
-    const onText = lang === "ru" ? "Регексы ВКЛ" : lang === "uk" ? "Regex УВІМКНЕНІ" : "Regex ON";
-    const offText = lang === "ru" ? "Регексы ВЫКЛ" : lang === "uk" ? "Regex ВИМКНЕНІ" : "Regex OFF";
+    const dict = UI_TEXT[lang] || UI_TEXT.en;
+    const onText = dict.regexToggleOn;
+    const offText = dict.regexToggleOff;
 
     if (cfg.regexActive) {
         btn.removeClass("inactive").addClass("active");
@@ -1298,7 +1378,7 @@ function renderRegexPackList() {
           <span class="yp-regex-pack-name">${pack.name}</span>
         </label>
         <div class="yp-regex-pack-desc">${pack.description}</div>
-        <div class="yp-regex-pack-count">${pack.scripts.length} регексов</div>
+        <div class="yp-regex-pack-count">${pack.scripts.length} ${dict.regexCount}</div>
       </div>
     `;
         container.append(html);
@@ -1554,8 +1634,8 @@ function initControls() {
             }
             if (window.toastr) {
                 const lang = getUiLang();
-                const msg = lang === "ru" ? "Regex Manager включён" : lang === "uk" ? "Regex увімкнені" : "Regex Manager enabled";
-                window.toastr.success(msg);
+                const dict = UI_TEXT[lang] || UI_TEXT.en;
+                window.toastr.success(dict.toastRegexEnabled);
             }
         } else {
             for (const packId of window.YablochnyRegexData.enabled) {
@@ -1563,8 +1643,8 @@ function initControls() {
             }
             if (window.toastr) {
                 const lang = getUiLang();
-                const msg = lang === "ru" ? "Regex Manager выключен" : lang === "uk" ? "Regex вимкнені" : "Regex Manager disabled";
-                window.toastr.info(msg);
+                const dict = UI_TEXT[lang] || UI_TEXT.en;
+                window.toastr.info(dict.toastRegexDisabled);
             }
         }
 
@@ -1582,13 +1662,9 @@ function initControls() {
             window.RegexManager.debug();
         } else {
             const lang = getUiLang();
-            const msg = lang === "ru"
-                ? "Открой старый Regex Manager, чтобы использовать дебаг."
-                : lang === "uk"
-                    ? "Відкрий старий Regex Manager, щоб використати debug."
-                    : "Open legacy Regex Manager extension to use debug.";
+            const dict = UI_TEXT[lang] || UI_TEXT.en;
             if (window.toastr) {
-                window.toastr.info(msg);
+                window.toastr.info(dict.toastRegexDebugNote);
             }
         }
     });
