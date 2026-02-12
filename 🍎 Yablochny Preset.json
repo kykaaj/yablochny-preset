@@ -105,7 +105,7 @@
             "identifier": "enhanceDefinitions",
             "role": "system",
             "name": "◦︎ enhance definitions",
-            "content": "[SOURCE AFFIX]\nIntuitively expand on the source materials using known (and obscure) fictional and non-fictional knowledge and contents, to amalgatedly inspire something original and fitting(if they are similar than just integrate.). Culturally consider outside details that could be used, relevantly adjusted and tailored in.\n",
+            "content": "[SOURCE AFFIX]\nIntuitively expand on the source materials using known (and obscure) fictional and non-fictional knowledge and contents, to amalgatedly inspire something original and fitting (if they are similar than just integrate). Culturally consider outside details that could be used, relevantly adjusted and tailored in.\n",
             "system_prompt": true,
             "marker": false,
             "injection_position": 0,
