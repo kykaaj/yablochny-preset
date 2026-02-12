@@ -14,7 +14,8 @@
     </div>
     <div class="inline-drawer-content">
       <div class="yablochny-desc" id="yp-desc-text">
-        Managed chat-completion preset. The extension creates/updates a normal preset in the list and keeps your toggle state and custom prompts.
+        Managed chat-completion preset. The extension creates/updates a normal preset in the list and keeps your toggle
+        state and custom prompts.
       </div>
 
       <div class="yablochny-controls">
@@ -70,6 +71,15 @@
           </select>
         </div>
 
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-image-mode-label">Image Style</div>
+          <select id="yp-image-mode" class="yablochny-select">
+            <option value="silly">Silly Images (Standard)</option>
+            <option value="grok">Grok (Nai Tavern)</option>
+            <option value="pollinations">Pollinations</option>
+            <option value="custom">Custom (Manually Edited)</option>
+          </select>
+        </div>
 
         <div class="yablochny-field">
           <div class="yablochny-label" id="yp-prose-label">Prose style</div>
@@ -130,11 +140,13 @@
         <div class="inline-drawer-content">
           <div class="yablochny-things" id="yp-things">
             <div class="yablochny-things-note" id="yp-things-note">
-              Дополнительные «штуки» для тогла ◦︎ ✎ things (sample). Некоторые можно смешивать, другие — только по одному варианту.
+              Дополнительные «штуки» для тогла ◦︎ ✎ things (sample). Некоторые можно смешивать, другие — только по
+              одному варианту.
             </div>
             <div class="yablochny-inline">
               <input type="checkbox" id="yp-things-managed" checked>
-              <label for="yp-things-managed" id="yp-things-managed-label">Управлять содержимым тогла отсюда (иначе — не трогаем)</label>
+              <label for="yp-things-managed" id="yp-things-managed-label">Управлять содержимым тогла отсюда (иначе — не
+                трогаем)</label>
             </div>
 
             <div class="yablochny-things-group">
@@ -197,4 +209,3 @@
     </div>
   </div>
 </div>
-

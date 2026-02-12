@@ -628,6 +628,7 @@ function getConfig() {
             proseStyle: "ao3",
             speechStyle: "none",
             htmlTheme: "dark",
+            imageMode: "silly",
             promptSyncMeta: {},
             lastSync: null,
             regexActive: true,
@@ -655,6 +656,7 @@ function getConfig() {
     cfg.proseStyle ??= "ao3";
     cfg.speechStyle ??= "none";
     cfg.htmlTheme ??= "dark";
+    cfg.imageMode ??= "silly";
     cfg.promptSyncMeta ??= {};
     cfg.regexActive ??= true;
     cfg.regexEnabled ??= [];
@@ -832,6 +834,25 @@ function applyThingsVariant(master, cfg) {
     prompt.content = parts.join("\n\n");
 }
 
+function applyImageVariant(preset, mode) {
+    if (!mode) return; // default is 'silly' but if undefined we do nothing (or fallback)
+    const p = (preset.prompts || []).find(x => x.identifier === "e12784ea-de67-48a7-99ef-3b0c1c45907c");
+    if (p) {
+        if (IMAGE_VARIANTS[mode]) {
+            p.content = IMAGE_VARIANTS[mode];
+        } else if (mode === "custom") {
+            // Если выбран режим custom, можно либо очистить, либо оставить как есть. 
+            // Но мы договорились, что в коде 'custom' просто имеет дефолт или пустую строку.
+            // Если мы хотим НЕ трогать контент (дать юзеру писать), то в buildMaster мы берем базу,
+            // и если в базе плейсхолдер - он и останется. 
+            // Если `IMAGE_VARIANTS["custom"]` задан, используем его.
+            if (IMAGE_VARIANTS["custom"]) {
+                p.content = IMAGE_VARIANTS["custom"];
+            }
+        }
+    }
+}
+
 function buildMasterWithVariants(basePreset, cfg, uiLang) {
     // Клонируем исходный пресет как есть
     const master = structuredClone(basePreset);
@@ -844,6 +865,11 @@ function buildMasterWithVariants(basePreset, cfg, uiLang) {
     applyProseVariant(master, cfg);
     applyHtmlTheme(master, cfg);
     applyThingsVariant(master, cfg);
+
+    // Apply Image Generation Style
+    // Default to 'silly' if not set
+    const imgMode = cfg.imageMode || "silly";
+    applyImageVariant(master, imgMode);
 
     return master;
 }
@@ -959,13 +985,42 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
     }
 
+    // CLEANUP: Remove deprecated image prompts from the result order and result prompts if they linger
+    // Grok: a0bf6c3c-cc3b-4614-a00b-f9be905807b6
+    // Pollinations: 3c73ce0d-9cb9-413b-bf1d-94cccd757894
+    const deprecatedIds = new Set([
+        "a0bf6c3c-cc3b-4614-a00b-f9be905807b6",
+        "3c73ce0d-9cb9-413b-bf1d-94cccd757894"
+    ]);
+
+    // Filter prompts
+    newPrompts.forEach((p, idx) => {
+        if (p.identifier && deprecatedIds.has(p.identifier)) {
+            // Mark for deletion or just filter logic below? 
+            // Logic below:
+            // We'll actually filter the final `result.prompts` and `result.prompt_order` structure 
+            // to be safe, though `newPrompts` is constructed mostly from master + custom.
+            // If these were "custom" (because removed from master), they are in `customPrompts`.
+        }
+    });
+
+    // Let's filter `newPrompts` properly:
+    const filteredPrompts = newPrompts.filter(p => !p.identifier || !deprecatedIds.has(p.identifier));
+
+    // Filter `newPromptOrder`:
+    for (const group of newPromptOrder) {
+        if (Array.isArray(group.order)) {
+            group.order = group.order.filter(o => !deprecatedIds.has(o.identifier));
+        }
+    }
+
     const result = existingPreset ? JSON.parse(JSON.stringify(existingPreset)) : JSON.parse(JSON.stringify(master));
 
     if (!existingPreset) {
         Object.assign(result, master);
     }
 
-    result.prompts = newPrompts;
+    result.prompts = filteredPrompts;
     result.prompt_order = newPromptOrder.length ? newPromptOrder : masterOrder;
 
     if (!result.extensions && master.extensions) {
@@ -1334,6 +1389,7 @@ function initControls() {
     jQuery("#yp-prose").val(cfg.proseStyle || "ao3");
     jQuery("#yp-speech").val(cfg.speechStyle || "none");
     jQuery("#yp-theme").val(cfg.htmlTheme || "dark");
+    jQuery("#yp-image-mode").val(cfg.imageMode || "silly");
     jQuery("#yp-auto-sync").prop("checked", !!cfg.autoSyncOnStart);
     jQuery("#yp-dev-mode").prop("checked", !!cfg.devMode);
     jQuery("#yp-things-managed").prop("checked", cfg.thingsManaged !== false);
@@ -1344,10 +1400,18 @@ function initControls() {
         syncPreset(true);
     });
 
+    jQuery("#yp-theme").on("change", function () {
+        setConfig("htmlTheme", this.value);
+        syncPreset(true);
+    });
+
+    jQuery("#yp-image-mode").on("change", function () {
+        setConfig("imageMode", this.value);
+        syncPreset(true);
+    });
+
     jQuery("#yp-auto-sync").on("change", function () {
-        const cfg = getConfig();
-        cfg.autoSyncOnStart = jQuery(this).is(":checked");
-        saveSettingsDebounced();
+        setConfig("autoSyncOnStart", this.checked);
     });
 
     jQuery("#yp-things-managed").on("change", function () {
