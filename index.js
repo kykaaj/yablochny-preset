@@ -666,12 +666,6 @@ ONE block at END of response for ALL scene characters.`,
     ],
     comments: [
         {
-            id: "renette_comments",
-            label: "Comments (on)",
-            content: `[The Living Comments]
-At the end of your message, generate a "Comments" section with 9 unique users.`,
-        },
-        {
             id: "commentsv1",
             label: "Комменты V1",
             content: `[End of Chapter Comments: ALWAYS Design and populate at the end of the response a comment section where random or repeat(same username-handle) users, throw in their opinions, feelings positive, negative, emotional, etc. on the chapter or even on one-another. Also, sometimes the more sophisticated like to leave small images representing their feelings. Remember to Leave Comments and Reader-on-Reader Interactions at the end. Foster a sense of community.]`,
