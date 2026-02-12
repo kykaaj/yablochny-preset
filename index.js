@@ -8,7 +8,7 @@ const SCRIPT_PATH = import.meta.url.substring(0, import.meta.url.lastIndexOf('/'
 const EXTENSION_NAME = "yablochny-preset";
 
 // Пресет читаем из той же папки, где лежит скрипт
-const PRESET_URL = `${SCRIPT_PATH}/%F0%9F%8D%8EYablochny%20Preset.json`;
+const PRESET_URL = `${SCRIPT_PATH}/%F0%9F%8D%8E%20Yablochny%20Preset.json`;
 const DEFAULT_PRESET_NAME = "🍎Yablochny Preset";
 
 const REGEX_PACK_FILES = [
