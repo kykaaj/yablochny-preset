@@ -1152,7 +1152,7 @@ function applyLocaleToUi() {
     jQuery("#yp-lang-label").text(dict.langLabel);
     jQuery("#yp-length-label").text(dict.lengthLabel);
     jQuery("#yp-pov-label").text(dict.POVLabel);
-    jQuery("#yp-tense-label").text(dict.POVLabel);
+    jQuery("#yp-tense-label").text(dict.tenseLabel);
     jQuery("#yp-prose-label").text(dict.proseLabel);
     jQuery("#yp-speech-label").text(dict.speechLabel);
     jQuery("#yp-theme-label").text(dict.themeLabel);
