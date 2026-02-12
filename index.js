@@ -95,11 +95,6 @@ const UI_TEXT = {
         regexDebug: "Debug",
         regexDesc: "Packs of regex helpers for formatting Yablochny preset output. Enable only what you use.",
         regexCount: "regexes",
-        toastSyncSuccess: "Yablochny preset synchronized.",
-        toastSyncError: "Sync error: ",
-        toastRegexEnabled: "Regex Manager enabled",
-        toastRegexDisabled: "Regex Manager disabled",
-        toastRegexDebugNote: "Open legacy Regex Manager extension to use debug.",
     },
     ru: {
         title: "Яблочный пресет",
@@ -133,11 +128,6 @@ const UI_TEXT = {
         regexDebug: "Отладка",
         regexDesc: "Наборы регексов для форматирования вывода пресета. Включайте только то, что используете.",
         regexCount: "регексов",
-        toastSyncSuccess: "Яблочный пресет синхронизирован.",
-        toastSyncError: "Ошибка синхронизации: ",
-        toastRegexEnabled: "Regex Manager включён",
-        toastRegexDisabled: "Regex Manager выключен",
-        toastRegexDebugNote: "Открой старый Regex Manager, чтобы использовать дебаг.",
     },
     uk: {
         title: "Яблучний пресет",
@@ -171,11 +161,6 @@ const UI_TEXT = {
         regexDebug: "Відладка",
         regexDesc: "Набору регексів для форматування виводу пресета. Вмикайте тільки те, що використовуєте.",
         regexCount: "регексів",
-        toastSyncSuccess: "Яблучний пресет синхронізовано.",
-        toastSyncError: "Помилка синхронізації: ",
-        toastRegexEnabled: "Regex Manager увімкнений",
-        toastRegexDisabled: "Regex Manager вимкнений",
-        toastRegexDebugNote: "Відкрий старий Regex Manager, щоб використати debug.",
     },
 };
 
@@ -1192,16 +1177,17 @@ async function syncPreset(showToasts = true) {
 
         if (showToasts && window.toastr) {
             const lang = getUiLang();
-            const dict = UI_TEXT[lang] || UI_TEXT.en;
-            const text = dict.toastSyncSuccess;
+            const text = lang === "ru"
+                ? "Яблочный пресет синхронизирован."
+                : lang === "uk"
+                    ? "Яблучний пресет синхронізовано."
+                    : "Yablochny preset synchronized.";
             window.toastr.success(text);
         }
     } catch (err) {
         console.error("[Yablochny] Sync error", err);
         if (showToasts && window.toastr) {
-            const lang = getUiLang();
-            const dict = UI_TEXT[lang] || UI_TEXT.en;
-            window.toastr.error((dict.toastSyncError || "Sync error: ") + err.message);
+            window.toastr.error("Ошибка синхронизации: " + err.message);
         }
     }
 }
@@ -1338,6 +1324,7 @@ async function loadRegexPacksIntoYablochny() {
 function updateRegexToggleButton() {
     const btn = jQuery("#yp-regex-toggle");
     const cfg = getConfig();
+    const lang = getUiLang();
     const dict = UI_TEXT[lang] || UI_TEXT.en;
     const onText = dict.regexToggleOn;
     const offText = dict.regexToggleOff;
@@ -1633,8 +1620,8 @@ function initControls() {
             }
             if (window.toastr) {
                 const lang = getUiLang();
-                const dict = UI_TEXT[lang] || UI_TEXT.en;
-                window.toastr.success(dict.toastRegexEnabled);
+                const msg = lang === "ru" ? "Regex Manager включён" : lang === "uk" ? "Regex увімкнені" : "Regex Manager enabled";
+                window.toastr.success(msg);
             }
         } else {
             for (const packId of window.YablochnyRegexData.enabled) {
@@ -1642,8 +1629,8 @@ function initControls() {
             }
             if (window.toastr) {
                 const lang = getUiLang();
-                const dict = UI_TEXT[lang] || UI_TEXT.en;
-                window.toastr.info(dict.toastRegexDisabled);
+                const msg = lang === "ru" ? "Regex Manager выключен" : lang === "uk" ? "Regex вимкнені" : "Regex Manager disabled";
+                window.toastr.info(msg);
             }
         }
 
@@ -1661,9 +1648,13 @@ function initControls() {
             window.RegexManager.debug();
         } else {
             const lang = getUiLang();
-            const dict = UI_TEXT[lang] || UI_TEXT.en;
+            const msg = lang === "ru"
+                ? "Открой старый Regex Manager, чтобы использовать дебаг."
+                : lang === "uk"
+                    ? "Відкрий старий Regex Manager, щоб використати debug."
+                    : "Open legacy Regex Manager extension to use debug.";
             if (window.toastr) {
-                window.toastr.info(dict.toastRegexDebugNote);
+                window.toastr.info(msg);
             }
         }
     });
