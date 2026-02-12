@@ -984,18 +984,19 @@ function applyThingsVariant(master, cfg, existingPreset) {
     if (!prompt) return;
 
     const existingContent = getContentFromExisting(existingPreset, id) || "";
+    const normalize = (s) => (s || "").replace(/\r/g, "").split("\n").map(l => l.trim()).join("\n").trim();
 
     // Identify all possible contents from DEFINITIONS to strip them
     const allKnownContents = new Set();
     Object.values(THINGS_DEFS).forEach(group => {
         group.forEach(item => {
-            if (item.content) allKnownContents.add(item.content.trim());
+            if (item.content) allKnownContents.add(normalize(item.content));
         });
     });
 
     // Extract User Part: Split existing into blocks, and remove any that match known contents
-    const existingBlocks = existingContent.split("\n\n").map(b => b.trim()).filter(b => b.length > 0);
-    const userPartBlocks = existingBlocks.filter(block => !allKnownContents.has(block));
+    const existingBlocks = existingContent.split(/\n\s*\n/).filter(b => b.trim().length > 0);
+    const userPartBlocks = existingBlocks.filter(block => !allKnownContents.has(normalize(block)));
 
     // Construct New Extension Part
     const sel = cfg.thingsSelected || {};
