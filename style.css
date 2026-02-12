@@ -1,113 +1,113 @@
 .yablochny-settings {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 .yablochny-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .yablochny-title {
-    font-size: 16px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .yablochny-link {
-    font-size: 12px;
-    color: #7a9a72;
-    text-decoration: none;
-    font-weight: 600;
+  font-size: 12px;
+  color: #7a9a72;
+  text-decoration: none;
+  font-weight: 600;
 }
 
 .yablochny-link:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .yablochny-desc {
-    font-size: 13px;
-    color: #ccc;
-    margin-top: 6px;
-    line-height: 1.5;
+  font-size: 13px;
+  color: #ccc;
+  margin-top: 6px;
+  line-height: 1.5;
 }
 
 .yablochny-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
 }
 
 .yablochny-controls .menu_button {
-    flex: 0 0 auto;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .yablochny-controls .menu_button.primary {
-    background: rgba(107, 203, 119, 0.18);
-    border-color: #6bcb77;
+  background: rgba(107, 203, 119, 0.18);
+  border-color: #6bcb77;
 }
 
 .yablochny-controls .menu_button.secondary {
-    background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .yablochny-inline {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
 }
 
 .yablochny-inline input[type="checkbox"] {
-    margin: 0;
+  margin: 0;
 }
 
 .yablochny-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .yablochny-field {
-    flex: 1 1 160px;
-    min-width: 160px;
+  flex: 1 1 160px;
+  min-width: 160px;
 }
 
 .yablochny-label {
-    font-size: 12px;
-    color: #bbb;
-    margin-bottom: 4px;
+  font-size: 12px;
+  color: #bbb;
+  margin-bottom: 4px;
 }
 
 .yablochny-select {
-    width: 100%;
-    padding: 6px 8px;
-    font-size: 12px;
-    border-radius: 6px;
-    background: var(--black30a);
-    border: 1px solid var(--SmartThemeBorderColor);
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  background: var(--black30a);
+  border: 1px solid var(--SmartThemeBorderColor);
 }
 
 .yablochny-meta {
-    margin-top: 8px;
-    font-size: 11px;
-    color: #888;
+  margin-top: 8px;
+  font-size: 11px;
+  color: #888;
 }
 
 .yablochny-meta strong {
-    color: #ccc;
+  color: #ccc;
 }
 
 .yablochny-things {
@@ -213,41 +213,55 @@
   margin-left: 24px;
 }
 
-.yp-regex-pack input[type="checkbox"]:disabled + .yp-regex-pack-name {
+.yp-regex-pack input[type="checkbox"]:disabled+.yp-regex-pack-name {
   opacity: 0.5;
 }
 
 .yablochny-info-links {
   display: flex;
-  flex-direction: column;
   gap: 8px;
   margin-bottom: 12px;
 }
 
 .yablochny-info-link {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(107, 203, 119, 0.05);
+  border: 1px solid rgba(107, 203, 119, 0.2);
   border-radius: 8px;
   color: #ddd;
   text-decoration: none;
-  font-size: 13px;
+  font-size: 12px;
   transition: all 0.2s;
 }
 
 .yablochny-info-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(107, 203, 119, 0.1);
+  border-color: rgba(107, 203, 119, 0.3);
   color: #fff;
   text-decoration: none;
 }
 
 .yablochny-info-link i {
-  color: #7a9a72;
-  font-size: 16px;
-  width: 20px;
-  text-align: center;
+  color: #6bcb77;
+  font-size: 14px;
+}
+
+/* Distinct headers for extension sub-drawers */
+.yablochny-subdrawer .inline-drawer-header {
+  background: linear-gradient(90deg, rgba(107, 203, 119, 0.15) 0%, rgba(0, 0, 0, 0) 100%) !important;
+  border-left: 3px solid #6bcb77 !important;
+  border-radius: 4px 0 0 4px;
+  margin-bottom: 2px;
+}
+
+.yablochny-subtitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(107, 203, 119, 0.5);
 }
