@@ -18,8 +18,12 @@
         <a href="https://github.com/kykaaj/yablochny-preset/blob/main/README.md" target="_blank"
           class="yablochny-info-link">
           <i class="fa-solid fa-book"></i>
-          <span id="yp-guide-label">Полная инструкция (Guide)</span>
+          <span id="yp-guide-label">Инструкция</span>
         </a>
+        <div class="yablochny-info-link" id="yp-credits-btn" style="cursor: pointer;">
+          <i class="fa-solid fa-users"></i>
+          <span id="yp-credits-label">Credits</span>
+        </div>
       </div>
 
       <div class="yablochny-desc" id="yp-desc-text">
@@ -294,6 +298,31 @@
       </button>
       <button id="yp-editor-cancel" class="menu_button secondary">
         <i class="fa-solid fa-xmark"></i> Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Credits Modal -->
+<div id="yp-credits-modal"
+  style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center;">
+  <div
+    style="background: var(--SmartThemeHardwareBody, #151515); color: var(--SmartThemeBodyColor, #ccc); border: 1px solid var(--SmartThemeBorderColor); border-radius: 8px; padding: 20px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+    <h3 style="margin-top: 0; text-align: center;">Credits & Authors</h3>
+    <div style="margin-bottom: 20px; line-height: 1.6;">
+      <h4>Extension Author</h4>
+      <p>Kykaa (<a href="https://github.com/kykaaj" target="_blank">GitHub</a>)</p>
+
+      <h4>Prompt Authors</h4>
+      <p>Your Name Here (<a href="#">Link</a>)</p>
+      <p>Another Author (<a href="#">Link</a>)</p>
+
+      <h4>Special Thanks</h4>
+      <p>To the SillyTavern community!</p>
+    </div>
+    <div style="display: flex; justify-content: center;">
+      <button id="yp-credits-close" class="menu_button secondary">
+        Close
       </button>
     </div>
   </div>

@@ -272,6 +272,7 @@
   text-decoration: none;
   font-size: 12px;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .yablochny-info-link:hover {

@@ -2647,6 +2647,17 @@ jQuery(async () => {
     applyLocaleToUi();
     initControls();
 
+    // Credits Modal Logic
+    jQuery("#yp-credits-btn").on("click", function () {
+        jQuery("#yp-credits-modal").css("display", "flex");
+    });
+    jQuery("#yp-credits-close").on("click", function () {
+        jQuery("#yp-credits-modal").hide();
+    });
+    jQuery("#yp-credits-modal").on("click", function (e) {
+        if (e.target === this) jQuery(this).hide();
+    });
+
     await waitForOpenAI();
 
     // Загрузить и отрисовать regex-паки (объединённый менеджер)
