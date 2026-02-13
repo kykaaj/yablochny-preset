@@ -1371,20 +1371,6 @@
             "forbid_overrides": false
         },
         {
-            "identifier": "e955ba0e-2830-40d7-badb-12b1235cff79",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "◦︎ colored thoughts",
-            "role": "system",
-            "content": "[COLORED DIALOGUE]\nColor in a unique shade of tone for each character's <font color=#abc123>*Thoughts*</font> Surround each \"thought\" with <font> tags. Gravitate toward pastel hues for readability and select them intuitively based on the pecularities of the character's appearance and personality. Keep it consistent, once chosen.\n\nEXAMPLE: <font color=#abc123>*Thought*</font>",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
             "identifier": "5907aad3-0519-45e9-b6f7-40d9e434ef28",
             "system_prompt": false,
             "enabled": false,
