@@ -1299,18 +1299,26 @@ function applyThingsVariant(master, cfg, existingPreset) {
     // Helper to escape regex special characters
     const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    // Collect all known content strings
+    // Collect all known content strings (default AND overrides)
     const allKnownContents = [];
-    Object.values(THINGS_DEFS).forEach(group => {
+    Object.keys(THINGS_DEFS).forEach(groupKey => {
+        const group = THINGS_DEFS[groupKey];
         group.forEach(item => {
+            // Default content
             if (item.content) allKnownContents.push(item.content.trim());
+
+            // Edited content (if any)
+            if (cfg.promptEdits && cfg.promptEdits.things && cfg.promptEdits.things[groupKey] && cfg.promptEdits.things[groupKey][item.id]) {
+                const edited = cfg.promptEdits.things[groupKey][item.id];
+                if (edited) allKnownContents.push(edited.trim());
+            }
         });
     });
 
-    // Sort by length (descending) to match longest blocks first (e.g. fancyfull vs fancybase)
+    // Sort by length (descending) to match longest blocks first
     allKnownContents.sort((a, b) => b.length - a.length);
 
-    // Remove known contents from existingContent using fuzzy regex (ignoring whitespace differences)
+    // Remove known contents from existingContent using fuzzy regex
     allKnownContents.forEach(known => {
         const fuzzyPattern = escapeRegExp(known).replace(/\\s\\+/g, '[\\s\\r\\n]*');
         const parts = known.split(/\s+/);
@@ -1929,6 +1937,7 @@ async function savePromptEdit(variantType, variantKey, content) {
 
     cfg.promptEdits[variantType][variantKey] = content;
     saveSettingsDebounced();
+    await syncPreset(false);
 }
 
 
@@ -1940,6 +1949,7 @@ async function saveThingEdit(groupKey, thingId, content) {
 
     cfg.promptEdits.things[groupKey][thingId] = content;
     saveSettingsDebounced();
+    await syncPreset(false);
 }
 
 
