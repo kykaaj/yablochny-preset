@@ -742,12 +742,7 @@ You must always generate information about the day, date and year in the format:
       <span style='color:#a6b1e1;'>Дата:</span> <span style='font-weight:bold;'> EEE, dd MMM yyyy </span>
       <span style='color:#a6b1e1;'>Weather:</span> <span style='font-weight:bold;'> (Weather conditions) </span>.`,
         },
-        {
-            id: "fancythoughts",
-            label: "Fancy UI — только мысли",
-            content: `[Encapitulate Fancy UI in each and every response! Conceptualize High Quality UI-like Advance-CSS/HTML blocks of varying sizes with java, animations and other techniques(endless), for things like:
-Thoughts, in the form of blocks. No large fonts!! Never use *asterisks* inside. Be sure to include the name of the person who owns the thoughts, use KAOMOJI's next to their name to show their mood.`,
-        },
+
     ],
     ui_elements: [
         {
