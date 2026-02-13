@@ -167,20 +167,6 @@
             "forbid_overrides": false
         },
         {
-            "identifier": "c4953893-99e2-4b4b-b085-d04be4bc7528",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "read me!",
-            "role": "system",
-            "content": "◈︎ INFO ◈︎\nPreset for Gemini, Claude and GPT (other models work, but are not optimized).\n╭︎ Preset website (additional prompts, guides, links) ╮︎\nhttps://kykaaj.github.io/yablochny-preset/\n╭︎ Regexes for preset ╮︎\nhttps://github.com/kykaaj/regex-manager\n╭︎ Silly Images ╮︎\nhttps://github.com/0xl0cal/sillyimages/\n╭︎ Grok Tavern ╮︎\nTelegram bot - @naistera_blocks_bot\nDocumentation - https://t.me/ah_ah_shino4ka/591\n\n◈︎ SETTING FOR MODELS ◈︎\n╭︎ Gemini ╮︎\nTemperature - 1\nFrequency Penalty - 0,20\nPresence Penalty - 0,30\nTop P - 0,95\n\n╭︎ Claude ╮︎\nTemperature - 0,8-0,85\nFrequency Penalty - 0,17\nPresence Penalty - 0,26\nTop P - 0,9\n\n╭︎ GPT ╮︎\nTemperature - 0,85\nFrequency Penalty - 0\nPresence Penalty - 0\nTop P - 0,8\n\n╭︎ DeepSeek ╮︎\nTemperature - 0,65-75\nFrequency Penalty - 0\nPresence Penalty - 0\nTop P - 0,90-95\n",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
             "identifier": "a4f8713c-2990-4422-9431-a4cfc4bd81e9",
             "system_prompt": false,
             "enabled": false,
