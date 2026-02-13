@@ -1123,211 +1123,6 @@ function getContentFromExisting(existingPreset, identifier) {
     return p ? p.content : null;
 }
 
-function applyLanguageVariant(master, cfg, uiLang, existingPreset) {
-    const id = "28ec4454-b3c2-4c06-8fd0-52cb123b778f";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
-    const mode = cfg.languageMode || "auto";
-    if (mode === "custom") {
-        const existingContent = getContentFromExisting(existingPreset, id);
-        if (existingContent !== null) {
-            prompt.content = existingContent;
-        }
-        return;
-    }
-    let targetName;
-
-    if (mode === "auto") {
-        if (uiLang === "ru") targetName = "Russian";
-        else if (uiLang === "uk") targetName = "Ukrainian";
-        else targetName = "English";
-    } else if (mode === "ru") {
-        targetName = "Russian";
-    } else if (mode === "uk") {
-        targetName = "Ukrainian";
-    } else if (mode === "en") {
-        targetName = "English";
-    }
-
-    if (!targetName) return;
-
-    const text = LANGUAGE_VARIANTS[targetName];
-    if (text) {
-        prompt.content = text;
-    }
-}
-
-function applyLengthVariant(master, cfg, existingPreset) {
-    const id = "9adda56b-6f32-416a-b947-9aa9f41564eb";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
-    if (cfg.lengthMode === "custom") {
-        const existingContent = getContentFromExisting(existingPreset, id);
-        if (existingContent !== null) {
-            prompt.content = existingContent;
-        }
-        return;
-    }
-    const text = LENGTH_VARIANTS[cfg.lengthMode || "400-600"];
-    if (text) {
-        prompt.content = text;
-    }
-}
-function applyPOVVariant(master, cfg, existingPreset) {
-    const id = "5907aad3-0519-45e9-b6f7-40d9e434ef28";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
-    if (cfg.POVMode === "custom") {
-        const existingContent = getContentFromExisting(existingPreset, id);
-        if (existingContent !== null) {
-            prompt.content = existingContent;
-        }
-        return;
-    }
-    const text = POV_VARIANTS[cfg.POVMode || "3rd"];
-    if (text) {
-        prompt.content = text;
-    }
-}
-function applyTENSEVariant(master, cfg, existingPreset) {
-    const id = "e0ce2a23-98e3-4772-8984-5e9aa4c5c551";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
-    if (cfg.TENSEMode === "custom") {
-        const existingContent = getContentFromExisting(existingPreset, id);
-        if (existingContent !== null) {
-            prompt.content = existingContent;
-        }
-        return;
-    }
-    const text = TENSE_VARIANTS[cfg.TENSEMode || "3rd"];
-    if (text) {
-        prompt.content = text;
-    }
-}
-
-function applySpeechVariant(master, cfg, existingPreset) {
-    const id = "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
-    if (cfg.speechStyle === "none") {
-        // we could potentially clear it, but maybe better to pull existing?
-        // if mode is "none", usually we want it disabled/empty in our system.
-        // but if user manually edited it while it was in "none" (unlikely but possible), 
-        // we might want to adopt it.
-        return;
-    }
-    const text = SPEECH_VARIANTS[cfg.speechStyle];
-    if (text) {
-        prompt.content = text;
-    }
-}
-
-function applyProseVariant(master, cfg, existingPreset) {
-    const id = "92f96f89-c01d-4a91-bea3-c8abb75b995a";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
-    if (cfg.proseStyle === "custom") {
-        const existingContent = getContentFromExisting(existingPreset, id);
-        if (existingContent !== null) {
-            prompt.content = existingContent;
-        }
-        return;
-    }
-    const key = cfg.proseStyle || "ao3";
-    const text = PROSE_VARIANTS[key];
-    if (text) {
-        prompt.content = text;
-    }
-}
-
-function applyHtmlTheme(master, cfg, existingPreset) {
-    const id = "14bf3aa5-73cf-4112-8aca-437c48978663";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
-    if (cfg.htmlTheme === "custom") {
-        const existingContent = getContentFromExisting(existingPreset, id);
-        if (existingContent !== null) {
-            prompt.content = existingContent;
-        }
-        return;
-    }
-    const themeKey = cfg.htmlTheme || "dark";
-    const text = HTML_THEME[themeKey];
-    if (text) {
-        prompt.content = text;
-    }
-}
-
-function applyThingsVariant(master, cfg, existingPreset) {
-    const id = "6b235beb-7de9-4f84-9b09-6f20210eae6d";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
-
-    let existingContent = getContentFromExisting(existingPreset, id) || "";
-
-    // Helper to escape regex special characters
-    const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-    // Collect all known content strings
-    const allKnownContents = [];
-    Object.values(THINGS_DEFS).forEach(group => {
-        group.forEach(item => {
-            if (item.content) allKnownContents.push(item.content.trim());
-        });
-    });
-
-    // Sort by length (descending) to match longest blocks first (e.g. fancyfull vs fancybase)
-    allKnownContents.sort((a, b) => b.length - a.length);
-
-    // Remove known contents from existingContent using fuzzy regex (ignoring whitespace differences)
-    allKnownContents.forEach(known => {
-        // Create a regex that matches the content but allows any whitespace sequence where the original had whitespace
-        const fuzzyPattern = escapeRegExp(known).replace(/\\s\+/g, '[\\s\\r\\n]*');
-        // We need to handle the case where escapeRegExp escapes spaces. 
-        // Actually, just replacing literal spaces with whitespace matcher is better.
-        // Let's re-do the regex construction:
-        const parts = known.split(/\s+/);
-        const regexString = parts.map(escapeRegExp).join('[\\s\\r\\n]+');
-        const regex = new RegExp(regexString, 'g');
-        existingContent = existingContent.replace(regex, "");
-    });
-
-    // User part is what remains
-    const userPart = existingContent.trim();
-
-    // Construct New Extension Part
-    const sel = cfg.thingsSelected || {};
-    const extensionParts = [];
-
-    const addFromGroup = (items, selectedIds) => {
-        if (!Array.isArray(selectedIds)) return;
-        selectedIds.forEach(sid => {
-            const def = items.find(x => x.id === sid);
-            if (def && def.content) extensionParts.push(def.content.trim());
-        });
-    };
-
-    addFromGroup(THINGS_DEFS.mix, sel.mix);
-    addFromGroup(THINGS_DEFS.hidden, sel.hidden);
-    if (sel.cyoa) {
-        const def = THINGS_DEFS.cyoa.find(x => x.id === sel.cyoa);
-        if (def && def.content) extensionParts.push(def.content.trim());
-    }
-    if (sel.fancy) {
-        const def = THINGS_DEFS.fancy.find(x => x.id === sel.fancy);
-        if (def && def.content) extensionParts.push(def.content.trim());
-    }
-    if (sel.comments) {
-        const def = THINGS_DEFS.comments.find(x => x.id === sel.comments);
-        if (def && def.content) extensionParts.push(def.content.trim());
-    }
-
-    // Final Merge: User Parts + Extension Parts
-    const finalBlocks = [userPart, ...extensionParts].filter(b => b.length > 0);
-    prompt.content = finalBlocks.join("\n\n");
-}
-
 function applyImageVariant(preset, mode, existingPreset) {
     if (!mode) return;
     const id = "e12784ea-de67-48a7-99ef-3b0c1c45907c";
@@ -1508,7 +1303,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "5907aad3-0519-45e9-b6f7-40d9e434ef28", // Synced from user preset
         "c741b88a-6fe2-4055-9b93-81b4503081b6", // Synced from user preset
         "d9762c5c-d5a4-49b0-9d00-814ae57e9711", // Synced from user preset
-    ,
+        ,
         "nsfw", // Synced from user preset
         "dialogueExamples", // Synced from user preset
         "jailbreak", // Synced from user preset
@@ -1520,7 +1315,19 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "charPersonality", // Synced from user preset
         "scenario", // Synced from user preset
         "personaDescription", // Synced from user preset
-];
+        ,
+        "nsfw", // Synced from user preset
+        "dialogueExamples", // Synced from user preset
+        "jailbreak", // Synced from user preset
+        "chatHistory", // Synced from user preset
+        "worldInfoAfter", // Synced from user preset
+        "worldInfoBefore", // Synced from user preset
+        "enhanceDefinitions", // Synced from user preset
+        "charDescription", // Synced from user preset
+        "charPersonality", // Synced from user preset
+        "scenario", // Synced from user preset
+        "personaDescription", // Synced from user preset
+    ];
 
     const customPrompts = [];
     for (const p of existingPrompts) {
