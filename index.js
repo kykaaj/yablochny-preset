@@ -95,6 +95,7 @@ const UI_TEXT = {
         lastSyncLabel: "Last sync:",
         thingsTitle: "Things / Toggles",
         thingsNote: "Sync after checking/unchecking!",
+        thingsManagedLabel: "Managed Toggles",
         groupMix: "◇ Mixable",
         groupHidden: "👁 Hidden blocks",
         groupCyoa: "✧ CYOA (only one)",
@@ -112,6 +113,15 @@ const UI_TEXT = {
         toastRegexEnabled: "Regex Manager enabled",
         toastRegexDisabled: "Regex Manager disabled",
         toastRegexDebugNote: "Open legacy Regex Manager extension to use debug.",
+        profileLabel: "Profile:",
+        profileSave: "Save as Profile",
+        profileUpdate: "Save",
+        profileDelete: "Delete Profile",
+        profileNamePrompt: "Enter profile name:",
+        profileSaved: "Profile saved",
+        profileDeleted: "Profile deleted",
+        profileLoaded: "Profile loaded",
+        modelPresetLabel: "Model Preset:",
     },
     ru: {
         title: "Яблочный пресет",
@@ -149,6 +159,15 @@ const UI_TEXT = {
         toastRegexEnabled: "Regex Manager включён",
         toastRegexDisabled: "Regex Manager выключен",
         toastRegexDebugNote: "Открой старый Regex Manager, чтобы использовать дебаг.",
+        profileLabel: "Профиль:",
+        profileSave: "Сохранить как",
+        profileUpdate: "Сохранить",
+        profileDelete: "Удалить",
+        profileNamePrompt: "Введите название профиля:",
+        profileSaved: "Профиль сохранён",
+        profileDeleted: "Профиль удалён",
+        profileLoaded: "Профиль загружен",
+        modelPresetLabel: "Пресет модели:",
     },
     uk: {
         title: "Яблучний пресет",
@@ -189,6 +208,15 @@ const UI_TEXT = {
         toastRegexEnabled: "Regex Manager увімкнений",
         toastRegexDisabled: "Regex Manager вимкнений",
         toastRegexDebugNote: "Відкрий старий Regex Manager, щоб використати debug.",
+        profileLabel: "Профіль:",
+        profileSave: "Зберегти як",
+        profileUpdate: "Зберегти",
+        profileDelete: "Видалити",
+        profileNamePrompt: "Введіть назву профілю:",
+        profileSaved: "Профіль збережено",
+        profileDeleted: "Профіль видалено",
+        profileLoaded: "Профіль завантажено",
+        modelPresetLabel: "Пресет моделі:",
     },
 };
 
@@ -419,6 +447,111 @@ OUTPUT LANGUAGE: UKRAINIAN:
 </language>
 {{setvar::lang_check::- LANGUAGE: Is entire output in Ukrainian? Any accidental English/other?}}`,
 };
+
+// Model presets configuration
+const MODEL_PRESETS = {
+    claude: {
+        name: "Claude",
+        settings: {
+            temperature: 0.85,
+            frequency_penalty: 0.17,
+            presence_penalty: 0.26,
+            top_p: 0.9,
+        },
+        toggles: {
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // ◈︎ ↗ universal prefill
+        },
+        disableToggles: [
+            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
+        ],
+    },
+    "gpt-no-cot": {
+        name: "GPT −COT",
+        settings: {
+            temperature: 0.85,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            top_p: 0.8,
+        },
+        toggles: {
+            "jailbreak": true, // JB
+            "d0851faf-af18-40c6-8bf4-35e2338061e5": true, // no COT prefill
+        },
+        disableToggles: [
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003", // ◦︎ COT
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f", // ◈︎ ↗ universal prefill
+        ],
+    },
+    "deepseek-no-cot": {
+        name: "DS −COT",
+        settings: {
+            temperature: 0.70,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            top_p: 0.92,
+        },
+        toggles: {
+            "d0851faf-af18-40c6-8bf4-35e2338061e5": true, // no cot prefill
+        },
+        disableToggles: [
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003", // ◦︎ COT
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f", // universal prefill
+        ],
+    },
+    gemini: {
+        name: "Gemini",
+        settings: {
+            temperature: 1.0,
+            frequency_penalty: 0.20,
+            presence_penalty: 0.30,
+            top_p: 0.95,
+        },
+        toggles: {
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // universal prefill
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
+        },
+        disableToggles: [
+            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
+        ],
+    },
+    "gpt-cot": {
+        name: "GPT +COT",
+        settings: {
+            temperature: 0.85,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            top_p: 0.8,
+        },
+        toggles: {
+            "jailbreak": true, // JB
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // universal prefill
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
+        },
+        disableToggles: [
+            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
+        ],
+    },
+    "deepseek-cot": {
+        name: "DS +COT",
+        settings: {
+            temperature: 0.70,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            top_p: 0.92,
+        },
+        toggles: {
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // universal prefill
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
+        },
+        disableToggles: [
+            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no cot prefill
+        ],
+    },
+};
+
+// Built-in profiles - REMOVED, replaced with MODEL_PRESETS
+const BUILTIN_PROFILES = {};
 
 const THINGS_DEFS = {
     mix: [
@@ -792,6 +925,7 @@ function getConfig() {
                 comments: null,
             },
             devMode: false,
+            modelPreset: "claude",
         };
     }
 
@@ -818,9 +952,143 @@ function getConfig() {
         comments: null,
     };
     cfg.devMode ??= false;
+    cfg.modelPreset ??= "claude";
 
     promptSyncMetaCache = cfg.promptSyncMeta;
     return cfg;
+}
+
+function applyModelPreset(presetId) {
+    const preset = MODEL_PRESETS[presetId];
+    if (!preset) return false;
+
+    // Immediate UI feedback
+    jQuery(".yp-model-btn").removeClass("active");
+    jQuery(`.yp-model-btn[data-preset-id="${presetId}"]`).addClass("active");
+
+    const cfg = getConfig();
+
+    // Get current preset
+    const presetName = cfg.presetName || DEFAULT_PRESET_NAME;
+    const index = findPresetIndexByName(presetName);
+    if (index === null) {
+        if (window.toastr) {
+            window.toastr.warning(`Preset "${presetName}" not found. Please click SYNC first.`);
+        }
+        return false;
+    }
+
+    const currentPreset = openai_settings[index];
+    if (!currentPreset) return false;
+
+    // Helper IDs
+    const ID_NORMAL_ANTIECHO = "b26eb680-d1cd-4f8a-a54a-67e17a13a6c0";
+    const ID_GPT_ANTIECHO = "3fac312b-68d9-4c98-b17e-e3565322e236";
+    const ID_GPT_JB = "jailbreak";
+    const ID_GEMINI_DQUOTES = "00119b3e-a60f-4f1e-b48a-127026645a39";
+
+    // Function to check if a toggle is currently enabled
+    const isToggleEnabled = (identifier) => {
+        if (Array.isArray(currentPreset.prompt_order)) {
+            for (const group of currentPreset.prompt_order) {
+                if (Array.isArray(group.order)) {
+                    for (const item of group.order) {
+                        if (item.identifier === identifier) return item.enabled;
+                    }
+                }
+            }
+        }
+        return false;
+    };
+
+    // Function to set toggle state in both prompts and prompt_order
+    const setToggleEnabled = (identifier, enabled) => {
+        if (Array.isArray(currentPreset.prompts)) {
+            for (const p of currentPreset.prompts) {
+                if (p.identifier === identifier) p.enabled = enabled;
+            }
+        }
+        if (Array.isArray(currentPreset.prompt_order)) {
+            for (const group of currentPreset.prompt_order) {
+                if (Array.isArray(group.order)) {
+                    for (const item of group.order) {
+                        if (item.identifier === identifier) item.enabled = enabled;
+                    }
+                }
+            }
+        }
+    };
+
+    // Apply settings
+    if (preset.settings) {
+        if (Object.prototype.hasOwnProperty.call(preset.settings, "temperature")) currentPreset.temperature = preset.settings.temperature;
+        if (Object.prototype.hasOwnProperty.call(preset.settings, "frequency_penalty")) currentPreset.frequency_penalty = preset.settings.frequency_penalty;
+        if (Object.prototype.hasOwnProperty.call(preset.settings, "presence_penalty")) currentPreset.presence_penalty = preset.settings.presence_penalty;
+        if (Object.prototype.hasOwnProperty.call(preset.settings, "top_p")) currentPreset.top_p = preset.settings.top_p;
+        if (Object.prototype.hasOwnProperty.call(preset.settings, "openai_max_tokens")) currentPreset.openai_max_tokens = preset.settings.openai_max_tokens;
+    }
+
+    const isGptMode = presetId.startsWith("gpt");
+    const isGeminiMode = presetId === "gemini";
+
+    // --- GPT anti-echo smart swap ---
+    if (isGptMode) {
+        // If normal anti-echo is on, swap it for GPT anti-echo
+        if (isToggleEnabled(ID_NORMAL_ANTIECHO)) {
+            setToggleEnabled(ID_NORMAL_ANTIECHO, false);
+        }
+        setToggleEnabled(ID_GPT_ANTIECHO, true);
+        setToggleEnabled(ID_GPT_JB, true);
+    } else {
+        // Leaving GPT mode: disable GPT-specific toggles
+        setToggleEnabled(ID_GPT_ANTIECHO, false);
+        setToggleEnabled(ID_GPT_JB, false);
+    }
+
+    // --- Gemini double quotes exclusivity ---
+    if (isGeminiMode) {
+        setToggleEnabled(ID_GEMINI_DQUOTES, true);
+    } else {
+        setToggleEnabled(ID_GEMINI_DQUOTES, false);
+    }
+
+    // Apply toggle states (COT, prefills, etc.)
+    if (preset.toggles) {
+        for (const id in preset.toggles) {
+            // Skip GPT/Gemini toggles already handled above
+            if ([ID_GPT_ANTIECHO, ID_GPT_JB, ID_GEMINI_DQUOTES].includes(id)) continue;
+            setToggleEnabled(id, preset.toggles[id]);
+        }
+    }
+
+    // Disable specific toggles
+    if (preset.disableToggles) {
+        for (const id of preset.disableToggles) {
+            if ([ID_GPT_ANTIECHO, ID_GPT_JB, ID_GEMINI_DQUOTES].includes(id)) continue;
+            setToggleEnabled(id, false);
+        }
+    }
+
+    cfg.modelPreset = presetId;
+    saveSettingsDebounced();
+
+    return true;
+}
+
+// Old profile functions - REMOVED
+function saveProfile(name) {
+    // Deprecated - profiles removed
+    return;
+}
+
+function loadProfile(profileId) {
+    // Deprecated - profiles removed
+    return false;
+}
+
+function deleteProfile(name) {
+    // Deprecated - profiles removed
+    return false;
 }
 
 async function loadBasePreset() {
@@ -1136,7 +1404,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
     // and should be deleted from the user's preset too.
     const KNOWN_PRESET_IDS = [
         "222af4fb-56e0-4c44-83e0-258cdba11d85", // ◈︎ →︎ Gemini prefill
-    ,
+        ,
         "main", // Synced from user preset
         "nsfw", // Synced from user preset
         "dialogueExamples", // Synced from user preset
@@ -1240,6 +1508,18 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "5907aad3-0519-45e9-b6f7-40d9e434ef28", // Synced from user preset
         "c741b88a-6fe2-4055-9b93-81b4503081b6", // Synced from user preset
         "d9762c5c-d5a4-49b0-9d00-814ae57e9711", // Synced from user preset
+    ,
+        "nsfw", // Synced from user preset
+        "dialogueExamples", // Synced from user preset
+        "jailbreak", // Synced from user preset
+        "chatHistory", // Synced from user preset
+        "worldInfoAfter", // Synced from user preset
+        "worldInfoBefore", // Synced from user preset
+        "enhanceDefinitions", // Synced from user preset
+        "charDescription", // Synced from user preset
+        "charPersonality", // Synced from user preset
+        "scenario", // Synced from user preset
+        "personaDescription", // Synced from user preset
 ];
 
     const customPrompts = [];
@@ -1398,6 +1678,20 @@ async function syncPreset(showToasts = true) {
         const uiLang = getUiLang();
         const basePreset = await loadBasePreset();
 
+        // Capture old settings for changelog
+        const oldSettings = {
+            languageMode: cfg.languageMode,
+            lengthMode: cfg.lengthMode,
+            POVMode: cfg.POVMode,
+            TENSEMode: cfg.TENSEMode,
+            proseStyle: cfg.proseStyle,
+            speechStyle: cfg.speechStyle,
+            htmlTheme: cfg.htmlTheme,
+            imageMode: cfg.imageMode,
+            thingsSelected: JSON.parse(JSON.stringify(cfg.thingsSelected)),
+            regexEnabled: [...cfg.regexEnabled],
+        };
+
         const name = cfg.presetName || DEFAULT_PRESET_NAME;
         const index = findPresetIndexByName(name);
         const existingPreset = index !== null ? JSON.parse(JSON.stringify(openai_settings[index])) : null;
@@ -1461,6 +1755,7 @@ async function syncPreset(showToasts = true) {
         cfg.promptSyncMeta = syncMeta;
         promptSyncMetaCache = syncMeta;
         cfg.lastSync = new Date().toISOString();
+
         saveSettingsDebounced();
 
         updateMetaUi();
@@ -1468,7 +1763,85 @@ async function syncPreset(showToasts = true) {
         if (showToasts && window.toastr) {
             const lang = getUiLang();
             const dict = UI_TEXT[lang] || UI_TEXT.en;
-            window.toastr.success(dict.toastSyncSuccess);
+
+            // Generate changelog
+            const changes = [];
+
+            const langMap = { auto: "Auto", ru: "Russian", en: "English", uk: "Ukrainian", custom: "Custom" };
+            if (oldSettings.languageMode !== cfg.languageMode) {
+                changes.push(`Language: ${langMap[oldSettings.languageMode] || oldSettings.languageMode} → ${langMap[cfg.languageMode] || cfg.languageMode}`);
+            }
+
+            if (oldSettings.lengthMode !== cfg.lengthMode) {
+                changes.push(`Length: ${oldSettings.lengthMode} → ${cfg.lengthMode}`);
+            }
+
+            const povMap = { "1st": "1st person", "2nd": "2nd person", "3rd": "3rd person" };
+            if (oldSettings.POVMode !== cfg.POVMode) {
+                changes.push(`POV: ${povMap[oldSettings.POVMode]} → ${povMap[cfg.POVMode]}`);
+            }
+
+            if (oldSettings.TENSEMode !== cfg.TENSEMode) {
+                changes.push(`Tense: ${oldSettings.TENSEMode} → ${cfg.TENSEMode}`);
+            }
+
+            if (oldSettings.proseStyle !== cfg.proseStyle) {
+                changes.push(`Prose: ${oldSettings.proseStyle} → ${cfg.proseStyle}`);
+            }
+
+            if (oldSettings.speechStyle !== cfg.speechStyle) {
+                changes.push(`Speech: ${oldSettings.speechStyle} → ${cfg.speechStyle}`);
+            }
+
+            if (oldSettings.htmlTheme !== cfg.htmlTheme) {
+                changes.push(`Theme: ${oldSettings.htmlTheme} → ${cfg.htmlTheme}`);
+            }
+
+            if (oldSettings.imageMode !== cfg.imageMode) {
+                changes.push(`Image: ${oldSettings.imageMode} → ${cfg.imageMode}`);
+            }
+
+            // Things changes
+            const oldThings = oldSettings.thingsSelected;
+            const newThings = cfg.thingsSelected;
+
+            const addedMix = newThings.mix.filter(id => !oldThings.mix.includes(id));
+            const removedMix = oldThings.mix.filter(id => !newThings.mix.includes(id));
+            if (addedMix.length > 0) changes.push(`+Things (mix): ${addedMix.join(", ")}`);
+            if (removedMix.length > 0) changes.push(`-Things (mix): ${removedMix.join(", ")}`);
+
+            const addedHidden = newThings.hidden.filter(id => !oldThings.hidden.includes(id));
+            const removedHidden = oldThings.hidden.filter(id => !newThings.hidden.includes(id));
+            if (addedHidden.length > 0) changes.push(`+Things (hidden): ${addedHidden.join(", ")}`);
+            if (removedHidden.length > 0) changes.push(`-Things (hidden): ${removedHidden.join(", ")}`);
+
+            if (oldThings.cyoa !== newThings.cyoa) {
+                if (newThings.cyoa) changes.push(`+CYOA: ${newThings.cyoa}`);
+                if (oldThings.cyoa) changes.push(`-CYOA: ${oldThings.cyoa}`);
+            }
+
+            if (oldThings.fancy !== newThings.fancy) {
+                if (newThings.fancy) changes.push(`+Fancy: ${newThings.fancy}`);
+                if (oldThings.fancy) changes.push(`-Fancy: ${oldThings.fancy}`);
+            }
+
+            if (oldThings.comments !== newThings.comments) {
+                if (newThings.comments) changes.push(`+Comments: ${newThings.comments}`);
+                if (oldThings.comments) changes.push(`-Comments: ${oldThings.comments}`);
+            }
+
+            // Regex changes
+            const addedRegex = cfg.regexEnabled.filter(id => !oldSettings.regexEnabled.includes(id));
+            const removedRegex = oldSettings.regexEnabled.filter(id => !cfg.regexEnabled.includes(id));
+            if (addedRegex.length > 0) changes.push(`+Regex: ${addedRegex.join(", ")}`);
+            if (removedRegex.length > 0) changes.push(`-Regex: ${removedRegex.join(", ")}`);
+
+            let message = dict.toastSyncSuccess;
+            if (changes.length > 0) {
+                message += "\n\n" + changes.join("\n");
+            }
+
+            window.toastr.success(message);
         }
     } catch (err) {
         console.error("[Yablochny] Sync error", err);
@@ -1478,6 +1851,156 @@ async function syncPreset(showToasts = true) {
             window.toastr.error((dict.toastSyncError || "Sync error: ") + err.message);
         }
     }
+}
+
+// Prompt Editor Helper Functions
+const VARIANT_TYPE_MAP = {
+    language: { constants: "LANGUAGE_VARIANTS", keys: ["Russian", "English", "Ukrainian"] },
+    length: { constants: "LENGTH_VARIANTS", keys: ["200-400", "400-600", "600-800", "adaptive"] },
+    pov: { constants: "POV_VARIANTS", keys: ["1st", "2nd", "3rd"] },
+    tense: { constants: "TENSE_VARIANTS", keys: ["Present", "Past", "Future"] },
+    prose: { constants: "PROSE_VARIANTS", keys: ["ao3", "anne_rice", "donna_tartt", "pratchett", "salinger", "le_guin", "backman"] },
+    speech: { constants: "SPEECH_VARIANTS", keys: ["salinger", "pratchett", "le_guin", "wilde"] },
+    theme: { constants: "HTML_THEME", keys: ["dark", "light"] },
+    image: { constants: "IMAGE_VARIANTS", keys: ["silly", "grok", "pollinations", "custom"] },
+};
+
+async function loadPromptEdits() {
+    const cfg = getConfig();
+    return cfg.promptEdits || {};
+}
+
+
+async function savePromptEdit(variantType, variantKey, content) {
+    const cfg = getConfig();
+    if (!cfg.promptEdits) cfg.promptEdits = {};
+    if (!cfg.promptEdits[variantType]) cfg.promptEdits[variantType] = {};
+
+    cfg.promptEdits[variantType][variantKey] = content;
+    saveSettingsDebounced();
+}
+
+
+async function saveThingEdit(groupKey, thingId, content) {
+    const cfg = getConfig();
+    if (!cfg.promptEdits) cfg.promptEdits = {};
+    if (!cfg.promptEdits.things) cfg.promptEdits.things = {};
+    if (!cfg.promptEdits.things[groupKey]) cfg.promptEdits.things[groupKey] = {};
+
+    cfg.promptEdits.things[groupKey][thingId] = content;
+    saveSettingsDebounced();
+}
+
+
+function getVariantContent(variantType, variantKey) {
+    const map = VARIANT_TYPE_MAP[variantType];
+    if (!map) return "";
+
+    const constantsName = map.constants;
+    let constants;
+
+    switch (constantsName) {
+        case "LANGUAGE_VARIANTS": constants = LANGUAGE_VARIANTS; break;
+        case "LENGTH_VARIANTS": constants = LENGTH_VARIANTS; break;
+        case "POV_VARIANTS": constants = POV_VARIANTS; break;
+        case "TENSE_VARIANTS": constants = TENSE_VARIANTS; break;
+        case "PROSE_VARIANTS": constants = PROSE_VARIANTS; break;
+        case "SPEECH_VARIANTS": constants = SPEECH_VARIANTS; break;
+        case "HTML_THEME": constants = HTML_THEME; break;
+        case "IMAGE_VARIANTS": constants = IMAGE_VARIANTS; break;
+        default: return "";
+    }
+
+    return constants[variantKey] || "";
+}
+
+function getThingContent(groupKey, thingId) {
+    const group = THINGS_DEFS[groupKey];
+    if (!group) return "";
+
+    const thing = group.find(t => t.id === thingId);
+    return thing ? thing.content : "";
+}
+
+async function loadPromptVariantContent(variantType, variantKey) {
+    const edits = await loadPromptEdits();
+
+    let content;
+    if (edits[variantType] && edits[variantType][variantKey]) {
+        content = edits[variantType][variantKey];
+    } else {
+        content = getVariantContent(variantType, variantKey);
+    }
+
+    jQuery("#yp-editor-textarea").val(content);
+}
+
+async function loadThingContent(groupKey, thingId) {
+    const edits = await loadPromptEdits();
+
+    let content;
+    if (edits.things && edits.things[groupKey] && edits.things[groupKey][thingId]) {
+        content = edits.things[groupKey][thingId];
+    } else {
+        content = getThingContent(groupKey, thingId);
+    }
+
+    jQuery("#yp-editor-textarea").val(content);
+}
+
+function openPromptEditor(variantType) {
+    const map = VARIANT_TYPE_MAP[variantType];
+    if (!map) return;
+
+    // Set title
+    const titles = {
+        language: "Language Variants",
+        length: "Length Variants",
+        pov: "POV Variants",
+        tense: "Tense Variants",
+        prose: "Prose Style Variants",
+        speech: "Speech Style Variants",
+        theme: "HTML Theme Variants",
+        image: "Image Mode Variants",
+    };
+    jQuery("#yp-editor-title").text("Edit " + (titles[variantType] || "Prompt Variant"));
+
+    // Populate variant dropdown
+    const select = jQuery("#yp-editor-variant-select");
+    select.empty();
+    for (const key of map.keys) {
+        select.append(`<option value="${key}">${key}</option>`);
+    }
+
+    // Show variant selector
+    jQuery("#yp-editor-variant-row").show();
+
+    // Load first variant content
+    const firstKey = map.keys[0];
+    loadPromptVariantContent(variantType, firstKey);
+
+    // Show modal
+    jQuery("#yp-prompt-editor-modal").css("display", "flex");
+}
+
+function openThingEditor(groupKey, thingId) {
+    const group = THINGS_DEFS[groupKey];
+    if (!group) return;
+
+    const thing = group.find(t => t.id === thingId);
+    if (!thing) return;
+
+    // Set title
+    jQuery("#yp-editor-title").text(`Edit Thing: ${thing.label}`);
+
+    // Hide variant selector
+    jQuery("#yp-editor-variant-row").hide();
+
+    // Load content
+    loadThingContent(groupKey, thingId);
+
+    // Show modal
+    jQuery("#yp-prompt-editor-modal").css("display", "flex");
 }
 
 function applyLocaleToUi() {
@@ -1544,6 +2067,7 @@ function renderThingsUI(cfg) {
     const sel = cfg.thingsSelected || { mix: [], hidden: [], fancy: null, comments: null };
     const lang = getUiLang();
     const dict = UI_TEXT[lang] || UI_TEXT.en;
+    const devMode = cfg.devMode || false;
 
     function renderGroup(containerSelector, defs, groupKey, isExclusive) {
         const container = jQuery(containerSelector);
@@ -1556,13 +2080,16 @@ function renderThingsUI(cfg) {
                     ? (sel[groupKey] || []).includes(def.id)
                     : sel[groupKey] === def.id;
 
+            const editBtn = devMode ? `<button class="yp-thing-edit-btn menu_button secondary" data-thing-group="${groupKey}" data-thing-id="${def.id}" style="padding: 2px 6px; margin-left: 4px;"><i class="fa-solid fa-pen"></i></button>` : '';
+
             const html = `
-        <div class="yablochny-thing-item">
-          <label for="${inputId}">
+        <div class="yablochny-thing-item" style="display: flex; align-items: center; gap: 4px;">
+          <label for="${inputId}" style="flex: 1;">
             <input type="checkbox" id="${inputId}" data-things-group="${groupKey}" data-things-id="${def.id}" ${checked ? "checked" : ""}>
             <span>${def.label}</span>
             ${isExclusive ? `<span class="yablochny-thing-tag">${dict.exclusiveTag}</span>` : ""}
           </label>
+          ${editBtn}
         </div>
       `;
             container.append(html);
@@ -1769,6 +2296,32 @@ function initControls() {
 
     updateMetaUi();
 
+    // Model Preset controls
+    // Model Preset buttons
+    const modelButtonsContainer = jQuery("#yp-model-buttons");
+    modelButtonsContainer.empty();
+
+    Object.keys(MODEL_PRESETS).forEach(id => {
+        const preset = MODEL_PRESETS[id];
+        const activeClass = (cfg.modelPreset === id) ? "active" : "";
+        const btn = `<button class="yp-model-btn ${activeClass}" data-preset-id="${id}">${preset.name}</button>`;
+        modelButtonsContainer.append(btn);
+    });
+
+    modelButtonsContainer.on("click", ".yp-model-btn", function () {
+        const presetId = jQuery(this).data("preset-id");
+        if (!presetId) return;
+
+        if (applyModelPreset(presetId)) {
+            syncPreset(true);
+
+            if (window.toastr) {
+                const preset = MODEL_PRESETS[presetId];
+                window.toastr.success(`Model preset applied: ${preset.name}`);
+            }
+        }
+    });
+
     jQuery("#yp-sync").on("click", () => {
         syncPreset(true);
     });
@@ -1786,6 +2339,87 @@ function initControls() {
         const cfg = getConfig();
         cfg.devMode = jQuery(this).is(":checked");
         saveSettingsDebounced();
+
+        // Show/hide edit buttons based on dev mode
+        if (cfg.devMode) {
+            jQuery(".yp-edit-btn").show();
+        } else {
+            jQuery(".yp-edit-btn").hide();
+        }
+
+        // Re-render Things UI to show/hide edit buttons
+        renderThingsUI(cfg);
+    });
+
+    // Initialize edit button visibility
+    if (cfg.devMode) {
+        jQuery(".yp-edit-btn").show();
+    }
+
+    // Prompt Editor functionality
+    let currentEditingType = null;
+    let currentEditingGroup = null;
+    let currentEditingId = null;
+
+    jQuery(".yp-edit-btn").on("click", function () {
+        const variantType = jQuery(this).data("variant-type");
+        currentEditingType = variantType;
+        currentEditingGroup = null;
+        currentEditingId = null;
+        openPromptEditor(variantType);
+    });
+
+    // Thing edit buttons (delegated event)
+    jQuery("#yp-things").on("click", ".yp-thing-edit-btn", function () {
+        const groupKey = jQuery(this).data("thing-group");
+        const thingId = jQuery(this).data("thing-id");
+        currentEditingType = null;
+        currentEditingGroup = groupKey;
+        currentEditingId = thingId;
+        openThingEditor(groupKey, thingId);
+    });
+
+    jQuery("#yp-editor-cancel").on("click", function () {
+        jQuery("#yp-prompt-editor-modal").hide();
+        currentEditingType = null;
+        currentEditingGroup = null;
+        currentEditingId = null;
+    });
+
+    jQuery("#yp-editor-save").on("click", async function () {
+        const content = jQuery("#yp-editor-textarea").val();
+
+        try {
+            if (currentEditingType) {
+                // Saving prompt variant
+                const variantKey = jQuery("#yp-editor-variant-select").val();
+                await savePromptEdit(currentEditingType, variantKey, content);
+            } else if (currentEditingGroup && currentEditingId) {
+                // Saving thing
+                await saveThingEdit(currentEditingGroup, currentEditingId, content);
+            }
+
+            jQuery("#yp-prompt-editor-modal").hide();
+            currentEditingType = null;
+            currentEditingGroup = null;
+            currentEditingId = null;
+
+            if (window.toastr) {
+                window.toastr.success("Edit saved to tools/prompt-edits.json");
+            }
+        } catch (err) {
+            console.error("[Yablochny] Failed to save edit", err);
+            if (window.toastr) {
+                window.toastr.error("Failed to save: " + err.message);
+            }
+        }
+    });
+
+    jQuery("#yp-editor-variant-select").on("change", function () {
+        const variantKey = jQuery(this).val();
+        if (currentEditingType) {
+            loadPromptVariantContent(currentEditingType, variantKey);
+        }
     });
 
     function onPresetOptionChanged(updater) {

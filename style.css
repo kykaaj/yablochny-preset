@@ -100,6 +100,41 @@
   border: 1px solid var(--SmartThemeBorderColor);
 }
 
+.yablochny-model-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin-bottom: 6px;
+}
+
+.yp-model-btn {
+  all: unset;
+  box-sizing: border-box;
+  display: block;
+  cursor: pointer;
+  padding: 3px 2px;
+  font-size: 10.5px;
+  font-family: inherit;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--SmartThemeBodyColor, #ccc);
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  opacity: 0.55;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+
+.yp-model-btn:hover {
+  opacity: 0.85;
+}
+
+.yp-model-btn.active {
+  opacity: 1;
+  font-weight: 700;
+  border-bottom-color: var(--SmartThemeQuoteColor, #4a9);
+  color: var(--SmartThemeQuoteColor, #4a9);
+}
+
 .yablochny-meta {
   margin-top: 8px;
   font-size: 11px;
