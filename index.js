@@ -1124,6 +1124,7 @@ function getContentFromExisting(existingPreset, identifier) {
 }
 
 function applyLanguageVariant(master, cfg, uiLang, existingPreset) {
+    // console.log("[Yablochny] Applying Language Variant");
     const id = "28ec4454-b3c2-4c06-8fd0-52cb123b778f";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
@@ -1296,6 +1297,12 @@ function applyThingsVariant(master, cfg, existingPreset) {
 
     let existingContent = getContentFromExisting(existingPreset, id) || "";
 
+    // 1. ROBUST REMOVAL: Remove previously injected content using wrapper tags
+    // Matches <!-- YP:group:id --> ... <!-- /YP:group:id -->
+    const wrapperRegex = /<!-- YP:[^>]+-->[\s\S]*?<!-- \/YP:[^>]+-->/g;
+    existingContent = existingContent.replace(wrapperRegex, "");
+
+    // 2. LEGACY REMOVAL: Fallback for older content (fuzzy matching)
     // Helper to escape regex special characters
     const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -1304,21 +1311,14 @@ function applyThingsVariant(master, cfg, existingPreset) {
     Object.keys(THINGS_DEFS).forEach(groupKey => {
         const group = THINGS_DEFS[groupKey];
         group.forEach(item => {
-            // Default content
             if (item.content) allKnownContents.push(item.content.trim());
-
-            // Edited content (if any)
             if (cfg.promptEdits && cfg.promptEdits.things && cfg.promptEdits.things[groupKey] && cfg.promptEdits.things[groupKey][item.id]) {
                 const edited = cfg.promptEdits.things[groupKey][item.id];
                 if (edited) allKnownContents.push(edited.trim());
             }
         });
     });
-
-    // Sort by length (descending) to match longest blocks first
     allKnownContents.sort((a, b) => b.length - a.length);
-
-    // Remove known contents from existingContent using fuzzy regex
     allKnownContents.forEach(known => {
         const fuzzyPattern = escapeRegExp(known).replace(/\\s\\+/g, '[\\s\\r\\n]*');
         const parts = known.split(/\s+/);
@@ -1329,10 +1329,10 @@ function applyThingsVariant(master, cfg, existingPreset) {
 
     // User part is what remains
     const userPart = existingContent.trim();
-
-    // Construct New Extension Part
-    const sel = cfg.thingsSelected || {};
     const extensionParts = [];
+
+    // 3. INJECT NEW CONTENT with Wrapper Tags
+    const sel = cfg.thingsSelected || {};
 
     const addFromGroup = (items, selectedIds, groupKey) => {
         if (!Array.isArray(selectedIds)) return;
@@ -1344,22 +1344,19 @@ function applyThingsVariant(master, cfg, existingPreset) {
                 if (cfg.promptEdits && cfg.promptEdits.things && cfg.promptEdits.things[groupKey] && cfg.promptEdits.things[groupKey][sid]) {
                     content = cfg.promptEdits.things[groupKey][sid];
                 }
-                if (content) extensionParts.push(content.trim());
+                if (content) {
+                    const wrapped = `<!-- YP:${groupKey}:${sid} -->\n${content.trim()}\n<!-- /YP:${groupKey}:${sid} -->`;
+                    extensionParts.push(wrapped);
+                }
             }
         });
     };
 
     addFromGroup(THINGS_DEFS.mix, sel.mix, "mix");
     addFromGroup(THINGS_DEFS.hidden, sel.hidden, "hidden");
-    if (sel.cyoa) {
-        addFromGroup(THINGS_DEFS.cyoa, [sel.cyoa], "cyoa");
-    }
-    if (sel.fancy) {
-        addFromGroup(THINGS_DEFS.fancy, [sel.fancy], "fancy");
-    }
-    if (sel.comments) {
-        addFromGroup(THINGS_DEFS.comments, [sel.comments], "comments");
-    }
+    if (sel.cyoa) addFromGroup(THINGS_DEFS.cyoa, [sel.cyoa], "cyoa");
+    if (sel.fancy) addFromGroup(THINGS_DEFS.fancy, [sel.fancy], "fancy");
+    if (sel.comments) addFromGroup(THINGS_DEFS.comments, [sel.comments], "comments");
 
     // Final Merge: User Parts + Extension Parts
     const finalBlocks = [userPart, ...extensionParts].filter(b => b.length > 0);
