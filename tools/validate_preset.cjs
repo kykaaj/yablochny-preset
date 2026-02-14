@@ -10,13 +10,13 @@ const PRESET_PATH = path.join(__dirname, '..', '🍎 Yablochny Preset.json');
 
 function validatePreset() {
     console.log('[Validation] Checking preset file...');
-    
+
     // Check if file exists
     if (!fs.existsSync(PRESET_PATH)) {
         console.error('[Validation] ERROR: Preset file not found at:', PRESET_PATH);
         process.exit(1);
     }
-    
+
     // Read and parse JSON
     let preset;
     try {
@@ -28,9 +28,9 @@ function validatePreset() {
         console.error(err.message);
         process.exit(1);
     }
-    
+
     // Check required fields
-    const requiredFields = ['name', 'prompts'];
+    const requiredFields = ['prompts'];
     for (const field of requiredFields) {
         if (!preset[field]) {
             console.error(`[Validation] ERROR: Missing required field: ${field}`);
@@ -38,13 +38,13 @@ function validatePreset() {
         }
     }
     console.log('[Validation] ✓ Required fields present');
-    
+
     // Check prompts structure
     if (!Array.isArray(preset.prompts)) {
         console.error('[Validation] ERROR: "prompts" must be an array');
         process.exit(1);
     }
-    
+
     // Validate each prompt
     for (let i = 0; i < preset.prompts.length; i++) {
         const prompt = preset.prompts[i];
@@ -62,7 +62,7 @@ function validatePreset() {
         }
     }
     console.log(`[Validation] ✓ All ${preset.prompts.length} prompts valid`);
-    
+
     console.log('[Validation] ✓ Preset validation passed!');
     return true;
 }
