@@ -2,10 +2,10 @@
     "extensions": {
         "regex_scripts": []
     },
-    "temperature": 0.85,
-    "frequency_penalty": 0,
-    "presence_penalty": 0,
-    "top_p": 0.8,
+    "temperature": 1,
+    "frequency_penalty": 0.2,
+    "presence_penalty": 0.3,
+    "top_p": 0.95,
     "top_k": 0,
     "top_a": 0,
     "min_p": 0,
@@ -67,7 +67,8 @@
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
-            "injection_trigger": []
+            "injection_trigger": [],
+            "enabled": false
         },
         {
             "identifier": "chatHistory",
@@ -285,7 +286,7 @@
             "marker": false,
             "name": "◈︎ prose style (change)",
             "role": "system",
-            "content": "<prose_style>\nRenette are an author writing a fanfiction in the narrative style commonly found on Archive of Our Own (AO3).\nWrite as if this is a complete, polished chapter posted on AO3, not a chat reply.\n\nGENERAL STYLE:\n- Use rich, but readable prose with clear imagery and emotional focus.\nPrioritize character-driven storytelling over plot exposition. Show emotions through actions, body language, small details and subtext, not by bluntly naming feelings.\nKeep the tone cohesive (humorous, angsty, romantic, dark, etc.) according to the request, and let it color descriptions and dialogue.\n- Stay close to the chosen POV character’s perceptions; only describe what they could realistically notice.\nInclude inner thoughts in italics using like this, blending them smoothly into the narration.\n- Start a new paragraph for each new speaker.\nMix dialogue with action beats and physical reactions instead of using only 'he said/she said'.\n-Let characters speak in a way that reflects their personality, background, and current emotional state.\n- Build scenes with a clear sense of place, using sensory details (sound, smell, texture, temperature, light).\nAlternate between dialogue, action, and introspection to keep the pacing dynamic.\n- Use AO3-like scene breaks with a centered line of symbols when the time, location, or emotional focus shifts strongly, for example:\nEnd the scene or chapter with a line that feels like a beat or hook: a strong image, a sharp line of dialogue, or a thought that invites curiosity.\n\nCHARACTERIZATION AND RELATIONSHIPS:\n- Make every character feel distinct through their choices, voice, gestures, and small habits.\n- Show relationship dynamics through banter, tension, physical distance or closeness, and what characters choose to say or hide.\n- Avoid summarizing development; instead, reveal it through specific moments, callbacks, and recurring motifs.\n</prose_style>\n{{setvar::prose_check::- PROSE STYLE: You write in the prose style indicated in `<prose_style>`?}}",
+            "content": "<prose_style>\nRenette are an author writing a fanfiction in the narrative style commonly found on Archive of Our Own (AO3).\nWrite as if this is a complete, polished chapter posted on AO3, not a chat reply.\n\nGENERAL STYLE:\n- Use rich, but readable prose with clear imagery and emotional focus.\nPrioritize character-driven storytelling over plot exposition. Show emotions through actions, body language, small details and subtext, not by bluntly naming feelings.\nKeep the tone cohesive (humorous, angsty, romantic, dark, etc.) according to the request, and let it color descriptions and dialogue.\n- Stay close to the chosen POV character’s perceptions; only describe what they could realistically notice.\nInclude inner thoughts in italics using like this, blending them smoothly into the narration.\n- Start a new paragraph for each new speaker.\nMix dialogue with action beats and physical reactions instead of using only 'he said/she said'.\n-Let characters speak in a way that reflects their personality, background, and current emotional state.\n- Build scenes with a clear sense of place, using sensory details (sound, smell, texture, temperature, light).\nAlternate between dialogue, action, and introspection to keep the pacing dynamic.\n- Use AO3-like scene breaks with a centered line of symbols when the time, location, or emotional focus shifts strongly, for example:\nEnd the scene or chapter with a line that feels like a beat or hook: a strong image, a sharp line of dialogue, or a thought that invites curiosity.\n\nCHARACTERIZATION AND RELATIONSHIPS:\n- Make every character feel distinct through their choices, voice, gestures, and small habits.\n- Show relationship dynamics through banter, tension, physical distance or closeness, and what characters choose to say or hide.\n- Avoid summarizing development; instead, reveal it through specific moments, callbacks, and recurring motifs.{{getvar::speech_style}}\n</prose_style>\n{{setvar::prose_check::- PROSE STYLE: You write in the prose style indicated in `<prose_style>`?}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -785,7 +786,7 @@
         {
             "identifier": "4ad8a657-f24c-40c9-bffc-976a6ab39003",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
             "name": "◦︎ COT",
             "role": "system",
@@ -799,7 +800,7 @@
         {
             "identifier": "6c0ab122-aa65-4c14-ae20-199c2010df2f",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
             "name": "◈︎ ↗ universal prefill",
             "role": "assistant",
@@ -1359,7 +1360,7 @@
         {
             "identifier": "00119b3e-a60f-4f1e-b48a-127026645a39",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
             "name": "◦︎ double quotes",
             "role": "system",
@@ -1459,7 +1460,7 @@
                 },
                 {
                     "identifier": "jailbreak",
-                    "enabled": true
+                    "enabled": false
                 }
             ]
         },
@@ -1467,16 +1468,12 @@
             "character_id": 100001,
             "order": [
                 {
-                    "identifier": "c4953893-99e2-4b4b-b085-d04be4bc7528",
-                    "enabled": false
-                },
-                {
                     "identifier": "0a2c3465-e2a8-4e71-8e09-e39557967df3",
                     "enabled": true
                 },
                 {
                     "identifier": "jailbreak",
-                    "enabled": true
+                    "enabled": false
                 },
                 {
                     "identifier": "main",
@@ -1612,7 +1609,7 @@
                 },
                 {
                     "identifier": "00119b3e-a60f-4f1e-b48a-127026645a39",
-                    "enabled": false
+                    "enabled": true
                 },
                 {
                     "identifier": "d1997c77-2a84-4a94-888c-3cd890f86bbf",
@@ -1644,7 +1641,7 @@
                 },
                 {
                     "identifier": "3fac312b-68d9-4c98-b17e-e3565322e236",
-                    "enabled": true
+                    "enabled": false
                 },
                 {
                     "identifier": "a8c1703a-8384-4a6f-871b-32cbc2758b14",
@@ -1693,10 +1690,6 @@
                 {
                     "identifier": "b655e83e-2e97-4641-b9ce-de00e6765a65",
                     "enabled": true
-                },
-                {
-                    "identifier": "e955ba0e-2830-40d7-badb-12b1235cff79",
-                    "enabled": false
                 },
                 {
                     "identifier": "e8055071-6dfb-4069-9fb6-873535346a79",
@@ -1856,19 +1849,15 @@
                 },
                 {
                     "identifier": "4ad8a657-f24c-40c9-bffc-976a6ab39003",
-                    "enabled": false
+                    "enabled": true
                 },
                 {
                     "identifier": "6c0ab122-aa65-4c14-ae20-199c2010df2f",
-                    "enabled": false
-                },
-                {
-                    "identifier": "222af4fb-56e0-4c44-83e0-258cdba11d85",
-                    "enabled": false
+                    "enabled": true
                 },
                 {
                     "identifier": "d0851faf-af18-40c6-8bf4-35e2338061e5",
-                    "enabled": true
+                    "enabled": false
                 },
                 {
                     "identifier": "scenario",

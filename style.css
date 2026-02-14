@@ -301,3 +301,10 @@
   color: #fff;
   text-shadow: 0 0 5px rgba(107, 203, 119, 0.5);
 }
+
+/* Visual feedback for disabled mods */
+.yablochny-model-buttons.disabled-mods {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(0.5);
+}

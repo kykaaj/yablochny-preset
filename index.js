@@ -167,7 +167,9 @@ const UI_TEXT = {
         profileSaved: "Профиль сохранён",
         profileDeleted: "Профиль удалён",
         profileLoaded: "Профиль загружен",
+        profileLoaded: "Профиль загружен",
         modelPresetLabel: "Пресет модели:",
+        disableModsLabel: "Отключить моды (bypass settings)",
     },
     uk: {
         title: "Яблучний пресет",
@@ -216,7 +218,9 @@ const UI_TEXT = {
         profileSaved: "Профіль збережено",
         profileDeleted: "Профіль видалено",
         profileLoaded: "Профіль завантажено",
+        profileLoaded: "Профіль завантажено",
         modelPresetLabel: "Пресет моделі:",
+        disableModsLabel: "Вимкнути моди (bypass settings)",
     },
 };
 
@@ -925,7 +929,9 @@ function getConfig() {
                 comments: null,
             },
             devMode: false,
+            devMode: false,
             modelPreset: "claude",
+            disableMods: false,
         };
     }
 
@@ -952,7 +958,9 @@ function getConfig() {
         comments: null,
     };
     cfg.devMode ??= false;
+    cfg.devMode ??= false;
     cfg.modelPreset ??= "claude";
+    cfg.disableMods ??= false;
 
     promptSyncMetaCache = cfg.promptSyncMeta;
     return cfg;
@@ -1020,12 +1028,14 @@ function applyModelPreset(presetId) {
     };
 
     // Apply settings
-    if (preset.settings) {
+    if (preset.settings && !cfg.disableMods) {
         if (Object.prototype.hasOwnProperty.call(preset.settings, "temperature")) currentPreset.temperature = preset.settings.temperature;
         if (Object.prototype.hasOwnProperty.call(preset.settings, "frequency_penalty")) currentPreset.frequency_penalty = preset.settings.frequency_penalty;
         if (Object.prototype.hasOwnProperty.call(preset.settings, "presence_penalty")) currentPreset.presence_penalty = preset.settings.presence_penalty;
         if (Object.prototype.hasOwnProperty.call(preset.settings, "top_p")) currentPreset.top_p = preset.settings.top_p;
         if (Object.prototype.hasOwnProperty.call(preset.settings, "openai_max_tokens")) currentPreset.openai_max_tokens = preset.settings.openai_max_tokens;
+    } else if (cfg.disableMods) {
+        console.log("[Yablochny] Mods disabled: skipping generation settings application.");
     }
 
     const isGptMode = presetId.startsWith("gpt");
@@ -1576,7 +1586,19 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "charPersonality", // Synced from user preset
         "scenario", // Synced from user preset
         "personaDescription", // Synced from user preset
-    ];
+    ,
+        "nsfw", // Synced from user preset
+        "dialogueExamples", // Synced from user preset
+        "jailbreak", // Synced from user preset
+        "chatHistory", // Synced from user preset
+        "worldInfoAfter", // Synced from user preset
+        "worldInfoBefore", // Synced from user preset
+        "enhanceDefinitions", // Synced from user preset
+        "charDescription", // Synced from user preset
+        "charPersonality", // Synced from user preset
+        "scenario", // Synced from user preset
+        "personaDescription", // Synced from user preset
+];
 
     const customPrompts = [];
     for (const p of existingPrompts) {
@@ -1754,6 +1776,76 @@ async function syncPreset(showToasts = true) {
 
         const master = buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset);
         const { preset, syncMeta } = buildMergedPreset(existingPreset, master, cfg);
+
+        // STICT SYNC LOGIC: Enforce model-specific toggles if mods are enabled
+        if (!cfg.disableMods && cfg.modelPreset) {
+            const modelDef = MODEL_PRESETS[cfg.modelPreset];
+            if (modelDef) {
+                // Helper to set enabled state in the preset object
+                const forceToggleState = (identifier, state) => {
+                    // Update prompts array
+                    if (Array.isArray(preset.prompts)) {
+                        const p = preset.prompts.find(x => x.identifier === identifier);
+                        if (p) p.enabled = state;
+                    }
+                    // Update prompt_order
+                    if (Array.isArray(preset.prompt_order)) {
+                        for (const group of preset.prompt_order) {
+                            if (Array.isArray(group.order)) {
+                                const item = group.order.find(x => x.identifier === identifier);
+                                if (item) item.enabled = state;
+                            }
+                        }
+                    }
+                };
+
+                // Enforce enabled toggles
+                if (modelDef.toggles) {
+                    for (const id in modelDef.toggles) {
+                        forceToggleState(id, modelDef.toggles[id]);
+                    }
+                }
+                // Enforce disabled toggles
+                if (modelDef.disableToggles) {
+                    for (const id of modelDef.disableToggles) {
+                        forceToggleState(id, false);
+                    }
+                }
+
+                // GPT/Gemini specific logic (replicated from applyModelPreset for consistency)
+                const isGptMode = cfg.modelPreset.startsWith("gpt");
+                const isGeminiMode = cfg.modelPreset === "gemini";
+                const ID_NORMAL_ANTIECHO = "b26eb680-d1cd-4f8a-a54a-67e17a13a6c0";
+                const ID_GPT_ANTIECHO = "3fac312b-68d9-4c98-b17e-e3565322e236";
+                const ID_GPT_JB = "jailbreak";
+                const ID_GEMINI_DQUOTES = "00119b3e-a60f-4f1e-b48a-127026645a39";
+
+                if (isGptMode) {
+                    forceToggleState(ID_NORMAL_ANTIECHO, false); // Disable normal if GPT
+                    forceToggleState(ID_GPT_ANTIECHO, true);
+                    forceToggleState(ID_GPT_JB, true);
+                } else {
+                    forceToggleState(ID_GPT_ANTIECHO, false);
+                    forceToggleState(ID_GPT_JB, false);
+                }
+
+                if (isGeminiMode) {
+                    forceToggleState(ID_GEMINI_DQUOTES, true);
+                } else {
+                    forceToggleState(ID_GEMINI_DQUOTES, false);
+                }
+
+                // STRICT SYNC: Generation Settings
+                if (modelDef.settings) {
+                    const s = modelDef.settings;
+                    if (Object.prototype.hasOwnProperty.call(s, "temperature")) preset.temperature = s.temperature;
+                    if (Object.prototype.hasOwnProperty.call(s, "frequency_penalty")) preset.frequency_penalty = s.frequency_penalty;
+                    if (Object.prototype.hasOwnProperty.call(s, "presence_penalty")) preset.presence_penalty = s.presence_penalty;
+                    if (Object.prototype.hasOwnProperty.call(s, "top_p")) preset.top_p = s.top_p;
+                    if (Object.prototype.hasOwnProperty.call(s, "openai_max_tokens")) preset.openai_max_tokens = s.openai_max_tokens;
+                }
+            }
+        }
 
         const ctx = window.SillyTavern?.getContext?.();
         const headers = ctx?.getRequestHeaders ? ctx.getRequestHeaders() : {};
@@ -2099,6 +2191,7 @@ function applyLocaleToUi() {
                 ? "Режим розробника (лог синка в консолі)"
                 : "Developer mode (log sync to console)";
     jQuery("#yp-dev-label").text(devLabel);
+    if (dict.disableModsLabel) jQuery("#yp-disable-mods-label").text(dict.disableModsLabel);
 }
 
 function updateMetaUi() {
@@ -2350,13 +2443,22 @@ function initControls() {
     jQuery("#yp-image-mode").val(cfg.imageMode || "silly");
     window.YablochnyThingsSelection = cfg.thingsSelected || {};
     jQuery("#yp-auto-sync").prop("checked", !!cfg.autoSyncOnStart);
+    jQuery("#yp-disable-mods").prop("checked", !!cfg.disableMods);
     jQuery("#yp-dev-mode").prop("checked", !!cfg.devMode);
 
     updateMetaUi();
 
     // Model Preset controls
-    // Model Preset buttons
     const modelButtonsContainer = jQuery("#yp-model-buttons");
+
+    // Initialize Disabled Class
+    if (cfg.disableMods) {
+        modelButtonsContainer.addClass("disabled-mods");
+    } else {
+        modelButtonsContainer.removeClass("disabled-mods");
+    }
+
+    // Model Preset buttons
     modelButtonsContainer.empty();
 
     Object.keys(MODEL_PRESETS).forEach(id => {
@@ -2391,6 +2493,25 @@ function initControls() {
 
     jQuery("#yp-auto-sync").on("change", function () {
         setConfig("autoSyncOnStart", this.checked);
+    });
+
+    jQuery("#yp-disable-mods").on("change", function () {
+        const cfg = getConfig();
+        const checked = jQuery(this).is(":checked");
+        cfg.disableMods = checked;
+
+        // Visual feedback
+        if (checked) {
+            jQuery("#yp-model-buttons").addClass("disabled-mods");
+        } else {
+            jQuery("#yp-model-buttons").removeClass("disabled-mods");
+        }
+
+        saveSettingsDebounced();
+        // Re-apply preset to enforce/bypass settings immediately
+        if (cfg.modelPreset) {
+            applyModelPreset(cfg.modelPreset);
+        }
     });
 
     jQuery("#yp-dev-mode").on("change", function () {
