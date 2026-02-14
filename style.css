@@ -330,8 +330,7 @@
   z-index: 99999;
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(2px);
-  /* Use flex for centering, but NO !important so JS .hide() works */
-  display: flex;
+  /* Alignment is applied when shown via JS (which adds display: flex inline) */
   align-items: flex-start;
   /* Start from top on mobile */
   justify-content: center;
