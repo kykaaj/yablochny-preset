@@ -52,7 +52,7 @@ function validatePreset() {
             console.error(`[Validation] ERROR: Prompt at index ${i} missing "identifier"`);
             process.exit(1);
         }
-        if (!prompt.name) {
+        if (prompt.name === undefined) {
             console.error(`[Validation] ERROR: Prompt at index ${i} missing "name"`);
             process.exit(1);
         }
