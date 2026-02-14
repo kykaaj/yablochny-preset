@@ -393,7 +393,7 @@ const FOCUS_VARIANTS = {
 };
 
 const DECONSTRUCTION_VARIANTS = {
-    large: `{{setvar::largedeco::\n1. CHARACTER'S PRESENT & DOMINANT TRAITS. THEIR CLOTHES.\n2. RELATIONSHIP STATUS. How do Char treat User? Determine the realistically internal attachment of Character toward User (0-100%). Cold/neutral/close, any shift why.\n3. LOCATION (time, weather) & ATMOSPHERE.\n4. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside \`<NSFW_instructions>\`. If no - continue as usual.}}`,
+    large: `{{setvar::largedeco::\n1. CHARACTER'S PRESENT & DOMINANT TRAITS. THEIR CLOTHES.\n2. RELATIONSHIP STATUS. How do Char treat User? Determine the realistically internal attachment of Character toward User (0-100%). Cold/neutral/close, any shift and why.\n3. LOCATION (time, weather) & ATMOSPHERE.\n4. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside \`<NSFW_instructions>\`. If no - continue as usual.}}`,
     mini: `{{setvar::minideco::\n1. CHARACTER'S PRESENT, CLOTHES, RELATIONSHIP STATUS.\n2. LOCATION.\n3. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside \`<NSFW_instructions>\`. If no - continue as usual.}}`
 };
 
