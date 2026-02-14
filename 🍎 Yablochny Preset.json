@@ -814,7 +814,7 @@
         {
             "identifier": "1efdd851-e336-44a3-8e08-3cbff9077ed5",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
             "name": "┌︎ ◦︎ thoughts",
             "role": "system",
@@ -1427,11 +1427,11 @@
                 },
                 {
                     "identifier": "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc",
-                    "enabled": false
+                    "enabled": true
                 },
                 {
                     "identifier": "85609813-6c7f-4df2-bee8-0ace5b10df91",
-                    "enabled": false
+                    "enabled": true
                 },
                 {
                     "identifier": "6b6fbfc0-970c-433a-b901-8f075887bed9",
@@ -1535,7 +1535,7 @@
                 },
                 {
                     "identifier": "c741b88a-6fe2-4055-9b93-81b4503081b6",
-                    "enabled": true
+                    "enabled": false
                 },
                 {
                     "identifier": "3f839183-2388-4999-9c1c-bd0b7d48e1d5",
@@ -1655,7 +1655,7 @@
                 },
                 {
                     "identifier": "9c2536d8-2e0f-478d-8bef-3e4e75bcee83",
-                    "enabled": false
+                    "enabled": true
                 },
                 {
                     "identifier": "6473fd43-9e1f-4da7-9848-14a1fced05a9",
