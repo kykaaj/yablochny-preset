@@ -592,7 +592,7 @@
             "system_prompt": false,
             "enabled": false,
             "marker": false,
-            "name": "┌︎ ◦︎ html theme (change)",
+            "name": "└︎ ◦︎ html theme (change)",
             "role": "system",
             "content": "HTML THEME:\nAlways apply DARK THEME styling for all HTML visual renderings. Use backgrounds in deep shades of #0d0d0d–#1a1a1a range (matte blacks, charcoal, deep navy, dark gray gradients), with light text colors (#f5f5f5–#dcdcdc) and subtle accent hues (neon cyan, magenta, amber, violet) to enhance readability and aesthetic impact.\nAvoid pure white (#fff) or blinding highlights; instead, use off-white or light gray tones. Never use bright backgrounds.",
             "injection_position": 0,

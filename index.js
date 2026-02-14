@@ -532,7 +532,7 @@ End the scene or chapter with a line that feels like a beat or hook: a strong im
 CHARACTERIZATION AND RELATIONSHIPS:
 - Make every character feel distinct through their choices, voice, gestures, and small habits.
 - Show relationship dynamics through banter, tension, physical distance or closeness, and what characters choose to say or hide.
-- Avoid summarizing development; instead, reveal it through specific moments, callbacks, and recurring motifs.
+- Avoid summarizing development; instead, reveal it through specific moments, callbacks, and recurring motifs.{{getvar::speech_style}}
 </prose_style>
 {{setvar::prose_check::- PROSE STYLE: You write in the prose style indicated in \`<prose_style>\`?}}`,
     anne_rice: `<prose_style>
