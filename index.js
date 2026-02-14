@@ -2059,6 +2059,18 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4", // Deprecated: ua swearing
         "7d81224c-eaf8-45ef-9af0-b3f52369c792", // Deprecated: quickpace
         "d00a8bd2-d7ec-4a1e-919b-4089d2489e82", // Deprecated: ua extras
+,
+        "nsfw", // Synced from user preset
+        "dialogueExamples", // Synced from user preset
+        "jailbreak", // Synced from user preset
+        "chatHistory", // Synced from user preset
+        "worldInfoAfter", // Synced from user preset
+        "worldInfoBefore", // Synced from user preset
+        "enhanceDefinitions", // Synced from user preset
+        "charDescription", // Synced from user preset
+        "charPersonality", // Synced from user preset
+        "scenario", // Synced from user preset
+        "personaDescription", // Synced from user preset
 ];
 
     const customPrompts = [];

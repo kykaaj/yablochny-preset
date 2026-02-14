@@ -2,10 +2,10 @@
     "extensions": {
         "regex_scripts": []
     },
-    "temperature": 1,
-    "frequency_penalty": 0.2,
-    "presence_penalty": 0.3,
-    "top_p": 0.95,
+    "temperature": 0.85,
+    "frequency_penalty": 0.17,
+    "presence_penalty": 0.26,
+    "top_p": 0.9,
     "top_k": 0,
     "top_a": 0,
     "min_p": 0,
@@ -944,7 +944,7 @@
             "marker": false,
             "name": "┌︎ ◈︎ deconstruction (change)",
             "role": "system",
-            "content": "{{setvar::largedeco::\n1. CHARACTER'S PRESENT & DOMINANT TRAITS. THEIR CLOTHES.\n2. RELATIONSHIP STATUS. How do Char treat User? Determine the realistically internal attachment of Character toward User (0-100%). Cold/neutral/close, any shift why.\n3. LOCATION (time, weather) & ATMOSPHERE.\n4. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside `<NSFW_instructions>`. If no - continue as usual.}}",
+            "content": "{{setvar::largedeco::\n1. CHARACTER'S PRESENT & DOMINANT TRAITS. THEIR CLOTHES.\n2. RELATIONSHIP STATUS. How do Char treat User? Determine the realistically internal attachment of Character toward User (0-100%). Cold/neutral/close, any shift and why.\n3. LOCATION (time, weather) & ATMOSPHERE.\n4. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside `<NSFW_instructions>`. If no - continue as usual.}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -1252,7 +1252,7 @@
             "marker": false,
             "name": "└︎ ◦︎ extras lang (change)",
             "role": "system",
-            "content": "",
+            "content": "варврв",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -1262,7 +1262,7 @@
         {
             "identifier": "00119b3e-a60f-4f1e-b48a-127026645a39",
             "system_prompt": false,
-            "enabled": true,
+            "enabled": false,
             "marker": false,
             "name": "◦︎ double quotes",
             "role": "system",
@@ -1427,7 +1427,7 @@
                 },
                 {
                     "identifier": "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc",
-                    "enabled": true
+                    "enabled": false
                 },
                 {
                     "identifier": "85609813-6c7f-4df2-bee8-0ace5b10df91",
@@ -1491,7 +1491,7 @@
                 },
                 {
                     "identifier": "00119b3e-a60f-4f1e-b48a-127026645a39",
-                    "enabled": true
+                    "enabled": false
                 },
                 {
                     "identifier": "d1997c77-2a84-4a94-888c-3cd890f86bbf",
@@ -1519,7 +1519,7 @@
                 },
                 {
                     "identifier": "b26eb680-d1cd-4f8a-a54a-67e17a13a6c0",
-                    "enabled": false
+                    "enabled": true
                 },
                 {
                     "identifier": "3fac312b-68d9-4c98-b17e-e3565322e236",
