@@ -196,12 +196,19 @@
         <div id="yp-preset-name-row">
           <strong id="yp-preset-label">Preset:</strong> <span id="yp-preset-name">—</span>
         </div>
-        <div id="yp-last-sync-row">
-          <strong id="yp-last-sync-label">Last sync:</strong> <span id="yp-last-sync">—</span>
-        </div>
-        <div class="yablochny-inline">
-          <input type="checkbox" id="yp-dev-mode">
-          <label for="yp-dev-mode" id="yp-dev-label">Developer mode (log sync to console)</label>
+        <div class="yablochny-row">
+          <div class="yablochny-field">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong id="yp-last-sync-label">Last sync:</strong> <span id="yp-last-sync">—</span>
+            </div>
+            <!-- Hidden Dev Mode Section -->
+            <div id="yp-dev-container" class="yp-hidden-section">
+              <div class="yablochny-inline">
+                <input type="checkbox" id="yp-dev-mode">
+                <label for="yp-dev-mode" id="yp-dev-label">Developer mode (log sync to console)</label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -308,10 +315,8 @@
 </div>
 
 <!-- Credits Modal -->
-<div id="yp-credits-modal"
-  style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center;">
-  <div
-    style="background: var(--SmartThemeHardwareBody, #151515); color: var(--SmartThemeBodyColor, #ccc); border: 1px solid var(--SmartThemeBorderColor); border-radius: 8px; padding: 20px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+<div id="yp-credits-modal" class="yp-credits-modal">
+  <div class="yp-credits-content">
     <h3 style="margin-top: 0; text-align: center;">Credits & Authors</h3>
     <div style="margin-bottom: 20px; line-height: 1.6;">
       <h4 style="border-bottom: 1px solid var(--SmartThemeBorderColor); padding-bottom: 5px; margin-bottom: 10px;">Автор

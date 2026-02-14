@@ -321,3 +321,45 @@
   pointer-events: none;
   filter: grayscale(0.5);
 }
+
+/* Credits Modal Overlay */
+.yp-credits-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 2147483647;
+  /* Max z-index to be on top of everything */
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+/* Credits Modal Content */
+.yp-credits-content {
+  background: var(--SmartThemeHardwareBody, #151515);
+  color: var(--SmartThemeBodyColor, #ccc);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hidden Section (for Dev Mode) */
+.yp-hidden-section {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+}

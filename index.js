@@ -2768,7 +2768,7 @@ jQuery(async () => {
     applyLocaleToUi();
     initControls();
 
-    // Credits Modal Logic
+    // Credits Modal Logic - use new class
     jQuery("#yp-credits-btn").on("click", function () {
         jQuery("#yp-credits-modal").css("display", "flex");
     });
@@ -2777,6 +2777,28 @@ jQuery(async () => {
     });
     jQuery("#yp-credits-modal").on("click", function (e) {
         if (e.target === this) jQuery(this).hide();
+    });
+
+    // Easter Egg: Click title 5 times to toggle Dev Mode visibility
+    let titleClicks = 0;
+    jQuery("#yp-title-text").on("click", function () {
+        titleClicks++;
+        if (titleClicks >= 5) {
+            titleClicks = 0;
+            const devContainer = jQuery("#yp-dev-container");
+            const isHidden = devContainer.css("display") === "none";
+
+            if (isHidden) {
+                devContainer.show();
+                if (window.toastr) window.toastr.info("Developer Mode revealed!");
+            } else {
+                devContainer.hide();
+                // Also turn off dev mode if hiding section
+                if (jQuery("#yp-dev-mode").is(":checked")) {
+                    jQuery("#yp-dev-mode").click();
+                }
+            }
+        }
     });
 
     await waitForOpenAI();
