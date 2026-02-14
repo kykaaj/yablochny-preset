@@ -2768,15 +2768,12 @@ jQuery(async () => {
     applyLocaleToUi();
     initControls();
 
-    // Credits Modal Logic - use new class
+    // Credits Logic - Inline
     jQuery("#yp-credits-btn").on("click", function () {
-        jQuery("#yp-credits-modal").show(); // Uses block display defined in CSS (or default for div)
+        jQuery("#yp-credits-area").slideToggle(200);
     });
-    jQuery("#yp-credits-close").on("click", function () {
-        jQuery("#yp-credits-modal").hide();
-    });
-    jQuery("#yp-credits-modal").on("click", function (e) {
-        if (e.target === this) jQuery(this).hide();
+    jQuery("#yp-credits-close-inline").on("click", function () {
+        jQuery("#yp-credits-area").slideUp(200);
     });
 
     // Easter Egg: Click title 5 times to toggle Dev Mode visibility
