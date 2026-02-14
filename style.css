@@ -327,18 +327,16 @@
   display: none;
   position: fixed;
   inset: 0;
-  /* Modern shortcut for top/left/right/bottom: 0 */
   z-index: 99999;
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(2px);
-  /* Alignment logic */
-  display: flex !important;
-  /* Force flex when shown */
+  /* Use flex for centering, but NO !important so JS .hide() works */
+  display: flex;
   align-items: flex-start;
-  /* Align to top, push down with margin (safer for tall content) */
+  /* Start from top on mobile */
   justify-content: center;
   overflow-y: auto;
-  /* Allow scrolling the overlay itself */
+  /* Scroll overlay if content is huge */
   padding: 10px;
   box-sizing: border-box;
 }
@@ -359,7 +357,10 @@
   width: 100%;
   max-width: 500px;
 
-  /* Vertical positioning safety */
+  max-height: 80vh;
+  overflow-y: auto;
+
+  /* Safe top margin for mobile */
   margin-top: 10vh;
   margin-bottom: 5vh;
 
