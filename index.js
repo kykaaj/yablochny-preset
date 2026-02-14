@@ -1323,6 +1323,10 @@ function applyLanguageVariant(master, cfg, uiLang, existingPreset) {
     const id = "28ec4454-b3c2-4c06-8fd0-52cb123b778f";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
+
+    // Force enable the prompt so updates apply immediately
+    prompt.enabled = true;
+
     const mode = cfg.languageMode || "auto";
     if (mode === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
@@ -1361,6 +1365,10 @@ function applyLengthVariant(master, cfg, existingPreset) {
     const id = "9adda56b-6f32-416a-b947-9aa9f41564eb";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
+
+    // Force enable the prompt so updates apply immediately
+    prompt.enabled = true;
+
     if (cfg.lengthMode === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
@@ -1383,6 +1391,10 @@ function applyPOVVariant(master, cfg, existingPreset) {
     const id = "5907aad3-0519-45e9-b6f7-40d9e434ef28";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
+
+    // Force enable the prompt so updates apply immediately
+    prompt.enabled = true;
+
     if (cfg.POVMode === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
@@ -1405,6 +1417,10 @@ function applyTENSEVariant(master, cfg, existingPreset) {
     const id = "e0ce2a23-98e3-4772-8984-5e9aa4c5c551";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
+
+    // Force enable the prompt so updates apply immediately
+    prompt.enabled = true;
+
     if (cfg.TENSEMode === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
@@ -1427,6 +1443,12 @@ function applySpeechVariant(master, cfg, existingPreset) {
     const id = "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
+
+    // Force enable if a style is selected (logic handles 'none' below)
+    if (cfg.speechStyle && cfg.speechStyle !== "none") {
+        prompt.enabled = true;
+    }
+
     if (cfg.speechStyle === "none") {
         return;
     }
@@ -1445,6 +1467,10 @@ function applyProseVariant(master, cfg, existingPreset) {
     const id = "92f96f89-c01d-4a91-bea3-c8abb75b995a";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
+
+    // Force enable the prompt so updates apply immediately
+    prompt.enabled = true;
+
     if (cfg.proseStyle === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
@@ -1467,6 +1493,10 @@ function applyHtmlTheme(master, cfg, existingPreset) {
     const id = "14bf3aa5-73cf-4112-8aca-437c48978663";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
+
+    // Force enable the prompt so updates apply immediately
+    prompt.enabled = true;
+
     if (cfg.htmlTheme === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
