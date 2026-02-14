@@ -432,21 +432,21 @@ const LANGUAGE_VARIANTS = {
     Russian: `{{setvar::extralang::Russian}}<language>
 OUTPUT LANGUAGE: RUSSIAN:
 - ALL content in Russian: narration, dialogue, thoughts.
-- Apply natural, informal Russian with correct cases, tenses, word endings, and authentic swearing.
+- Apply natural, informal Russian with correct cases, tenses, word endings.
 - Other languages forbidden — except in-character foreign speech if contextually appropriate.
 </language>
 {{setvar::lang_check::- LANGUAGE: Is entire output in Russian? Any accidental English/other?}}`,
     English: `{{setvar::extralang::English}}<language>
 OUTPUT LANGUAGE: ENGLISH:
 - ALL content in English: narration, dialogue, thoughts.
-- Apply natural, informal English with correct cases, tenses, word endings, and authentic swearing.
+- Apply natural, informal English with correct cases, tenses, word endings.
 - Other languages forbidden — except in-character foreign speech if contextually appropriate.
 </language>
 {{setvar::lang_check::- LANGUAGE: Is entire output in English?}}`,
     Ukrainian: `{{setvar::extralang::Ukrainian}}<language>
 OUTPUT LANGUAGE: UKRAINIAN:
 - ALL content in Ukrainian: narration, dialogue, thoughts.
-- Apply natural, informal Ukrainian with correct cases, tenses, word endings, and authentic swearing.
+- Apply natural, informal Ukrainian with correct cases, tenses, word endings.
 - Other languages forbidden — except in-character foreign speech if contextually appropriate.
 </language>
 {{setvar::lang_check::- LANGUAGE: Is entire output in Ukrainian? Any accidental English/other?}}`,
@@ -1586,7 +1586,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "charPersonality", // Synced from user preset
         "scenario", // Synced from user preset
         "personaDescription", // Synced from user preset
-    ,
+        ,
         "nsfw", // Synced from user preset
         "dialogueExamples", // Synced from user preset
         "jailbreak", // Synced from user preset
@@ -1598,7 +1598,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "charPersonality", // Synced from user preset
         "scenario", // Synced from user preset
         "personaDescription", // Synced from user preset
-];
+    ];
 
     const customPrompts = [];
     for (const p of existingPrompts) {
