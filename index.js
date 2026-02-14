@@ -2770,7 +2770,7 @@ jQuery(async () => {
 
     // Credits Modal Logic - use new class
     jQuery("#yp-credits-btn").on("click", function () {
-        jQuery("#yp-credits-modal").css("display", "flex");
+        jQuery("#yp-credits-modal").show(); // Uses block display defined in CSS (or default for div)
     });
     jQuery("#yp-credits-close").on("click", function () {
         jQuery("#yp-credits-modal").hide();

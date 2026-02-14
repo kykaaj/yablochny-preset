@@ -330,20 +330,20 @@
   z-index: 99999;
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(2px);
-  /* Alignment is applied when shown via JS (which adds display: flex inline) */
-  align-items: flex-start;
-  /* Start from top on mobile */
-  justify-content: center;
+  /* ROBUST MOBILE LAYOUT: Block display + overflow scrolling */
+  display: none;
+  /* JS will toggle to 'block' */
   overflow-y: auto;
   /* Scroll overlay if content is huge */
   padding: 10px;
   box-sizing: border-box;
+  text-align: center;
+  /* Helper for inline-block centering if needed, but we use margin auto */
 }
 
 /* Credits Modal Content */
 .yp-credits-content {
   position: relative;
-  /* Solid fallback color first, then variable */
   background: #151515;
   background: var(--SmartThemeHardwareBody, #151515);
   color: #ccc;
@@ -352,21 +352,16 @@
   border: 1px solid var(--SmartThemeBorderColor);
   border-radius: 12px;
   padding: 20px;
+  text-align: left;
+  /* Reset text align */
 
   width: 100%;
   max-width: 500px;
 
-  max-height: 80vh;
-  overflow-y: auto;
+  /* ROBUST VERTICAL POSITIONING */
+  margin: 10vh auto 5vh auto;
+  /* 10% from top, centered horizontally */
 
-  /* Safe top margin for mobile */
-  margin-top: 10vh;
-  margin-bottom: 5vh;
-
-  /* Reset flex behavior */
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
 }
 
