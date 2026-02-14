@@ -150,6 +150,36 @@
         </div>
 
         <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-extras-lang-label">Extras language</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-extras-lang" class="yablochny-select" style="flex: 1;">
+              <option value="custom">Off / Custom</option>
+              <option value="ru">Russian</option>
+              <option value="uk">Ukrainian</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="extras"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-swearing-label">Swearing</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-swearing" class="yablochny-select" style="flex: 1;">
+              <option value="custom">Off / Custom</option>
+              <option value="ru">Russian</option>
+              <option value="uk">Ukrainian</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="swearing"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
           <div class="yablochny-label" id="yp-length-label">Length</div>
           <div style="display: flex; gap: 4px; align-items: center;">
             <select id="yp-length" class="yablochny-select" style="flex: 1;">
@@ -160,6 +190,20 @@
               <option value="adaptive">Adaptive</option>
             </select>
             <button class="yp-edit-btn menu_button secondary" data-variant-type="length"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-roleplay-label">Roleplay Mode</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-roleplay" class="yablochny-select" style="flex: 1;">
+              <option value="dont_speak">Don't speak for user (default)</option>
+              <option value="speak">Speak for user</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="roleplay"
               style="display: none; padding: 4px 8px;">
               <i class="fa-solid fa-pen"></i>
             </button>
@@ -190,6 +234,130 @@
               <option value="Future">Future</option>
             </select>
             <button class="yp-edit-btn menu_button secondary" data-variant-type="tense"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-thoughts-label">Thoughts</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-thoughts" class="yablochny-select" style="flex: 1;">
+              <option value="off">Off / Empty</option>
+              <option value="thoughts">Thoughts (default)</option>
+              <option value="more_thoughts">More thoughts</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="thoughts"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-prose-label">Prose style</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-prose" class="yablochny-select" style="flex: 1;">
+              <option value="ao3">AO3 Fanfic (default)</option>
+              <option value="anne_rice">Anne Rice (Gothic/Sensual)</option>
+              <option value="donna_tartt">Donna Tartt (Dark Academia)</option>
+              <option value="pratchett">Terry Pratchett (Satirical/Witty)</option>
+              <option value="salinger">J.D. Salinger (Introspective/Raw)</option>
+              <option value="le_guin">Ursula Le Guin (Mythic/Grounded)</option>
+              <option value="backman">Fredrik Backman (Tragicomic/Warm)</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="prose"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-speech-label">Speech style</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-speech" class="yablochny-select" style="flex: 1;">
+              <option value="none">Default / None</option>
+              <option value="salinger">J.D. Salinger</option>
+              <option value="pratchett">Terry Pratchett</option>
+              <option value="le_guin">Ursula Le Guin</option>
+              <option value="wilde">Oscar Wilde</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="speech"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-pace-label">Pace</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-pace" class="yablochny-select" style="flex: 1;">
+              <option value="slowburn">Slowburn (default)</option>
+              <option value="quickpace">Quickpace</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="pace"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-focus-label">Focus</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-focus" class="yablochny-select" style="flex: 1;">
+              <option value="off">Off (Default)</option>
+              <option value="dialogues">Dialogues</option>
+              <option value="details">Details</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="focus"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-image-label">Image Generation</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-image-mode" class="yablochny-select" style="flex: 1;">
+              <option value="silly">SillyTavern Native (Default)</option>
+              <option value="grok">Grok (Twitter)</option>
+              <option value="pollinations">Pollinations</option>
+              <option value="custom">Custom</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="image"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-theme-label">HTML theme</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-theme" class="yablochny-select" style="flex: 1;">
+              <option value="dark">Dark (default)</option>
+              <option value="light">Light</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="theme"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field">
+          <div class="yablochny-label" id="yp-deconstruction-label">COT deconstruction</div>
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <select id="yp-deconstruction" class="yablochny-select" style="flex: 1;">
+              <option value="large">Large (Default)</option>
+              <option value="mini">Mini</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="deconstruction"
               style="display: none; padding: 4px 8px;">
               <i class="fa-solid fa-pen"></i>
             </button>

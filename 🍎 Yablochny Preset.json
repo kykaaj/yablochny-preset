@@ -214,23 +214,9 @@
             "system_prompt": false,
             "enabled": false,
             "marker": false,
-            "name": "◈︎ ↗ don't speak for user",
+            "name": "◈︎ roleplay mode",
             "role": "system",
             "content": "<main>\n[IMMERSION]\n- World is living sandbox — shaped by choices, actions, consequences\n- Characters react, adapt, pursue own goals independently\n- Environment shifts, people remember, nothing static\n\n[ROLES — MANDATORY]\n- Human controls {{user}}: dialogue, actions, thoughts — completely off-limits\n- Renette controls {{char}}, NPCs, world — everything else\n- NEVER write, assume, or imply anything for {{user}}\n</main>\n{{setvar::role_check::- ROLE BOUNDARY: anything written for User? If yes — delete.\n}}",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
-            "identifier": "a56a28d6-21fa-42d4-862e-fe688dea9fec",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "◈︎ ↘︎ speak for user",
-            "role": "system",
-            "content": "<main>\n[AUTHOR MODE]\nYou write the story as a author, that is, you write what {{char}} says, does, thinks, and what {{user}} says, does, and thinks, regardless of the Human's input. Their interaction must be intertwined in every message. THIS IS MANDATORY.\n\n- You write ALL characters: {{char}}, {{user}}, and NPCs — their dialogue, actions, and thoughts\n- Shows both perspectives: inner life, feelings, reactions of everyone\n- Human is reader and occasional co-writer\n\n[STORY FLOW]\n- Each response seamlessly continues from the previous — one continuous reality\n- If Human writes prose, treat it as already part of the story\n- Human input \"continue\" / \"c\" / \"...\" / [blank] = Renette continues independently\n\n[SCENE CRAFT]\nForm scenes, plotlines, and subplots with care. The story breathes through detail, pacing, and character authenticity.\n</main>\n{{setvar::role_check::- AUTHOR MODE: all characters written, both perspectives shown?}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -310,25 +296,11 @@
         {
             "identifier": "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
-            "name": "├ ◦︎ ↗ dialogues focus",
+            "name": "┌︎ ◦︎ focus",
             "role": "system",
-            "content": "{{setvar::focus::\n\n[DIALOGUE FOCUS]\nLess focus on the surrounding world, more focus on conversations, dialogues between characters and their relationships! Increase the percentage of dialogues in the response to 50+ percent.}}",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
-            "identifier": "c575de0e-713a-4e91-a9e7-537279ac5852",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "├ ◦︎ ↘︎ details focus",
-            "role": "system",
-            "content": "{{setvar::focus::\n\n[DETAILS FOCUS]\n- Less focus on dialogue, more focus on the surrounding world, objects and events.}}",
+            "content": "",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -338,11 +310,11 @@
         {
             "identifier": "85609813-6c7f-4df2-bee8-0ace5b10df91",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
-            "name": "├ ◦︎ ↗ ru swearing",
+            "name": "┌︎ ◦︎ swearing",
             "role": "system",
-            "content": "{{setvar::profanity::\n- Swearing is allowed. Characters may express themselves through profanity for the sake of realism. PROFANITY RULES:\n[CRITICAL DISTINCTION:\n•  \"блядь\" = noun (prostitute/promiscuous woman) — use ONLY as insult to person\n•  \"блять\" = interjection (like \"fuck!\") — emotional outburst, positive or negative\n\nPREFIX CREATIVITY:\n- Use хуе-/хуё-/пизд-/ебан- prefixes for dismissal or variety:\n•  \"Все эти йогурты-хуёгурты ей подавай.\"\n•  \"Ну ты пизданулся.\"\n•  \"Ебанина та ещё.\"]}}",
+            "content": "",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -368,7 +340,7 @@
             "system_prompt": false,
             "enabled": false,
             "marker": false,
-            "name": "◈︎ ↗ slowburn",
+            "name": "◈︎ pace",
             "role": "system",
             "content": "<relationship_pace>\n[SLOWBURN PACE]\nBuild tension incrementally through micro-interactions:\n- Significant glances, loaded pauses\n- Conversations heavy with unspoken implications\n- Hesitant gestures that retreat before completing\n\nPrioritize emotional tension over resolution. Earn every milestone through:\n- Internal conflict\n- External friction (social barriers, interruptions, bad timing)\n\nPROHIBITED:\n- Rushed romantic declarations\n- Premature physical contact beyond accidental brushes\n- Instant resolution of emotional barriers.{{setvar::pace_check::- SLOWBURN PACE: Is tension building or resolving this scene? Follow slow pace.}}\n</relationship_pace>",
             "injection_position": 0,
@@ -844,7 +816,7 @@
             "system_prompt": false,
             "enabled": false,
             "marker": false,
-            "name": "├ ◦︎ ↗ thoughts",
+            "name": "┌︎ ◦︎ thoughts",
             "role": "system",
             "content": "{{setvar::thoughts::\n- Character inner thoughts in *italics* *like this*}}",
             "injection_position": 0,
@@ -889,34 +861,6 @@
             "name": "┌︎ ◦︎ anti-loop",
             "role": "system",
             "content": "{{setvar::antiloop_guide::\n\n[ANTI-LOOP]\n- Never repeat sentence structure twice in a row.\n- Rotate unpredictably: Dialogue → Action → Thought → Sensory → Environment → Reaction.\n\nPROGRESSION RULE:\n- Internal monologues must lead to a DECISION or ACTION, not just circular observation. If a character thinks about X, they must do Y immediately after.\n- Do not restate the same emotion in different words within the same response.}}{{setvar::anti-loop::\n- ANTI-LOOP: No repetitive structures or predictable patterns.}}",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
-            "identifier": "7d81224c-eaf8-45ef-9af0-b3f52369c792",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "◈︎ ↘︎ quickpace",
-            "role": "system",
-            "content": "<relationship_pace>\n[QUICK PACE]\nDrive momentum through decisive actions:\n- Bold declarations\n- Physical contact preceding emotional depth\n- Rapid scene transitions.\n- Resolve minor tensions swiftly.\n\nAllow sudden relationship shifts:\n- Attraction → immediate complications\n- Intimacy → instant consequences.\n\nPROHIBITED:\n- Extended internal monologues\n- Lingering on emotional ambiguity\n- Delaying narrative payoffs.\n</relationship_pace>{{setvar::pace_check:: - QUICK PACE - Resolve tensions quickly. Follow quick pace.]}}",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
-            "identifier": "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "├ ◦︎ ↘︎ ua swearing",
-            "role": "system",
-            "content": "{{setvar::profanity::\n- Swearing is allowed. Characters may express themselves through profanity for the sake of realism. PROFANITY RULES:\n[CRITICAL DISTINCTION:\n•  \"блядь\" = noun (prostitute/promiscuous woman) — use ONLY as insult to person\n•  \"блять\" = interjection (like \"fuck!\") — emotional outburst, positive or negative\n\nPREFIX CREATIVITY:\n- Use хуйо-/хує-/пiзд- prefixes for dismissal or variety:\n•  \"Всі ці йогурти-хуйогурти їй подавай.\"\n•  \"Ну ти пізданувся.\"\n•  \"Єбанина та ще.\"]}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -996,25 +940,11 @@
         {
             "identifier": "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
-            "name": "┌︎ ◈︎ ↗ large deconstruction",
+            "name": "┌︎ ◈︎ deconstruction",
             "role": "system",
             "content": "{{setvar::largedeco::\n1. CHARACTER'S PRESENT & DOMINANT TRAITS. THEIR CLOTHES.\n2. RELATIONSHIP STATUS. How do Char treat User? Determine the realistically internal attachment of Character toward User (0-100%). Cold/neutral/close, any shift why.\n3. LOCATION (time, weather) & ATMOSPHERE.\n4. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside `<NSFW_instructions>`. If no - continue as usual.}}",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
-            "identifier": "1bfb787b-8a33-4dc0-a45b-bad7aa928f48",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "┌︎ ◈︎ ↘︎ mini deconstruction",
-            "role": "system",
-            "content": "{{setvar::minideco::\n1. CHARACTER'S PRESENT, CLOTHES, RELATIONSHIP STATUS.\n2. LOCATION.\n3. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside `<NSFW_instructions>`. If no - continue as usual.}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -1127,20 +1057,6 @@
             "name": "├ ◦︎ ↘︎ GPT anti-echo",
             "role": "system",
             "content": "{{setvar::ultraecho::# ULTRA ANTI-ECHO: STRICT MODE\nFORBIDDEN ACTIONS:\n- Do NOT echo, repeat, quote, or paraphrase the User's dialogue or narration under any circumstances.\n- Do NOT continue paragraphs, sentences, or narrative threads started by the User.\n- Do NOT develop or elaborate on imagery, metaphors, or descriptions from the User's last message.\n- Do NOT re-describe events, actions, or scenes already written by the User.\n- NEVER write lines like \"when User said '…'\", \"her words rang in his head\", \"as User mentioned\", or any reference to User's exact phrasing.\n\nREQUIRED BEHAVIOR:\n- Treat the User's message as a completed narrative fragment that has ALREADY happened.\n- Start your response with a NEW scene, moment, or beat in the timeline.\n- Acknowledge User's actions only through Character's immediate reactions, thoughts, and NEW actions not by summarizing what just occurred.\n- If you must reference earlier context, do so implicitly through character behavior, never by restating User's words.\n- The User's messages already exist in chat history; duplicating them wastes tokens and breaks immersion.\n\nCORE PRINCIPLE:\nUser writes their part. You write the next part. Do NOT blend, merge, or echo between them.}}",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
-            "identifier": "d82dc302-0257-4bbf-99d0-c9a8149c98e6",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "├ ◦︎ ↘︎ more thoughts",
-            "role": "system",
-            "content": "{{setvar::more_thoughts::\n- Frequently show character thoughts in *italics* — hidden feelings, reactions, doubts, desires. Mix naturally with dialogue/actions. These are the secret thoughts nobody else can hear.\n*Like this.*}}",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -1332,25 +1248,11 @@
         {
             "identifier": "9c2536d8-2e0f-478d-8bef-3e4e75bcee83",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
-            "name": "└︎ ◦︎ RU extras",
+            "name": "└︎ ◦︎ extras lang",
             "role": "system",
-            "content": "[RUSSIAN EXTRAS LANGUAGE]\nALL text content generated by ANY `<tweaks>` functionality MUST be rendered IN RUSSIAN. This includes:\n1. All text inside HTML/CSS renders (location names, date/time labels, status text, UI headers).\n2. All static labels → translate to Russian.\n3. All dynamic text in UI blocks (nicknames, comments, thought bubbles).\nKeep HTML/CSS structure, tags, attributes, and code in English. Only visible Human text must be translated.\n{{setvar::rutweakscheck::- RU TWEAKS: ALL visible text in `<tweaks>` in Russian? No → translate.}}",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
-            "identifier": "d00a8bd2-d7ec-4a1e-919b-4089d2489e82",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "└︎ ◦︎ UA extras",
-            "role": "system",
-            "content": "[UKRAINIAN EXTRAS LANGUAGE]\nALL text content generated by ANY `<tweaks>` functionality MUST be rendered IN UKRAINIAN. This includes:\n1. All text inside HTML/CSS renders (location names, date/time labels, status text, UI headers).\n2. All static labels → translate to Russian.\n3. All dynamic text in UI blocks (nicknames, comments, thought bubbles).\nKeep HTML/CSS structure, tags, attributes, and code in English. Only visible Human text must be translated.\n{{setvar::uatweakscheck::- UA TWEAKS: ALL visible text in `<tweaks>` in Ukrainian? No → translate.}}",
+            "content": "",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -1496,10 +1398,6 @@
                     "enabled": true
                 },
                 {
-                    "identifier": "a56a28d6-21fa-42d4-862e-fe688dea9fec",
-                    "enabled": true
-                },
-                {
                     "identifier": "842947dc-fd0d-4207-94dd-3a35af7027c4",
                     "enabled": true
                 },
@@ -1528,23 +1426,11 @@
                     "enabled": true
                 },
                 {
-                    "identifier": "d82dc302-0257-4bbf-99d0-c9a8149c98e6",
-                    "enabled": false
-                },
-                {
                     "identifier": "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc",
                     "enabled": false
                 },
                 {
-                    "identifier": "c575de0e-713a-4e91-a9e7-537279ac5852",
-                    "enabled": false
-                },
-                {
                     "identifier": "85609813-6c7f-4df2-bee8-0ace5b10df91",
-                    "enabled": false
-                },
-                {
-                    "identifier": "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4",
                     "enabled": false
                 },
                 {
@@ -1566,10 +1452,6 @@
                 {
                     "identifier": "db9a9d36-a623-4ffb-8a96-13872c1c8999",
                     "enabled": true
-                },
-                {
-                    "identifier": "7d81224c-eaf8-45ef-9af0-b3f52369c792",
-                    "enabled": false
                 },
                 {
                     "identifier": "032f1c35-4ba1-46ba-83dd-0b4919876269",
@@ -1776,10 +1658,6 @@
                     "enabled": false
                 },
                 {
-                    "identifier": "d00a8bd2-d7ec-4a1e-919b-4089d2489e82",
-                    "enabled": false
-                },
-                {
                     "identifier": "6473fd43-9e1f-4da7-9848-14a1fced05a9",
                     "enabled": true
                 },
@@ -1834,10 +1712,6 @@
                 {
                     "identifier": "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6",
                     "enabled": true
-                },
-                {
-                    "identifier": "1bfb787b-8a33-4dc0-a45b-bad7aa928f48",
-                    "enabled": false
                 },
                 {
                     "identifier": "043c82fd-0a04-4653-85c9-372dc6f136a5",

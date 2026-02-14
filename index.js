@@ -56,6 +56,26 @@ const VARIANT_PROMPT_IDS = new Set([
     "14bf3aa5-73cf-4112-8aca-437c48978663",
     // ◦︎ ✎ things (sample)
     "6b235beb-7de9-4f84-9b09-6f20210eae6d",
+    // ◈︎ ↗ don't speak for user
+    "e8c602e2-c7e7-4cc8-babf-7da12771c56a",
+    // ◈︎ ↘︎ speak for user
+    "a56a28d6-21fa-42d4-862e-fe688dea9fec",
+    // ├ ◦︎ ↗ thoughts
+    "1efdd851-e336-44a3-8e08-3cbff9077ed5",
+    // ├ ◦︎ ↘︎ more thoughts
+    "d82dc302-0257-4bbf-99d0-c9a8149c98e6",
+    // ├ ◦︎ ↗ ru swearing
+    "85609813-6c7f-4df2-bee8-0ace5b10df91",
+    // ├ ◦︎ ↘︎ ua swearing
+    "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4",
+    // ◈︎ ↗ slowburn
+    "db9a9d36-a623-4ffb-8a96-13872c1c8999",
+    // ◈︎ ↘︎ quickpace
+    "7d81224c-eaf8-45ef-9af0-b3f52369c792",
+    // └︎ ◦︎ RU extras
+    "9c2536d8-2e0f-478d-8bef-3e4e75bcee83",
+    // └︎ ◦︎ UA extras
+    "d00a8bd2-d7ec-4a1e-919b-4089d2489e82",
 ]);
 
 /** @typedef {{ version:number, hash:string }} PromptSyncMeta */
@@ -88,6 +108,13 @@ const UI_TEXT = {
         proseLabel: "Prose style",
         speechLabel: "Speech style",
         themeLabel: "HTML theme",
+        roleplayLabel: "Roleplay Mode",
+        thoughtsLabel: "Thoughts",
+        swearingLabel: "Swearing",
+        paceLabel: "Pace",
+        extrasLangLabel: "Extras Language",
+        focusLabel: "Focus",
+        deconstructionLabel: "COT deconstruction",
         lastSyncNever: "never",
         siteLabel: "Project Site",
         guideLabel: "Full Instructions (Guide)",
@@ -135,6 +162,13 @@ const UI_TEXT = {
         proseLabel: "Стиль прозы",
         speechLabel: "Манера речи",
         themeLabel: "HTML тема",
+        roleplayLabel: "Режим ролеплея",
+        thoughtsLabel: "Мысли",
+        swearingLabel: "Мат",
+        paceLabel: "Темп",
+        extrasLangLabel: "Язык дополнений",
+        focusLabel: "Фокус",
+        deconstructionLabel: "COT деконструкция",
         lastSyncNever: "ещё ни разу",
         siteLabel: "Сайт проекта",
         guideLabel: "Полная инструкция (Гайд)",
@@ -183,6 +217,13 @@ const UI_TEXT = {
         proseLabel: "Стиль прози",
         speechLabel: "Манера мовлення",
         themeLabel: "HTML тема",
+        roleplayLabel: "Режим рольової",
+        thoughtsLabel: "Думки",
+        swearingLabel: "Лайка",
+        paceLabel: "Темп",
+        extrasLangLabel: "Мова доповнень",
+        focusLabel: "Фокус",
+        deconstructionLabel: "COT деконструкція",
         lastSyncNever: "ще жодного разу",
         siteLabel: "Сайт проєкту",
         guideLabel: "Повна інструкція (Гайд)",
@@ -222,6 +263,138 @@ const UI_TEXT = {
         modelPresetLabel: "Пресет моделі:",
         disableModsLabel: "Вимкнути моди (bypass settings)",
     },
+};
+
+const ROLEPLAY_VARIANTS = {
+    dont_speak: `<main>
+[IMMERSION]
+- World is living sandbox — shaped by choices, actions, consequences
+- Characters react, adapt, pursue own goals independently
+- Environment shifts, people remember, nothing static
+
+[ROLES — MANDATORY]
+- Human controls {{user}}: dialogue, actions, thoughts — completely off-limits
+- Renette controls {{char}}, NPCs, world — everything else
+- NEVER write, assume, or imply anything for {{user}}
+</main>
+{{setvar::role_check::- ROLE BOUNDARY: anything written for User? If yes — delete.
+}}`,
+    speak: `<main>
+[AUTHOR MODE]
+You write the story as a author, that is, you write what {{char}} says, does, thinks, and what {{user}} says, does, and thinks, regardless of the Human's input. Their interaction must be intertwined in every message. THIS IS MANDATORY.
+
+- You write ALL characters: {{char}}, {{user}}, and NPCs — their dialogue, actions, and thoughts
+- Shows both perspectives: inner life, feelings, reactions of everyone
+- Human is reader and occasional co-writer
+
+[STORY FLOW]
+- Each response seamlessly continues from the previous — one continuous reality
+- If Human writes prose, treat it as already part of the story
+- Human input "continue" / "c" / "..." / [blank] = Renette continues independently
+
+[SCENE CRAFT]
+Form scenes, plotlines, and subplots with care. The story breathes through detail, pacing, and character authenticity.
+</main>
+{{setvar::role_check::- AUTHOR MODE: all characters written, both perspectives shown?}}`
+};
+
+const THOUGHTS_VARIANTS = {
+    off: ``,
+    thoughts: `{{setvar::thoughts::
+- Character inner thoughts in *italics* *like this*}}`,
+    more_thoughts: `{{setvar::thoughts::
+- Frequently show character thoughts in *italics* — hidden feelings, reactions, doubts, desires. Mix naturally with dialogue/actions. These are the secret thoughts nobody else can hear.
+*Like this.*}}`
+};
+
+const SWEARING_VARIANTS = {
+    custom: ``,
+    ru: `{{setvar::profanity::
+- Swearing is allowed. Characters may express themselves through profanity for the sake of realism. PROFANITY RULES:
+[CRITICAL DISTINCTION:
+•  "блядь" = noun (prostitute/promiscuous woman) — use ONLY as insult to person
+•  "блять" = interjection (like "fuck!") — emotional outburst, positive or negative
+
+PREFIX CREATIVITY:
+- Use хуе-/хуё-/пизд-/ебан- prefixes for dismissal or variety:
+•  "Все эти йогурты-хуёгурты ей подавай."
+•  "Ну ты пизданулся."
+•  "Ебанина та ещё."]}}`,
+    uk: `{{setvar::profanity::
+- Swearing is allowed. Characters may express themselves through profanity for the sake of realism. PROFANITY RULES:
+[CRITICAL DISTINCTION:
+•  "блядь" = noun (prostitute/promiscuous woman) — use ONLY as insult to person
+•  "блять" = interjection (like "fuck!") — emotional outburst, positive or negative
+
+PREFIX CREATIVITY:
+- Use хуйо-/хує-/пiзд- prefixes for dismissal or variety:
+•  "Всі ці йогурти-хуйогурти їй подавай."
+•  "Ну ти пізданувся."
+•  "Єбанина та ще."]}}`
+};
+
+const PACE_VARIANTS = {
+    slowburn: `<relationship_pace>
+[SLOWBURN PACE]
+Build tension incrementally through micro-interactions:
+- Significant glances, loaded pauses
+- Conversations heavy with unspoken implications
+- Hesitant gestures that retreat before completing
+
+Prioritize emotional tension over resolution. Earn every milestone through:
+- Internal conflict
+- External friction (social barriers, interruptions, bad timing)
+
+PROHIBITED:
+- Rushed romantic declarations
+- Premature physical contact beyond accidental brushes
+- Instant resolution of emotional barriers.{{setvar::pace_check::- SLOWBURN PACE: Is tension building or resolving this scene? Follow slow pace.}}\n</relationship_pace>`,
+    quickpace: `<relationship_pace>
+[QUICK PACE]
+Drive momentum through decisive actions:
+- Bold declarations
+- Physical contact preceding emotional depth
+- Rapid scene transitions.
+- Resolve minor tensions swiftly.
+
+Allow sudden relationship shifts:
+- Attraction → immediate complications
+- Intimacy → instant consequences.
+
+PROHIBITED:
+- Extended internal monologues
+- Lingering on emotional ambiguity
+- Delaying narrative payoffs.
+</relationship_pace>{{setvar::pace_check:: - QUICK PACE - Resolve tensions quickly. Follow quick pace.]}}`
+};
+
+const EXTRAS_LANG_VARIANTS = {
+    custom: ``,
+    ru: `[RUSSIAN EXTRAS LANGUAGE]
+ALL text content generated by ANY \`<tweaks>\` functionality MUST be rendered IN RUSSIAN. This includes:
+1. All text inside HTML/CSS renders (location names, date/time labels, status text, UI headers).
+2. All static labels → translate to Russian.
+3. All dynamic text in UI blocks (nicknames, comments, thought bubbles).
+Keep HTML/CSS structure, tags, attributes, and code in English. Only visible Human text must be translated.
+{{setvar::rutweakscheck::- RU TWEAKS: ALL visible text in \`<tweaks>\` in Russian? No → translate.}}`,
+    uk: `[UKRAINIAN EXTRAS LANGUAGE]
+ALL text content generated by ANY \`<tweaks>\` functionality MUST be rendered IN UKRAINIAN. This includes:
+1. All text inside HTML/CSS renders (location names, date/time labels, status text, UI headers).
+2. All static labels → translate to Russian.
+3. All dynamic text in UI blocks (nicknames, comments, thought bubbles).
+Keep HTML/CSS structure, tags, attributes, and code in English. Only visible Human text must be translated.
+{{setvar::uatweakscheck::- UA TWEAKS: ALL visible text in \`<tweaks>\` in Ukrainian? No → translate.}}`
+};
+
+const FOCUS_VARIANTS = {
+    off: ``,
+    dialogues: `{{setvar::focus::\n\n[DIALOGUE FOCUS]\nLess focus on the surrounding world, more focus on conversations, dialogues between characters and their relationships! Increase the percentage of dialogues in the response to 50+ percent.}}`,
+    details: `{{setvar::focus::\n\n[DETAILS FOCUS]\n- Less focus on dialogue, more focus on the surrounding world, objects and events.}}`
+};
+
+const DECONSTRUCTION_VARIANTS = {
+    large: `{{setvar::largedeco::\n1. CHARACTER'S PRESENT & DOMINANT TRAITS. THEIR CLOTHES.\n2. RELATIONSHIP STATUS. How do Char treat User? Determine the realistically internal attachment of Character toward User (0-100%). Cold/neutral/close, any shift why.\n3. LOCATION (time, weather) & ATMOSPHERE.\n4. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside \`<NSFW_instructions>\`. If no - continue as usual.}}`,
+    mini: `{{setvar::minideco::\n1. CHARACTER'S PRESENT, CLOTHES, RELATIONSHIP STATUS.\n2. LOCATION.\n3. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside \`<NSFW_instructions>\`. If no - continue as usual.}}`
 };
 
 const LENGTH_VARIANTS = {
@@ -915,6 +1088,11 @@ function getConfig() {
             TENSEMode: "Present",
             proseStyle: "ao3",
             speechStyle: "none",
+            roleplayMode: "dont_speak",
+            thoughtsMode: "thoughts",
+            swearingMode: "custom",
+            paceMode: "slowburn",
+            extrasLangMode: "custom",
             htmlTheme: "dark",
             imageMode: "silly",
             promptSyncMeta: {},
@@ -928,7 +1106,7 @@ function getConfig() {
                 fancy: null,
                 comments: null,
             },
-            devMode: false,
+            customPromptContents: {},
             devMode: false,
             modelPreset: "claude",
             disableMods: false,
@@ -945,6 +1123,13 @@ function getConfig() {
     cfg.TENSEMode ??= "Present";
     cfg.proseStyle ??= "ao3";
     cfg.speechStyle ??= "none";
+    cfg.roleplayMode ??= "dont_speak";
+    cfg.thoughtsMode ??= "thoughts";
+    cfg.swearingMode ??= "custom";
+    cfg.paceMode ??= "slowburn";
+    cfg.extrasLangMode ??= "custom";
+    cfg.focusMode ??= "off";
+    cfg.deconstructionMode ??= "large";
     cfg.htmlTheme ??= "dark";
     cfg.imageMode ??= "silly";
     cfg.promptSyncMeta ??= {};
@@ -957,7 +1142,7 @@ function getConfig() {
         fancy: null,
         comments: null,
     };
-    cfg.devMode ??= false;
+    cfg.customPromptContents ??= {};
     cfg.devMode ??= false;
     cfg.modelPreset ??= "claude";
     cfg.disableMods ??= false;
@@ -1373,6 +1558,213 @@ function applyThingsVariant(master, cfg, existingPreset) {
     prompt.content = finalBlocks.join("\n\n");
 }
 
+function applyRoleplayVariant(master, cfg, existingPreset) {
+    const id = "e8c602e2-c7e7-4cc8-babf-7da12771c56a"; // Don't speak (Container)
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Force enable the container prompt
+    prompt.enabled = true;
+
+    if (cfg.roleplayMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+    const mode = cfg.roleplayMode || "dont_speak";
+    let text = ROLEPLAY_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.roleplay && cfg.promptEdits.roleplay[mode]) {
+        text = cfg.promptEdits.roleplay[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = text;
+    }
+}
+
+function applyThoughtsVariant(master, cfg, existingPreset) {
+    const id = "1efdd851-e336-44a3-8e08-3cbff9077ed5"; // Thoughts (Container)
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Force enable the container prompt
+    prompt.enabled = true;
+
+    if (cfg.thoughtsMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+    const mode = cfg.thoughtsMode || "thoughts";
+    let text = THOUGHTS_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.thoughts && cfg.promptEdits.thoughts[mode]) {
+        text = cfg.promptEdits.thoughts[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = text;
+    }
+}
+
+function applySwearingVariant(master, cfg, existingPreset) {
+    const id = "85609813-6c7f-4df2-bee8-0ace5b10df91"; // Ru Swearing (Container)
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Force enable the container prompt
+    prompt.enabled = true;
+
+    // Legacy texts to detect from old versions
+    const legacyTexts = [
+        `{{setvar::profanity::\n- Swearing is allowed. Characters may express themselves through profanity for the sake of realism. PROFANITY RULES:\n[CRITICAL DISTINCTION:\n•  "блядь" = noun (prostitute/promiscuous woman) — use ONLY as insult to person\n•  "блять" = interjection (like "fuck!") — emotional outburst, positive or negative\n\nPREFIX CREATIVITY:\n- Use хуе-/хуё-/пизд-/ебан- prefixes for dismissal or variety:\n•  "Все эти йогурты-хуёгурты ей подавай."\n•  "Ну ты пизданулся."\n•  "Ебанина та ещё."]}}`,
+        `{{setvar::profanity::\n- Swearing is allowed. Characters may express themselves through profanity for the sake of realism. PROFANITY RULES:\n[CRITICAL DISTINCTION:\n•  "блядь" = noun (prostitute/promiscuous woman) — use ONLY as insult to person\n•  "блять" = interjection (like "fuck!") — emotional outburst, positive or negative\n\nPREFIX CREATIVITY:\n- Use хуйо-/хує-/пiзд- prefixes for dismissal or variety:\n•  "Всі ці йогурти-хуйогурти їй подавай."\n•  "Ну ти пізданувся."\n•  "Єбанина та ще."]}}`
+    ];
+
+    // Logic to preserve custom content when switching variants
+    const existingContent = getContentFromExisting(existingPreset, id);
+    const knownVariants = [
+        SWEARING_VARIANTS.ru,
+        SWEARING_VARIANTS.uk,
+        ...legacyTexts
+    ];
+
+    if (existingContent !== null) {
+        // Normalize for comparison
+        const normalizedExisting = existingContent.trim().replace(/\r\n/g, "\n");
+        const isKnown = knownVariants.some(v => v.trim().replace(/\r\n/g, "\n") === normalizedExisting);
+        
+        if (!isKnown && existingContent.length > 0) {
+            // It's non-standard content, save it
+            cfg.customPromptContents = cfg.customPromptContents || {};
+            cfg.customPromptContents.swearing = existingContent;
+        }
+    }
+
+    if (cfg.swearingMode === "custom") {
+        if (existingContent !== null) {
+            const normalizedExisting = existingContent.trim().replace(/\r\n/g, "\n");
+            const isKnown = knownVariants.some(v => v.trim().replace(/\r\n/g, "\n") === normalizedExisting);
+            
+            if (!isKnown && existingContent.length > 0) {
+                // Keep existing custom content
+                prompt.content = existingContent;
+            } else if (cfg.customPromptContents?.swearing !== undefined) {
+                // Restore backup
+                prompt.content = cfg.customPromptContents.swearing;
+            } else {
+                // Default to empty
+                prompt.content = "";
+            }
+        } else {
+            // New/Empty
+             prompt.content = "";
+        }
+        return;
+    }
+    
+    const mode = cfg.swearingMode || "custom";
+    let text = SWEARING_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.swearing && cfg.promptEdits.swearing[mode]) {
+        text = cfg.promptEdits.swearing[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = text;
+    }
+}
+
+function applyPaceVariant(master, cfg, existingPreset) {
+    const id = "db9a9d36-a623-4ffb-8a96-13872c1c8999"; // Slowburn (Container)
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Force enable the container prompt
+    prompt.enabled = true;
+
+    if (cfg.paceMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+    const mode = cfg.paceMode || "slowburn";
+    let text = PACE_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.pace && cfg.promptEdits.pace[mode]) {
+        text = cfg.promptEdits.pace[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = text;
+    }
+}
+
+function applyExtrasLangVariant(master, cfg, existingPreset) {
+    const id = "9c2536d8-2e0f-478d-8bef-3e4e75bcee83"; // Ru Extras (Container)
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Force enable the container prompt
+    prompt.enabled = true;
+
+    // Legacy texts to detect from old versions
+    const legacyTexts = [
+        `[RUSSIAN EXTRAS LANGUAGE]\nALL text content generated by ANY \`<tweaks>\` functionality MUST be rendered IN RUSSIAN. This includes:\n1. All text inside HTML/CSS renders (location names, date/time labels, status text, UI headers).\n2. All static labels → translate to Russian.\n3. All dynamic text in UI blocks (nicknames, comments, thought bubbles).\nKeep HTML/CSS structure, tags, attributes, and code in English. Only visible Human text must be translated.\n{{setvar::rutweakscheck::- RU TWEAKS: ALL visible text in \`<tweaks>\` in Russian? No → translate.}}`,
+        `[UKRAINIAN EXTRAS LANGUAGE]\nALL text content generated by ANY \`<tweaks>\` functionality MUST be rendered IN UKRAINIAN. This includes:\n1. All text inside HTML/CSS renders (location names, date/time labels, status text, UI headers).\n2. All static labels → translate to Russian.\n3. All dynamic text in UI blocks (nicknames, comments, thought bubbles).\nKeep HTML/CSS structure, tags, attributes, and code in English. Only visible Human text must be translated.\n{{setvar::uatweakscheck::- UA TWEAKS: ALL visible text in \`<tweaks>\` in Ukrainian? No → translate.}}`
+    ];
+
+    // Logic to preserve custom content when switching variants
+    const existingContent = getContentFromExisting(existingPreset, id);
+    const knownVariants = [
+        EXTRAS_LANG_VARIANTS.ru,
+        EXTRAS_LANG_VARIANTS.uk,
+        ...legacyTexts
+    ];
+
+    if (existingContent !== null) {
+        // Normalize for comparison
+        const normalizedExisting = existingContent.trim().replace(/\r\n/g, "\n");
+        const isKnown = knownVariants.some(v => v.trim().replace(/\r\n/g, "\n") === normalizedExisting);
+        
+        if (!isKnown && existingContent.length > 0) {
+            // It's non-standard content, save it
+            cfg.customPromptContents = cfg.customPromptContents || {};
+            cfg.customPromptContents.extras = existingContent;
+        }
+    }
+
+    if (cfg.extrasLangMode === "custom") {
+        if (existingContent !== null) {
+            const normalizedExisting = existingContent.trim().replace(/\r\n/g, "\n");
+            const isKnown = knownVariants.some(v => v.trim().replace(/\r\n/g, "\n") === normalizedExisting);
+            
+            if (!isKnown && existingContent.length > 0) {
+                // Keep existing custom content
+                prompt.content = existingContent;
+            } else if (cfg.customPromptContents?.extras !== undefined) {
+                // Restore backup
+                prompt.content = cfg.customPromptContents.extras;
+            } else {
+                // Default to empty
+                prompt.content = "";
+            }
+        } else {
+            // New/Empty
+             prompt.content = "";
+        }
+        return;
+    }
+
+    const mode = cfg.extrasLangMode || "custom";
+    let text = EXTRAS_LANG_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.extras && cfg.promptEdits.extras[mode]) {
+        text = cfg.promptEdits.extras[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = text;
+    }
+}
+
 function applyImageVariant(preset, mode, existingPreset) {
     if (!mode) return;
     const id = "e12784ea-de67-48a7-99ef-3b0c1c45907c";
@@ -1403,9 +1795,79 @@ function applyImageVariant(preset, mode, existingPreset) {
 }
 
 
+function applyFocusVariant(master, cfg, existingPreset) {
+    const id = "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc"; // Dialogues Focus (Container)
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Force enable the container prompt
+    prompt.enabled = true;
+
+    if (cfg.focusMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+    const mode = cfg.focusMode || "off";
+    let text = FOCUS_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.focus && cfg.promptEdits.focus[mode]) {
+        text = cfg.promptEdits.focus[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = text;
+    }
+}
+
+function applyDeconstructionVariant(master, cfg, existingPreset) {
+    const id = "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6"; // Large Deconstruction (Container)
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Force enable the container prompt
+    prompt.enabled = true;
+
+    if (cfg.deconstructionMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+    const mode = cfg.deconstructionMode || "large";
+    let text = DECONSTRUCTION_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.deconstruction && cfg.promptEdits.deconstruction[mode]) {
+        text = cfg.promptEdits.deconstruction[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = text;
+    }
+}
+
 function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null) {
     // Клонируем исходный пресет как есть
     const master = structuredClone(basePreset);
+
+    // Disable NSFW by default if new install (existingPreset is null)
+    if (!existingPreset) {
+        // Helper to disable in prompts array
+        if (master.prompts) {
+            master.prompts.forEach(p => {
+                if (p.identifier === "c741b88a-6fe2-4055-9b93-81b4503081b6") p.enabled = false;
+            });
+        }
+        // Helper to disable in prompt_order
+        if (master.prompt_order) {
+            master.prompt_order.forEach(group => {
+                if (group.order) {
+                    group.order.forEach(item => {
+                        if (item.identifier === "c741b88a-6fe2-4055-9b93-81b4503081b6") item.enabled = false;
+                    });
+                }
+            });
+        }
+    }
 
     applyLanguageVariant(master, cfg, uiLang, existingPreset);
     applyLengthVariant(master, cfg, existingPreset);
@@ -1414,6 +1876,36 @@ function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null)
     applySpeechVariant(master, cfg, existingPreset);
     applyProseVariant(master, cfg, existingPreset);
     applyHtmlTheme(master, cfg, existingPreset);
+    
+    // New Variants
+    applyRoleplayVariant(master, cfg, existingPreset);
+    applyThoughtsVariant(master, cfg, existingPreset);
+    applySwearingVariant(master, cfg, existingPreset);
+    applyPaceVariant(master, cfg, existingPreset);
+    applyExtrasLangVariant(master, cfg, existingPreset);
+    applyFocusVariant(master, cfg, existingPreset);
+    applyDeconstructionVariant(master, cfg, existingPreset);
+
+    // Disable Obsolete Prompts (Merged into Variants)
+    const obsoleteIds = [
+        "a56a28d6-21fa-42d4-862e-fe688dea9fec", // Speak for user
+        "d82dc302-0257-4bbf-99d0-c9a8149c98e6", // More thoughts
+        "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4", // Ua Swearing
+        "7d81224c-eaf8-45ef-9af0-b3f52369c792", // Quickpace
+        "d00a8bd2-d7ec-4a1e-919b-4089d2489e82", // Ua Extras
+        "c575de0e-713a-4e91-a9e7-537279ac5852", // Deprecated: Details Focus
+        "1bfb787b-8a33-4dc0-a45b-bad7aa928f48", // Deprecated: Mini Deconstruction
+    ];
+    
+    if (master.prompts) {
+        master.prompts.forEach(p => {
+            if (obsoleteIds.includes(p.identifier)) {
+                p.enabled = false;
+                p.content = ""; // Clear content to be safe
+            }
+        });
+    }
+
     applyThingsVariant(master, cfg, existingPreset);
 
     // Apply Image Generation Style
@@ -1483,7 +1975,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "92f96f89-c01d-4a91-bea3-c8abb75b995a", // Synced from user preset
         "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c", // Synced from user preset
         "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc", // Synced from user preset
-        "c575de0e-713a-4e91-a9e7-537279ac5852", // Synced from user preset
+        "c575de0e-713a-4e91-a9e7-537279ac5852", // Deprecated: details focus
         "85609813-6c7f-4df2-bee8-0ace5b10df91", // Synced from user preset
         "6d261700-060c-4f0c-9136-84083a657f6c", // Synced from user preset
         "db9a9d36-a623-4ffb-8a96-13872c1c8999", // Synced from user preset
@@ -1532,7 +2024,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "a8c1703a-8384-4a6f-871b-32cbc2758b14", // Synced from user preset
         "27ae2bd5-903a-48d2-b89b-8c50795b1579", // Synced from user preset
         "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6", // Synced from user preset
-        "1bfb787b-8a33-4dc0-a45b-bad7aa928f48", // Synced from user preset
+        "1bfb787b-8a33-4dc0-a45b-bad7aa928f48", // Deprecated: mini deconstruction
         "9ae8d38a-4493-4c8c-9eb5-ed2b2339f08d", // Synced from user preset
         "0a2c3465-e2a8-4e71-8e09-e39557967df3", // Synced from user preset
         "9df294b1-f7fd-4233-959d-61e53b6ea2ca", // Synced from user preset
@@ -1562,66 +2054,11 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "5907aad3-0519-45e9-b6f7-40d9e434ef28", // Synced from user preset
         "c741b88a-6fe2-4055-9b93-81b4503081b6", // Synced from user preset
         "d9762c5c-d5a4-49b0-9d00-814ae57e9711", // Synced from user preset
-        ,
-        "nsfw", // Synced from user preset
-        "dialogueExamples", // Synced from user preset
-        "jailbreak", // Synced from user preset
-        "chatHistory", // Synced from user preset
-        "worldInfoAfter", // Synced from user preset
-        "worldInfoBefore", // Synced from user preset
-        "enhanceDefinitions", // Synced from user preset
-        "charDescription", // Synced from user preset
-        "charPersonality", // Synced from user preset
-        "scenario", // Synced from user preset
-        "personaDescription", // Synced from user preset
-        ,
-        "nsfw", // Synced from user preset
-        "dialogueExamples", // Synced from user preset
-        "jailbreak", // Synced from user preset
-        "chatHistory", // Synced from user preset
-        "worldInfoAfter", // Synced from user preset
-        "worldInfoBefore", // Synced from user preset
-        "enhanceDefinitions", // Synced from user preset
-        "charDescription", // Synced from user preset
-        "charPersonality", // Synced from user preset
-        "scenario", // Synced from user preset
-        "personaDescription", // Synced from user preset
-        ,
-        "nsfw", // Synced from user preset
-        "dialogueExamples", // Synced from user preset
-        "jailbreak", // Synced from user preset
-        "chatHistory", // Synced from user preset
-        "worldInfoAfter", // Synced from user preset
-        "worldInfoBefore", // Synced from user preset
-        "enhanceDefinitions", // Synced from user preset
-        "charDescription", // Synced from user preset
-        "charPersonality", // Synced from user preset
-        "scenario", // Synced from user preset
-        "personaDescription", // Synced from user preset
-    ,
-        "nsfw", // Synced from user preset
-        "dialogueExamples", // Synced from user preset
-        "jailbreak", // Synced from user preset
-        "chatHistory", // Synced from user preset
-        "worldInfoAfter", // Synced from user preset
-        "worldInfoBefore", // Synced from user preset
-        "enhanceDefinitions", // Synced from user preset
-        "charDescription", // Synced from user preset
-        "charPersonality", // Synced from user preset
-        "scenario", // Synced from user preset
-        "personaDescription", // Synced from user preset
-,
-        "nsfw", // Synced from user preset
-        "dialogueExamples", // Synced from user preset
-        "jailbreak", // Synced from user preset
-        "chatHistory", // Synced from user preset
-        "worldInfoAfter", // Synced from user preset
-        "worldInfoBefore", // Synced from user preset
-        "enhanceDefinitions", // Synced from user preset
-        "charDescription", // Synced from user preset
-        "charPersonality", // Synced from user preset
-        "scenario", // Synced from user preset
-        "personaDescription", // Synced from user preset
+        "a56a28d6-21fa-42d4-862e-fe688dea9fec", // Deprecated: speak for user
+        "d82dc302-0257-4bbf-99d0-c9a8149c98e6", // Deprecated: more thoughts
+        "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4", // Deprecated: ua swearing
+        "7d81224c-eaf8-45ef-9af0-b3f52369c792", // Deprecated: quickpace
+        "d00a8bd2-d7ec-4a1e-919b-4089d2489e82", // Deprecated: ua extras
 ];
 
     const customPrompts = [];
@@ -1788,6 +2225,13 @@ async function syncPreset(showToasts = true) {
             TENSEMode: cfg.TENSEMode,
             proseStyle: cfg.proseStyle,
             speechStyle: cfg.speechStyle,
+            roleplayMode: cfg.roleplayMode,
+            thoughtsMode: cfg.thoughtsMode,
+            swearingMode: cfg.swearingMode,
+            paceMode: cfg.paceMode,
+            extrasLangMode: cfg.extrasLangMode,
+            focusMode: cfg.focusMode,
+            deconstructionMode: cfg.deconstructionMode,
             htmlTheme: cfg.htmlTheme,
             imageMode: cfg.imageMode,
             thingsSelected: JSON.parse(JSON.stringify(cfg.thingsSelected)),
@@ -1965,6 +2409,26 @@ async function syncPreset(showToasts = true) {
                 changes.push(`Speech: ${oldSettings.speechStyle} → ${cfg.speechStyle}`);
             }
 
+            if (oldSettings.roleplayMode !== cfg.roleplayMode) {
+                changes.push(`Roleplay: ${oldSettings.roleplayMode} → ${cfg.roleplayMode}`);
+            }
+
+            if (oldSettings.thoughtsMode !== cfg.thoughtsMode) {
+                changes.push(`Thoughts: ${oldSettings.thoughtsMode} → ${cfg.thoughtsMode}`);
+            }
+
+            if (oldSettings.swearingMode !== cfg.swearingMode) {
+                changes.push(`Swearing: ${oldSettings.swearingMode} → ${cfg.swearingMode}`);
+            }
+
+            if (oldSettings.paceMode !== cfg.paceMode) {
+                changes.push(`Pace: ${oldSettings.paceMode} → ${cfg.paceMode}`);
+            }
+
+            if (oldSettings.extrasLangMode !== cfg.extrasLangMode) {
+                changes.push(`Extras Lang: ${oldSettings.extrasLangMode} → ${cfg.extrasLangMode}`);
+            }
+
             if (oldSettings.htmlTheme !== cfg.htmlTheme) {
                 changes.push(`Theme: ${oldSettings.htmlTheme} → ${cfg.htmlTheme}`);
             }
@@ -2035,6 +2499,13 @@ const VARIANT_TYPE_MAP = {
     speech: { constants: "SPEECH_VARIANTS", keys: ["salinger", "pratchett", "le_guin", "wilde"] },
     theme: { constants: "HTML_THEME", keys: ["dark", "light"] },
     image: { constants: "IMAGE_VARIANTS", keys: ["silly", "grok", "pollinations", "custom"] },
+    roleplay: { constants: "ROLEPLAY_VARIANTS", keys: ["dont_speak", "speak"] },
+    thoughts: { constants: "THOUGHTS_VARIANTS", keys: ["off", "thoughts", "more_thoughts"] },
+    swearing: { constants: "SWEARING_VARIANTS", keys: ["custom", "ru", "uk"] },
+    pace: { constants: "PACE_VARIANTS", keys: ["slowburn", "quickpace"] },
+    extras: { constants: "EXTRAS_LANG_VARIANTS", keys: ["custom", "ru", "uk"] },
+    focus: { constants: "FOCUS_VARIANTS", keys: ["off", "dialogues", "details"] },
+    deconstruction: { constants: "DECONSTRUCTION_VARIANTS", keys: ["large", "mini"] },
 };
 
 async function loadPromptEdits() {
@@ -2082,6 +2553,13 @@ function getVariantContent(variantType, variantKey) {
         case "SPEECH_VARIANTS": constants = SPEECH_VARIANTS; break;
         case "HTML_THEME": constants = HTML_THEME; break;
         case "IMAGE_VARIANTS": constants = IMAGE_VARIANTS; break;
+        case "ROLEPLAY_VARIANTS": constants = ROLEPLAY_VARIANTS; break;
+        case "THOUGHTS_VARIANTS": constants = THOUGHTS_VARIANTS; break;
+        case "SWEARING_VARIANTS": constants = SWEARING_VARIANTS; break;
+        case "PACE_VARIANTS": constants = PACE_VARIANTS; break;
+        case "EXTRAS_LANG_VARIANTS": constants = EXTRAS_LANG_VARIANTS; break;
+        case "FOCUS_VARIANTS": constants = FOCUS_VARIANTS; break;
+        case "DECONSTRUCTION_VARIANTS": constants = DECONSTRUCTION_VARIANTS; break;
         default: return "";
     }
 
@@ -2192,6 +2670,13 @@ function applyLocaleToUi() {
     jQuery("#yp-prose-label").text(dict.proseLabel);
     jQuery("#yp-speech-label").text(dict.speechLabel);
     jQuery("#yp-theme-label").text(dict.themeLabel);
+    jQuery("#yp-roleplay-label").text(dict.roleplayLabel);
+    jQuery("#yp-thoughts-label").text(dict.thoughtsLabel);
+    jQuery("#yp-swearing-label").text(dict.swearingLabel);
+    jQuery("#yp-pace-label").text(dict.paceLabel);
+    jQuery("#yp-extras-lang-label").text(dict.extrasLangLabel);
+    jQuery("#yp-focus-label").text(dict.focusLabel);
+    jQuery("#yp-deconstruction-label").text(dict.deconstructionLabel);
     jQuery("#yp-site-label").text(dict.siteLabel);
     jQuery("#yp-guide-label").text(dict.guideLabel);
     jQuery("#yp-preset-label").text(dict.presetLabel);
@@ -2463,6 +2948,13 @@ function initControls() {
     jQuery("#yp-tense").val(cfg.TENSEMode || "Present");
     jQuery("#yp-prose").val(cfg.proseStyle || "ao3");
     jQuery("#yp-speech").val(cfg.speechStyle || "none");
+    jQuery("#yp-roleplay").val(cfg.roleplayMode || "dont_speak");
+    jQuery("#yp-thoughts").val(cfg.thoughtsMode || "thoughts");
+    jQuery("#yp-swearing").val(cfg.swearingMode || "custom");
+    jQuery("#yp-pace").val(cfg.paceMode || "slowburn");
+    jQuery("#yp-extras-lang").val(cfg.extrasLangMode || "custom");
+    jQuery("#yp-focus").val(cfg.focusMode || "off");
+    jQuery("#yp-deconstruction").val(cfg.deconstructionMode || "large");
     jQuery("#yp-theme").val(cfg.htmlTheme || "dark");
     jQuery("#yp-image-mode").val(cfg.imageMode || "silly");
     window.YablochnyThingsSelection = cfg.thingsSelected || {};
@@ -2677,6 +3169,62 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.speechStyle = value;
+        });
+    });
+
+    jQuery("#yp-roleplay").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.roleplayMode = value;
+        });
+    });
+
+    jQuery("#yp-thoughts").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.thoughtsMode = value;
+        });
+    });
+
+    jQuery("#yp-swearing").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.swearingMode = value;
+        });
+    });
+
+    jQuery("#yp-pace").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.paceMode = value;
+        });
+    });
+
+    jQuery("#yp-extras-lang").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.extrasLangMode = value;
+        });
+    });
+
+    jQuery("#yp-focus").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.focusMode = value;
+        });
+    });
+
+    jQuery("#yp-deconstruction").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.deconstructionMode = value;
         });
     });
 
