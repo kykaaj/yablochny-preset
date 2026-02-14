@@ -129,6 +129,7 @@
           <input type="checkbox" id="yp-auto-sync">
           <label for="yp-auto-sync" id="yp-auto-label">Sync on SillyTavern start</label>
         </div>
+        </div>
       </div>
 
       <div class="yablochny-row">
@@ -136,7 +137,7 @@
           <div class="yablochny-label" id="yp-lang-label">Language prompt</div>
           <div style="display: flex; gap: 4px; align-items: center;">
             <select id="yp-language" class="yablochny-select" style="flex: 1;">
-              <option value="custom">Custom / don't touch</option>
+              <option value="custom">Custom / Manual</option>
               <option value="auto">Auto (match ST language)</option>
               <option value="ru">Russian</option>
               <option value="en">English</option>
@@ -183,7 +184,7 @@
           <div class="yablochny-label" id="yp-length-label">Length</div>
           <div style="display: flex; gap: 4px; align-items: center;">
             <select id="yp-length" class="yablochny-select" style="flex: 1;">
-              <option value="custom">Custom / don't touch</option>
+              <option value="custom">Custom / Manual</option>
               <option value="200-400">200–400 words</option>
               <option value="400-600">400–600 words (default)</option>
               <option value="600-800">600–800 words</option>
@@ -244,7 +245,7 @@
           <div class="yablochny-label" id="yp-thoughts-label">Thoughts</div>
           <div style="display: flex; gap: 4px; align-items: center;">
             <select id="yp-thoughts" class="yablochny-select" style="flex: 1;">
-              <option value="off">Off / Empty</option>
+              <option value="off">Off / Custom</option>
               <option value="thoughts">Thoughts (default)</option>
               <option value="more_thoughts">More thoughts</option>
             </select>
@@ -278,7 +279,7 @@
           <div class="yablochny-label" id="yp-speech-label">Speech style</div>
           <div style="display: flex; gap: 4px; align-items: center;">
             <select id="yp-speech" class="yablochny-select" style="flex: 1;">
-              <option value="none">Default / None</option>
+              <option value="none">Off / Custom</option>
               <option value="salinger">J.D. Salinger</option>
               <option value="pratchett">Terry Pratchett</option>
               <option value="le_guin">Ursula Le Guin</option>
@@ -309,7 +310,7 @@
           <div class="yablochny-label" id="yp-focus-label">Focus</div>
           <div style="display: flex; gap: 4px; align-items: center;">
             <select id="yp-focus" class="yablochny-select" style="flex: 1;">
-              <option value="off">Off (Default)</option>
+              <option value="off">Off / Custom</option>
               <option value="dialogues">Dialogues</option>
               <option value="details">Details</option>
             </select>
@@ -370,20 +371,21 @@
           <div class="yablochny-label" id="yp-prose-label">Prose style</div>
           <div style="display: flex; gap: 4px; align-items: center;">
             <select id="yp-prose" class="yablochny-select" style="flex: 1;">
-              <option value="custom">Custom / don't touch</option>
-              <option value="ao3">AO3 (default)</option>
-              <option value="anne_rice">Anne Rice</option>
-              <option value="donna_tartt">Donna Tartt</option>
-              <option value="pratchett">Terry Pratchett</option>
-              <option value="salinger">J.D. Salinger</option>
-              <option value="le_guin">Ursula K. Le Guin</option>
-              <option value="backman">Fredrik Backman</option>
+              <option value="custom">Custom / Manual</option>
+              <option value="ao3">AO3 Fanfic (default)</option>
+              <option value="anne_rice">Anne Rice (Gothic/Sensual)</option>
+              <option value="donna_tartt">Donna Tartt (Dark Academia)</option>
+              <option value="pratchett">Terry Pratchett (Satirical/Witty)</option>
+              <option value="salinger">J.D. Salinger (Introspective/Raw)</option>
+              <option value="le_guin">Ursula Le Guin (Mythic/Grounded)</option>
+              <option value="backman">Fredrik Backman (Tragicomic/Warm)</option>
             </select>
             <button class="yp-edit-btn menu_button secondary" data-variant-type="prose"
               style="display: none; padding: 4px 8px;">
               <i class="fa-solid fa-pen"></i>
             </button>
           </div>
+        </div>
         </div>
 
         <div class="yablochny-field">
@@ -410,7 +412,7 @@
               <option value="silly">Silly Images (Standard)</option>
               <option value="grok">Grok (Nai Tavern)</option>
               <option value="pollinations">Pollinations</option>
-              <option value="custom">Custom (Manually Edited)</option>
+              <option value="custom">Custom / Manual</option>
             </select>
             <button class="yp-edit-btn menu_button secondary" data-variant-type="image"
               style="display: none; padding: 4px 8px;">
@@ -423,7 +425,7 @@
           <div class="yablochny-label" id="yp-theme-label">HTML theme</div>
           <div style="display: flex; gap: 4px; align-items: center;">
             <select id="yp-theme" class="yablochny-select" style="flex: 1;">
-              <option value="custom">Custom / don't touch</option>
+              <option value="custom">Custom / Manual</option>
               <option value="dark">Dark (default)</option>
               <option value="light">Light</option>
             </select>
@@ -432,7 +434,6 @@
               <i class="fa-solid fa-pen"></i>
             </button>
           </div>
-        </div>
       </div>
 
       <div class="yablochny-meta">

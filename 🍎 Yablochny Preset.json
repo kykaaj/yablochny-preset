@@ -212,7 +212,7 @@
         {
             "identifier": "e8c602e2-c7e7-4cc8-babf-7da12771c56a",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
             "name": "◈︎ roleplay mode",
             "role": "system",
@@ -338,7 +338,7 @@
         {
             "identifier": "db9a9d36-a623-4ffb-8a96-13872c1c8999",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
             "name": "◈︎ pace",
             "role": "system",
