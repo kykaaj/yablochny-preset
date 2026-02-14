@@ -2676,6 +2676,8 @@ function applyLocaleToUi() {
     jQuery("#yp-pace-label").text(dict.paceLabel);
     jQuery("#yp-extras-lang-label").text(dict.extrasLangLabel);
     jQuery("#yp-focus-label").text(dict.focusLabel);
+    jQuery("#yp-porn-label").text(dict.pornLabel);
+    jQuery("#yp-manga-label").text(dict.mangaLabel);
     jQuery("#yp-deconstruction-label").text(dict.deconstructionLabel);
     jQuery("#yp-site-label").text(dict.siteLabel);
     jQuery("#yp-guide-label").text(dict.guideLabel);
