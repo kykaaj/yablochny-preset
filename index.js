@@ -3548,7 +3548,20 @@ async function injectYablochnyUI(htmlContent) {
         // Track scroll position continuously
         const scrollable = jQuery("#rm_api_block").closest('.drawer-content');
         if (scrollable.length) {
-            window.yablochnyLastScroll = scrollable.scrollTop();
+            // Only update if we have a valid scroll position (ignore 0 if we suspect a reset)
+            // But 0 is valid at the top. 
+            // Better strategy: attach a scroll listener ONCE.
+            if (!scrollable.data("yp-scroll-bound")) {
+                scrollable.on("scroll", function() {
+                    window.yablochnyLastScroll = jQuery(this).scrollTop();
+                });
+                scrollable.data("yp-scroll-bound", true);
+            }
+            
+            // Fallback for initial capture if scroll event hasn't fired yet
+            if (typeof window.yablochnyLastScroll === 'undefined') {
+                window.yablochnyLastScroll = scrollable.scrollTop();
+            }
         }
 
         const isOpenAI = jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible");
