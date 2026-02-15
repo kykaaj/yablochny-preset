@@ -3163,11 +3163,28 @@ function initControls() {
         }
     });
 
-    function onPresetOptionChanged(updater) {
+    async function onPresetOptionChanged(updater) {
+        // PRE-SAVE SCROLL LOCK
+        // Find scrollable container
+        const s1 = jQuery("#rm_api_block").closest('.drawer-content');
+        const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
+        const s3 = jQuery(".drawer-content:visible").first();
+        const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
+
+        if (scrollable.length) {
+            window.yablochnyLastScroll = scrollable.scrollTop();
+            // Lock tracking for 1.5s to ignore the 0 position during wipe
+            window.yablochnyScrollLocked = true;
+            if (window.yablochnyScrollLockTimeout) clearTimeout(window.yablochnyScrollLockTimeout);
+            window.yablochnyScrollLockTimeout = setTimeout(() => { 
+                window.yablochnyScrollLocked = false; 
+            }, 1500);
+        }
+
         updater();
         saveSettingsDebounced();
         // Автоматически пересинхронизируем пресет при смене варианта
-        syncPreset(true);
+        await syncPreset(true);
     }
 
     jQuery("#yp-language").on("change", function () {
@@ -3554,13 +3571,19 @@ async function injectYablochnyUI(htmlContent) {
     // Use a fast polling interval instead of MutationObserver for now to guarantee stability
     setInterval(() => {
         // Track scroll position continuously
-        const s1 = jQuery("#rm_api_block").closest('.drawer-content');
-        const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
-        const s3 = jQuery(".drawer-content:visible").first();
-        const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
-        
-        if (scrollable.length) {
-            window.yablochnyLastScroll = scrollable.scrollTop();
+        if (!window.yablochnyScrollLocked) {
+            const s1 = jQuery("#rm_api_block").closest('.drawer-content');
+            const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
+            const s3 = jQuery(".drawer-content:visible").first();
+            const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
+            
+            if (scrollable.length) {
+                const currentScroll = scrollable.scrollTop();
+                // Only update if > 0 to avoid capturing the reset state if lock missed it
+                if (currentScroll > 0) {
+                    window.yablochnyLastScroll = currentScroll;
+                }
+            }
         }
 
         const isOpenAI = jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible");
