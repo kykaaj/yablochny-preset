@@ -28,23 +28,29 @@ if (startIndex !== -1 && endIndex !== -1) {
             return; 
         }
 
-        // Target: Insert into #rm_api_block, BEFORE #openai_settings.
-        const mainContainer = jQuery("#rm_api_block");
-        const settingsBlock = jQuery("#openai_settings");
+        // Target: The persistent OpenAI presets container.
+        const presetsBlock = jQuery("#openai_api-presets");
+        const promptManager = jQuery("#completion_prompt_manager_list");
         
-        if (mainContainer.length === 0 || !mainContainer.is(":visible")) return;
+        // Safety check: Are we visible?
+        if ((!presetsBlock.length || !presetsBlock.is(":visible")) && (!promptManager.length || !promptManager.is(":visible"))) return;
 
-        // Create wrapper - Flat structure needs padding
-        const wrapper = jQuery(\`<div id="yablochny-preset-container" style="width: 100%; margin-bottom: 15px; padding: 0 5px;"></div>\`);
+        // Create wrapper - No padding needed as the drawer handles it
+        const wrapper = jQuery(\`<div id="yablochny-preset-container" style="width: 100%; margin-top: 10px; margin-bottom: 5px;"></div>\`);
         wrapper.html(htmlContent);
 
         let inserted = false;
 
-        if (settingsBlock.length > 0) {
-            settingsBlock.before(wrapper);
+        // Preferred: Append to the persistent presets block
+        if (presetsBlock.length > 0 && presetsBlock.is(":visible")) {
+            presetsBlock.append(wrapper);
             inserted = true;
-        } else {
-            mainContainer.prepend(wrapper);
+        } 
+        // Fallback: Prompt manager
+        else if (promptManager.length > 0 && promptManager.is(":visible")) {
+            const drawer = promptManager.closest(".inline-drawer");
+            if (drawer.length > 0) drawer.before(wrapper);
+            else promptManager.before(wrapper);
             inserted = true;
         }
 
@@ -53,11 +59,13 @@ if (startIndex !== -1 && endIndex !== -1) {
             initControls();
             loadRegexPacksIntoYablochny();
             
-            // --- STATE RESTORATION (Only for Regex Drawer now) ---
+            // --- STATE RESTORATION ---
             const restoreDrawer = (key, selector) => {
                 const isOpen = localStorage.getItem(key) === "true";
                 const el = wrapper.find(selector);
-                const toggle = el.closest(".inline-drawer").find(".inline-drawer-toggle");
+                // Find the toggle button associated with this content
+                // Usually it's the previous sibling .inline-drawer-toggle
+                const toggle = el.closest(".inline-drawer").find(".inline-drawer-toggle").first();
                 const icon = toggle.find(".inline-drawer-icon");
                 
                 const updateIcon = (open) => {
@@ -94,12 +102,28 @@ if (startIndex !== -1 && endIndex !== -1) {
                 });
             };
 
-            // Restore Regex Drawer
-            wrapper.find(".inline-drawer").each(function() {
+            // Restore Main Drawer (Root)
+            // Selector needs to find the content relative to wrapper
+            // Wrapper -> .inline-drawer -> .inline-drawer-content (Main content)
+            // But now we have multiple drawers. We need to be specific.
+            // The first drawer is the Main one.
+            const mainDrawerContent = wrapper.children(".inline-drawer").first().children(".inline-drawer-content");
+            if (mainDrawerContent.length) {
+                restoreDrawer("yablochny_main_drawer_open", mainDrawerContent);
+            }
+
+            // Restore Sub Drawers (Things, Regex, More Settings)
+            // Look inside the main drawer content
+            mainDrawerContent.find(".inline-drawer").each(function(i) {
+                const subContent = jQuery(this).find(".inline-drawer-content");
                 const title = jQuery(this).find(".inline-drawer-toggle").text().trim();
-                if (title.includes("Regex")) {
-                    restoreDrawer("yablochny_drawer_regex", jQuery(this).find(".inline-drawer-content"));
-                }
+                
+                let keySuffix = "sub_" + i;
+                if (title.includes("Things")) keySuffix = "things";
+                else if (title.includes("Regex")) keySuffix = "regex";
+                else if (title.includes("More")) keySuffix = "more_settings";
+                
+                restoreDrawer("yablochny_drawer_" + keySuffix, subContent);
             });
 
             // Credits & Easter Egg
@@ -120,6 +144,7 @@ if (startIndex !== -1 && endIndex !== -1) {
         }
     };
 
+    // Use a fast polling interval
     setInterval(insertUI, 500);
     setTimeout(insertUI, 500);
 }

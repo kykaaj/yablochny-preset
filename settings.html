@@ -1,18 +1,24 @@
-<div class="yablochny-settings-flat" style="padding: 5px;">
-  <!-- Header -->
-  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid var(--SmartThemeBorderColor);">
+<!-- Main Drawer Container -->
+<div class="inline-drawer">
+  <!-- Drawer Header -->
+  <div class="inline-drawer-toggle inline-drawer-header interactable" id="yp-main-drawer-toggle">
     <div style="display: flex; align-items: center; gap: 8px;">
       <span style="font-size: 1.2em;">🍎</span>
-      <b id="yp-title-text" style="color: var(--SmartThemeBodyColor); text-shadow: 0 0 5px rgba(255,255,255,0.2); cursor: pointer;">Yablochny Preset</b>
-      <small id="yp-version-display" style="opacity: 0.6; font-size: 0.8em; margin-left: 5px;">(v1.10.17)</small>
+      <b id="yp-title-text" style="color: var(--SmartThemeBodyColor); text-shadow: 0 0 5px rgba(255,255,255,0.2);">Yablochny Preset</b>
+      <small id="yp-version-display" style="opacity: 0.6; font-size: 0.8em; margin-left: 5px;">(v1.10.20)</small>
     </div>
-    <!-- Links -->
-    <div style="display: flex; gap: 10px; font-size: 0.9em;">
-      <a href="https://kykaaj.github.io/yablochny/" target="_blank" style="text-decoration: none; opacity: 0.8;" title="Site"><i class="fa-solid fa-earth-americas"></i></a>
-      <span id="yp-credits-btn" style="cursor: pointer; opacity: 0.8;" title="Credits"><i class="fa-solid fa-users"></i></span>
-      <a href="https://github.com/kykaaj/yablochny-preset/blob/main/README.md" target="_blank" style="text-decoration: none; opacity: 0.8;" title="Guide"><i class="fa-solid fa-book"></i></a>
-    </div>
+    <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
   </div>
+
+  <!-- Drawer Content -->
+  <div class="inline-drawer-content" id="yp-main-drawer-content" style="display: none; padding-top: 5px;">
+    
+    <!-- Info Links -->
+    <div style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.9em; flex-wrap: wrap; justify-content: center;">
+      <a href="https://kykaaj.github.io/yablochny/" target="_blank" style="text-decoration: none; opacity: 0.8;" title="Site"><i class="fa-solid fa-earth-americas"></i> Site</a>
+      <span id="yp-credits-btn" style="cursor: pointer; opacity: 0.8;" title="Credits"><i class="fa-solid fa-users"></i> Credits</span>
+      <a href="https://github.com/kykaaj/yablochny-preset/blob/main/README.md" target="_blank" style="text-decoration: none; opacity: 0.8;" title="Guide"><i class="fa-solid fa-book"></i> Guide</a>
+    </div>
 
     <!-- Hidden Credits Area -->
     <div id="yp-credits-area" style="display: none; margin-bottom: 10px; background: var(--black30a); border-radius: 5px; padding: 10px; border: 1px solid var(--SmartThemeBorderColor);">
@@ -50,94 +56,113 @@
       </label>
     </div>
 
-    <!-- Main Settings Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-bottom: 15px;">
+    <hr style="border-color: var(--SmartThemeBorderColor); opacity: 0.3; margin: 10px 0;">
+
+    <!-- Settings Grid (Compact) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 5px; margin-bottom: 10px;">
+      
       <!-- Language -->
       <div>
-        <label id="yp-lang-label" style="font-size: 0.85em; opacity: 0.8;">Language</label>
+        <label id="yp-lang-label" style="font-size: 0.75em; opacity: 0.8;">Language</label>
         <select id="yp-language" class="text_pole" style="width: 100%;"><option value="auto">Auto</option><option value="ru">Russian</option><option value="en">English</option><option value="uk">Ukrainian</option></select>
       </div>
+
       <!-- Extras Lang -->
       <div>
-        <label id="yp-extras-lang-label" style="font-size: 0.85em; opacity: 0.8;">Extras Lang</label>
+        <label id="yp-extras-lang-label" style="font-size: 0.75em; opacity: 0.8;">Extras Lang</label>
         <select id="yp-extras-lang" class="text_pole" style="width: 100%;"><option value="custom">Off</option><option value="ru">Russian</option><option value="uk">Ukrainian</option></select>
       </div>
+
        <!-- Length -->
       <div>
-        <label id="yp-length-label" style="font-size: 0.85em; opacity: 0.8;">Length</label>
+        <label id="yp-length-label" style="font-size: 0.75em; opacity: 0.8;">Length</label>
         <select id="yp-length" class="text_pole" style="width: 100%;"><option value="400-600">400-600 words</option><option value="200-400">200-400 words</option><option value="adaptive">Adaptive</option></select>
       </div>
+
       <!-- Prose -->
       <div>
-        <label id="yp-prose-label" style="font-size: 0.85em; opacity: 0.8;">Prose Style</label>
+        <label id="yp-prose-label" style="font-size: 0.75em; opacity: 0.8;">Prose Style</label>
         <select id="yp-prose" class="text_pole" style="width: 100%;"><option value="ao3">AO3</option><option value="anne_rice">Anne Rice</option><option value="pratchett">Pratchett</option></select>
       </div>
+
        <!-- POV -->
       <div>
-        <label id="yp-pov-label" style="font-size: 0.85em; opacity: 0.8;">POV</label>
+        <label id="yp-pov-label" style="font-size: 0.75em; opacity: 0.8;">POV</label>
         <select id="yp-pov" class="text_pole" style="width: 100%;"><option value="3rd">3rd Person</option><option value="1st">1st Person</option><option value="2nd">2nd Person</option></select>
       </div>
+      
        <!-- Tense -->
       <div>
-        <label id="yp-tense-label" style="font-size: 0.85em; opacity: 0.8;">Tense</label>
+        <label id="yp-tense-label" style="font-size: 0.75em; opacity: 0.8;">Tense</label>
         <select id="yp-tense" class="text_pole" style="width: 100%;"><option value="Present">Present</option><option value="Past">Past</option></select>
       </div>
+    
       <!-- Roleplay -->
-      <div>
-         <label id="yp-roleplay-label" style="font-size: 0.85em; opacity: 0.8;">Roleplay</label>
+      <div style="grid-column: span 2;">
+         <label id="yp-roleplay-label" style="font-size: 0.75em; opacity: 0.8;">Roleplay</label>
          <select id="yp-roleplay" class="text_pole" style="width: 100%;"><option value="dont_speak">Don't speak for user</option><option value="speak">Speak for user</option></select>
       </div>
     </div>
     
-    <!-- More settings (Flat, Grid) -->
-    <div style="margin-bottom: 15px;">
-         <div style="font-weight: bold; font-size: 0.9em; margin-bottom: 5px; opacity: 0.8;">More Settings</div>
-         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
-            <div>
-                <label id="yp-speech-label" style="font-size: 0.8em;">Speech Style</label>
-                <select id="yp-speech" class="text_pole" style="width: 100%;"><option value="none">Off</option><option value="salinger">Salinger</option></select>
-            </div>
-            <div>
-                <label id="yp-thoughts-label" style="font-size: 0.8em;">Thoughts</label>
-                <select id="yp-thoughts" class="text_pole" style="width: 100%;"><option value="thoughts">On</option><option value="off">Off</option></select>
-            </div>
-             <div>
-                <label id="yp-swearing-label" style="font-size: 0.8em;">Swearing</label>
-                <select id="yp-swearing" class="text_pole" style="width: 100%;"><option value="custom">Off</option><option value="ru">Ru</option></select>
-            </div>
-             <div>
-                <label id="yp-pace-label" style="font-size: 0.8em;">Pace</label>
-                <select id="yp-pace" class="text_pole" style="width: 100%;"><option value="slowburn">Slowburn</option><option value="quickpace">Quick</option></select>
-            </div>
-             <div>
-                <label id="yp-focus-label" style="font-size: 0.8em;">Focus</label>
-                <select id="yp-focus" class="text_pole" style="width: 100%;"><option value="off">Off</option><option value="dialogues">Dialogues</option></select>
-            </div>
-             <div>
-                <label id="yp-image-mode-label" style="font-size: 0.8em;">Image Gen</label>
-                <select id="yp-image-mode" class="text_pole" style="width: 100%;"><option value="silly">Silly</option></select>
-            </div>
-             <div>
-                <label id="yp-theme-label" style="font-size: 0.8em;">HTML Theme</label>
-                <select id="yp-theme" class="text_pole" style="width: 100%;"><option value="dark">Dark</option><option value="light">Light</option></select>
-            </div>
-             <div>
-                <label id="yp-deconstruction-label" style="font-size: 0.8em;">Deconstruction</label>
-                <select id="yp-deconstruction" class="text_pole" style="width: 100%;"><option value="large">Large</option><option value="mini">Mini</option></select>
-            </div>
-         </div>
+    <!-- More Settings (Collapsible) -->
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <small>More Settings</small>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content" style="display: none;">
+             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 5px; margin-top: 5px;">
+                <div>
+                    <label id="yp-speech-label" style="font-size: 0.75em;">Speech Style</label>
+                    <select id="yp-speech" class="text_pole" style="width: 100%;"><option value="none">Off</option><option value="salinger">Salinger</option></select>
+                </div>
+                <div>
+                    <label id="yp-thoughts-label" style="font-size: 0.75em;">Thoughts</label>
+                    <select id="yp-thoughts" class="text_pole" style="width: 100%;"><option value="thoughts">On</option><option value="off">Off</option></select>
+                </div>
+                 <div>
+                    <label id="yp-swearing-label" style="font-size: 0.75em;">Swearing</label>
+                    <select id="yp-swearing" class="text_pole" style="width: 100%;"><option value="custom">Off</option><option value="ru">Ru</option></select>
+                </div>
+                 <div>
+                    <label id="yp-pace-label" style="font-size: 0.75em;">Pace</label>
+                    <select id="yp-pace" class="text_pole" style="width: 100%;"><option value="slowburn">Slowburn</option><option value="quickpace">Quick</option></select>
+                </div>
+                 <div>
+                    <label id="yp-focus-label" style="font-size: 0.75em;">Focus</label>
+                    <select id="yp-focus" class="text_pole" style="width: 100%;"><option value="off">Off</option><option value="dialogues">Dialogues</option></select>
+                </div>
+                 <div>
+                    <label id="yp-image-mode-label" style="font-size: 0.75em;">Image Gen</label>
+                    <select id="yp-image-mode" class="text_pole" style="width: 100%;"><option value="silly">Silly</option></select>
+                </div>
+                 <div>
+                    <label id="yp-theme-label" style="font-size: 0.75em;">HTML Theme</label>
+                    <select id="yp-theme" class="text_pole" style="width: 100%;"><option value="dark">Dark</option><option value="light">Light</option></select>
+                </div>
+                 <div>
+                    <label id="yp-deconstruction-label" style="font-size: 0.75em;">Deconstruction</label>
+                    <select id="yp-deconstruction" class="text_pole" style="width: 100%;"><option value="large">Large</option><option value="mini">Mini</option></select>
+                </div>
+             </div>
+        </div>
     </div>
 
-    <!-- Things (Always visible block) -->
-    <div style="margin-bottom: 15px; border-top: 1px solid var(--SmartThemeBorderColor); padding-top: 10px;">
-        <div class="yablochny-subtitle" id="yp-things-title" style="margin-bottom: 5px; font-weight: bold; font-size: 0.9em;">✎ Things & extras</div>
-        <div id="yp-things" style="padding: 5px;">
-             <div id="yp-things-note" style="font-size: 0.8em; opacity: 0.7; margin-bottom: 5px;"></div>
-             <div id="yp-things-mix"></div>
-             <div id="yp-things-hidden"></div>
-             <div id="yp-things-cyoa"></div>
-             <div id="yp-things-fancy"></div>
-             <div id="yp-things-comments"></div>
+    <!-- Things (Collapsible) -->
+    <div class="inline-drawer">
+         <div class="inline-drawer-toggle inline-drawer-header">
+            <small id="yp-things-title">Things & Extras</small>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content" style="display: none;">
+            <div id="yp-things" style="padding: 5px;">
+                 <div id="yp-things-note" style="font-size: 0.8em; opacity: 0.7; margin-bottom: 5px;"></div>
+                 <div id="yp-things-mix"></div>
+                 <div id="yp-things-hidden"></div>
+                 <div id="yp-things-cyoa"></div>
+                 <div id="yp-things-fancy"></div>
+                 <div id="yp-things-comments"></div>
+            </div>
         </div>
     </div>
 
@@ -165,6 +190,7 @@
          <label class="checkbox_label" style="font-size: 0.8em;"><input type="checkbox" id="yp-dev-mode"> Dev Mode</label>
     </div>
 
+  </div>
 </div>
 
 <!-- Editor Modal -->
