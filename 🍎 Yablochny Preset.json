@@ -1265,7 +1265,7 @@
             "enabled": false,
             "marker": false,
             "name": "◦︎ double quotes",
-            "role": "system",
+            "role": "user",
             "content": "[IMPORTANT: All characters words and speech must always be in double quotes \"like this\". NEVER use em dashes — to highlight speech, they are difficult to read to me.]",
             "injection_position": 1,
             "injection_depth": 0,
