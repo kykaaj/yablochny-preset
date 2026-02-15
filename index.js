@@ -3164,6 +3164,11 @@ function initControls() {
     });
 
     async function onPresetOptionChanged(updater) {
+        // Remove focus to prevent browser auto-scrolling to restored element
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+
         // PRE-SAVE SCROLL LOCK
         // Find scrollable container
         const s1 = jQuery("#rm_api_block").closest('.drawer-content');
