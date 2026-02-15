@@ -3534,10 +3534,33 @@ async function injectYablochnyUI(htmlContent) {
                     else { dev.hide(); if (jQuery("#yp-dev-mode").is(":checked")) jQuery("#yp-dev-mode").click(); }
                 }
             });
+
+            // Restore scroll position if we tracked it
+            if (window.yablochnyLastScroll > 0) {
+                const scrollable = jQuery("#rm_api_block").closest('.drawer-content');
+                if (scrollable.length) scrollable.scrollTop(window.yablochnyLastScroll);
+            }
         }
     };
 
-    setInterval(insertUI, 1000);
+    // Use a fast polling interval instead of MutationObserver for now to guarantee stability
+    setInterval(() => {
+        // Track scroll position continuously
+        const scrollable = jQuery("#rm_api_block").closest('.drawer-content');
+        if (scrollable.length) {
+            window.yablochnyLastScroll = scrollable.scrollTop();
+        }
+
+        const isOpenAI = jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible");
+        // Check if we need to insert (not exists OR not visible)
+        const needsInsert = jQuery("#yablochny-preset-container").length === 0 || !jQuery("#yablochny-preset-container").is(":visible");
+        
+        if (isOpenAI && needsInsert) {
+            insertUI();
+        }
+    }, 500); // Check every 500ms
+    
+    // Initial attempt
     setTimeout(insertUI, 1000);
 }
 
