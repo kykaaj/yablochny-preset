@@ -3376,45 +3376,96 @@ async function waitForOpenAI() {
 
 // Injected UI Management
 async function injectYablochnyUI(htmlContent) {
-    // We target the OpenAI settings area.
-    // The main container is usually #openai_settings or within the API block.
-    // The most reliable anchor is the "Prompt Manager" or "Advanced Formatting" block.
+    // We target the OpenAI settings area to be near the Preset settings.
+    // The main container for OpenAI settings is usually #openai_settings.
+    // The most reliable anchor is the "Prompt Manager" section.
 
-    const targetContainerSelector = "#openai_settings"; 
-    const anchorSelector = "#openai_advanced_formatting"; // The "Advanced Formatting" block which contains Prompt Manager
+    // Helper to log if dev mode
+    const log = (msg) => {
+        if (extension_settings[EXTENSION_NAME]?.devMode) console.log(`[Yablochny] ${msg}`);
+    };
 
     // Helper to insert our UI
     const insertUI = () => {
-        // If already exists, do nothing
-        if (jQuery("#yablochny-preset-container").length > 0) return;
+        // If already exists and is visible, do nothing
+        if (jQuery("#yablochny-preset-container").length > 0 && jQuery("#yablochny-preset-container").is(":visible")) return;
+
+        // If exists but detached/hidden, maybe we need to move it?
+        // Let's just remove old one if we find a better spot to avoid duplicates
+        if (jQuery("#yablochny-preset-container").length > 0) {
+            // Check if it's in the right place
+            // If we are re-inserting, we should remove the old one first
+            // jQuery("#yablochny-preset-container").remove(); 
+            // Actually, let's just check if we need to move it.
+            // If it's already there, we might not need to do anything.
+        }
 
         // Create our wrapper
         const wrapper = jQuery(`<div id="yablochny-preset-container" class="yablochny-ui-wrapper" style="margin-top: 10px; margin-bottom: 15px; border: 1px solid var(--SmartThemeBorderColor); padding: 10px; border-radius: 10px; background-color: var(--SmartThemeBlurTintColor);"></div>`);
         wrapper.html(htmlContent);
 
-        // Try to find the anchor
-        const anchor = jQuery(anchorSelector);
-        
-        if (anchor.length > 0) {
-            // Insert BEFORE the Advanced Formatting block
-            anchor.before(wrapper);
-        } else {
-            // Fallback: Try to find the Context Size slider container and insert AFTER it
-            const contextBlock = jQuery("#openai_context_size_block");
-            if (contextBlock.length > 0) {
-                contextBlock.after(wrapper);
+        let inserted = false;
+
+        // Strategy 1: Find the "Prompt Manager" list (toggles) and insert BEFORE its container
+        const promptList = jQuery("#completion_prompt_manager_list");
+        if (promptList.length > 0) {
+            // The prompt list is usually inside a details/summary block with class 'inline-drawer'
+            const drawer = promptList.closest(".inline-drawer");
+            if (drawer.length > 0) {
+                log("Found prompt manager drawer, inserting before.");
+                drawer.before(wrapper);
+                inserted = true;
             } else {
-                 // Last resort: Append to the main settings container if visible
-                 const mainContainer = jQuery(targetContainerSelector);
-                 if (mainContainer.length > 0) {
-                     mainContainer.append(wrapper);
-                 }
+                // Fallback: Insert before the list itself if drawer not found
+                log("Found prompt list but no drawer, inserting before list.");
+                promptList.before(wrapper);
+                inserted = true;
             }
         }
 
+        // Strategy 2: Find "Advanced Formatting" block
+        if (!inserted) {
+            const advancedFormatting = jQuery("#openai_advanced_formatting");
+            if (advancedFormatting.length > 0) {
+                log("Found Advanced Formatting block, inserting before.");
+                advancedFormatting.before(wrapper);
+                inserted = true;
+            }
+        }
+
+        // Strategy 3: Find "Context Template" block
+        if (!inserted) {
+            const contextTemplate = jQuery("#openai_context_template");
+            if (contextTemplate.length > 0) {
+                log("Found Context Template block, inserting before.");
+                contextTemplate.before(wrapper);
+                inserted = true;
+            }
+        }
+
+        // Strategy 4: Find "Temperature" slider and insert AFTER its container
+        if (!inserted) {
+            const tempSlider = jQuery("#openai_temp"); // or whatever ID standard ST uses
+            if (tempSlider.length > 0) {
+                 const tempBlock = tempSlider.closest(".range-block") || tempSlider.parent();
+                 log("Found Temperature slider, inserting after.");
+                 tempBlock.after(wrapper);
+                 inserted = true;
+            }
+        }
+
+         // Strategy 5: Append to main settings container
+        if (!inserted) {
+             const mainContainer = jQuery("#openai_settings");
+             if (mainContainer.length > 0) {
+                 log("Found main OpenAI settings container, appending.");
+                 mainContainer.append(wrapper);
+                 inserted = true;
+             }
+        }
+
         // Re-initialize controls since we added fresh HTML
-        // Only if we actually inserted something
-        if (jQuery("#yablochny-preset-container").length > 0) {
+        if (inserted) {
             applyLocaleToUi();
             initControls();
             loadRegexPacksIntoYablochny();
@@ -3430,11 +3481,18 @@ async function injectYablochnyUI(htmlContent) {
     };
 
     // Use a Polling strategy to ensure UI is injected when the tab is opened
-    // MutationObserver can be tricky if the parent itself is hidden/detached.
     setInterval(() => {
         // Only try to insert if the OpenAI settings are actually visible/rendered
-        if (jQuery(targetContainerSelector).is(":visible")) {
-            insertUI();
+        // OR if the wrapper is missing/detached
+        const wrapperExists = jQuery("#yablochny-preset-container").length > 0;
+        const wrapperVisible = jQuery("#yablochny-preset-container").is(":visible");
+        
+        // If wrapper doesn't exist or isn't visible, try to insert
+        if (!wrapperExists || !wrapperVisible) {
+            // Check if we have a valid target to insert into
+            if (jQuery("#openai_settings").length > 0 || jQuery("#completion_prompt_manager_list").length > 0) {
+                 insertUI();
+            }
         }
     }, 1000); 
 }
