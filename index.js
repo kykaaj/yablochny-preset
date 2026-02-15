@@ -3407,12 +3407,24 @@ async function injectYablochnyUI(htmlContent) {
         if (promptManager.length === 0 && settingsBlock.length === 0) return;
 
         // Create wrapper - CLEAN, no borders, full width
-        const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"></div>`);
+        // Anti-jump: restore min-height from last session
+        const lastHeight = localStorage.getItem("yablochny_ui_height");
+        const wrapperStyle = `width: 100%; margin-top: 5px; margin-bottom: 5px; ${lastHeight ? `min-height: ${lastHeight}px;` : ''}`;
+        const wrapper = jQuery(`<div id="yablochny-preset-container" style="${wrapperStyle}"></div>`);
         wrapper.html(htmlContent);
+
+        // Save height on resize or periodically
+        const saveHeight = () => {
+            if (wrapper.height() > 50) { // arbitrary small number to avoid saving 0
+                localStorage.setItem("yablochny_ui_height", wrapper.height());
+            }
+        };
+        // We can't easily detect resize, but we can save it when we interact or periodically
+        setTimeout(saveHeight, 1000); 
 
         let inserted = false;
 
-        // Try to insert before Prompt Manager (best spot)
+        // Strategy 1: Try to insert before Prompt Manager (best spot)
         if (promptManager.length > 0) {
             // Check for drawer wrapper
             const drawer = promptManager.closest(".inline-drawer");
@@ -3438,38 +3450,103 @@ async function injectYablochnyUI(htmlContent) {
             initControls();
             loadRegexPacksIntoYablochny();
             
+            // Allow height to adjust naturally after insertion, but keep min-height for stability during renders?
+            // Actually better to remove min-height after a moment so it can shrink if needed
+            // But if we remove it, it might jump next time. 
+            // Let's update the stored height on click events inside our UI.
+            wrapper.on("click", () => setTimeout(saveHeight, 300));
+
             // --- STATE RESTORATION ---
             const restoreDrawer = (key, selector) => {
                 const isOpen = localStorage.getItem(key) === "true";
                 const el = wrapper.find(selector);
-                // Find toggle button associated with this content
-                // In our HTML structure, it's the previous sibling usually, or part of .inline-drawer parent
-                const drawer = el.closest(".inline-drawer");
-                const toggle = drawer.find(".inline-drawer-toggle").first();
+                const toggle = el.closest(".inline-drawer").find(".inline-drawer-toggle");
                 const icon = toggle.find(".inline-drawer-icon");
                 
+                // Helper to update icon
+                const updateIcon = (open) => {
+                    if (open) {
+                        icon.removeClass("fa-circle-chevron-down").addClass("fa-circle-chevron-up");
+                        // Also remove 'down' class if it interferes with ST rotation styles, 
+                        // but usually swapping the icon is enough and safer.
+                        icon.removeClass("down"); 
+                        toggle.addClass("open");
+                    } else {
+                        icon.removeClass("fa-circle-chevron-up").addClass("fa-circle-chevron-down");
+                        icon.addClass("down");
+                        toggle.removeClass("open");
+                    }
+                };
+
                 if (isOpen) {
                     el.show();
-                    icon.removeClass("down").addClass("up");
-                    toggle.addClass("open");
+                    updateIcon(true);
                 } else {
                     el.hide();
-                    icon.removeClass("up").addClass("down");
-                    toggle.removeClass("open");
+                    updateIcon(false);
                 }
                 
                 toggle.off("click").on("click", function(e) {
                     e.preventDefault(); e.stopPropagation();
                     if (el.is(":visible")) {
-                        el.slideUp(200);
-                        icon.removeClass("up").addClass("down");
+                        el.slideUp(200, saveHeight); // Save height after animation
+                        updateIcon(false);
                         localStorage.setItem(key, "false");
                     } else {
-                        el.slideDown(200);
-                        icon.removeClass("down").addClass("up");
+                        el.slideDown(200, saveHeight);
+                        updateIcon(true);
                         localStorage.setItem(key, "true");
                     }
                 });
+            };
+
+            // Restore Main Drawer
+            restoreDrawer("yablochny_main_drawer_open", ".yablochny-settings > .inline-drawer > .inline-drawer-content");
+
+            // Restore Sub Drawers
+            wrapper.find(".yablochny-settings .inline-drawer .inline-drawer-content .inline-drawer").each(function(i) {
+                const subContent = jQuery(this).find(".inline-drawer-content");
+                const title = jQuery(this).find(".inline-drawer-toggle").text().trim();
+                let key = "yablochny_sub_" + i;
+                
+                if (title.includes("Things")) key = "yablochny_sub_things";
+                else if (title.includes("Regex")) key = "yablochny_sub_regex";
+                else if (title.includes("More")) key = "yablochny_sub_more";
+                
+                const toggle = jQuery(this).find(".inline-drawer-toggle");
+                const icon = toggle.find(".inline-drawer-icon");
+                
+                const updateSubIcon = (open) => {
+                    if (open) {
+                        icon.removeClass("fa-circle-chevron-down").addClass("fa-circle-chevron-up");
+                        icon.removeClass("down");
+                    } else {
+                        icon.removeClass("fa-circle-chevron-up").addClass("fa-circle-chevron-down");
+                        icon.addClass("down");
+                    }
+                };
+
+                if (localStorage.getItem(key) === "true") {
+                    subContent.show();
+                    updateSubIcon(true);
+                } else {
+                    subContent.hide();
+                    updateSubIcon(false);
+                }
+                
+                toggle.off("click").on("click", function(e) {
+                    e.preventDefault(); e.stopPropagation();
+                    if (subContent.is(":visible")) {
+                        subContent.slideUp(200, saveHeight);
+                        updateSubIcon(false);
+                        localStorage.setItem(key, "false");
+                    } else {
+                        subContent.slideDown(200, saveHeight);
+                        updateSubIcon(true);
+                        localStorage.setItem(key, "true");
+                    }
+                });
+            });
             };
 
             // Restore Main Drawer
