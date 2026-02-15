@@ -683,6 +683,7 @@ const MODEL_PRESETS = {
             frequency_penalty: 0.20,
             presence_penalty: 0.30,
             top_p: 0.95,
+            stream_openai: false,
         },
         toggles: {
             "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // universal prefill
@@ -2353,6 +2354,7 @@ async function syncPreset(showToasts = true) {
                     if (Object.prototype.hasOwnProperty.call(s, "presence_penalty")) preset.presence_penalty = s.presence_penalty;
                     if (Object.prototype.hasOwnProperty.call(s, "top_p")) preset.top_p = s.top_p;
                     if (Object.prototype.hasOwnProperty.call(s, "openai_max_tokens")) preset.openai_max_tokens = s.openai_max_tokens;
+                    if (Object.prototype.hasOwnProperty.call(s, "stream_openai")) preset.stream_openai = s.stream_openai;
                 }
             }
         }
