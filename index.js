@@ -3388,19 +3388,24 @@ async function injectYablochnyUI(htmlContent) {
         // If already exists and is visible, do nothing
         if (jQuery("#yablochny-preset-container").length > 0 && jQuery("#yablochny-preset-container").is(":visible")) return;
 
+        // If exists but hidden/detached, remove it to be safe and re-insert
+        jQuery("#yablochny-preset-container").remove();
+
         // Create our wrapper - CLEAN, no borders, full width
         const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"></div>`);
         wrapper.html(htmlContent);
 
         let inserted = false;
 
-        // Try to insert (Strategies 1-5...)
+        // Strategy 1: Find the "Prompt Manager" list (toggles) and insert BEFORE its container
         const promptList = jQuery("#completion_prompt_manager_list");
         if (promptList.length > 0) {
             const drawer = promptList.closest(".inline-drawer");
             if (drawer.length > 0) { drawer.before(wrapper); inserted = true; } 
             else { promptList.before(wrapper); inserted = true; }
         }
+        
+        // Fallback strategies
         if (!inserted) {
             const advancedFormatting = jQuery("#openai_advanced_formatting");
             if (advancedFormatting.length > 0) { advancedFormatting.before(wrapper); inserted = true; }
@@ -3410,32 +3415,23 @@ async function injectYablochnyUI(htmlContent) {
             if (contextTemplate.length > 0) { contextTemplate.before(wrapper); inserted = true; }
         }
         if (!inserted) {
-            const tempSlider = jQuery("#openai_temp"); 
-            if (tempSlider.length > 0) {
-                 const tempBlock = tempSlider.closest(".range-block") || tempSlider.parent();
-                 tempBlock.after(wrapper); inserted = true;
-            }
-        }
-        if (!inserted) {
              const mainContainer = jQuery("#openai_settings");
              if (mainContainer.length > 0) { mainContainer.append(wrapper); inserted = true; }
         }
 
         // Re-initialize controls since we added fresh HTML
         if (inserted) {
+            // log("UI Inserted successfully.");
             applyLocaleToUi();
             initControls();
             loadRegexPacksIntoYablochny();
             
             // --- STATE RESTORATION LOGIC (MAIN & SUB DRAWERS) ---
-            
-            // Helper to bind toggle logic
             const bindDrawer = (toggleSelector, contentSelector, storageKey) => {
                 const toggle = wrapper.find(toggleSelector);
                 const content = wrapper.find(contentSelector);
                 const icon = toggle.find(".inline-drawer-icon");
                 
-                // Restore state
                 const isSavedOpen = localStorage.getItem(storageKey) === "true";
                 if (isSavedOpen) {
                     content.show();
@@ -3447,11 +3443,9 @@ async function injectYablochnyUI(htmlContent) {
                     toggle.removeClass("open");
                 }
 
-                // Bind click
                 toggle.off("click").on("click", function(e) {
                     e.preventDefault(); e.stopPropagation();
-                    const isVisible = content.is(":visible");
-                    if (isVisible) {
+                    if (content.is(":visible")) {
                         content.slideUp(200);
                         icon.removeClass("up").addClass("down");
                         localStorage.setItem(storageKey, "false");
@@ -3463,21 +3457,16 @@ async function injectYablochnyUI(htmlContent) {
                 });
             };
 
-            // 1. Main Drawer
-            bindDrawer(
-                ".yablochny-settings > .inline-drawer > .inline-drawer-toggle", 
-                ".yablochny-settings > .inline-drawer > .inline-drawer-content", 
-                "yablochny_main_drawer_open"
-            );
+            // Main Drawer
+            bindDrawer(".yablochny-settings > .inline-drawer > .inline-drawer-toggle", ".yablochny-settings > .inline-drawer > .inline-drawer-content", "yablochny_main_drawer_open");
 
-            // 2. Sub-drawers (More Settings, Things, Regex)
+            // Sub-drawers
             const subDrawers = wrapper.find(".yablochny-settings > .inline-drawer > .inline-drawer-content .inline-drawer");
             subDrawers.each(function(index) {
                 const subToggle = jQuery(this).find(".inline-drawer-toggle");
                 const subContent = jQuery(this).find(".inline-drawer-content");
                 const subIcon = subToggle.find(".inline-drawer-icon");
                 
-                // Generate a key based on title content for stability
                 const titleText = subToggle.text().trim();
                 let keySuffix = "sub_" + index;
                 if (titleText.includes("Things")) keySuffix = "things";
@@ -3486,7 +3475,6 @@ async function injectYablochnyUI(htmlContent) {
                 
                 const storageKey = "yablochny_drawer_" + keySuffix;
 
-                // Restore
                 if (localStorage.getItem(storageKey) === "true") {
                     subContent.show();
                     subIcon.removeClass("down").addClass("up");
@@ -3495,7 +3483,6 @@ async function injectYablochnyUI(htmlContent) {
                     subIcon.removeClass("up").addClass("down");
                 }
 
-                // Bind
                 subToggle.off("click").on("click", function(e) {
                     e.preventDefault(); e.stopPropagation();
                     if (subContent.is(":visible")) {
@@ -3510,11 +3497,10 @@ async function injectYablochnyUI(htmlContent) {
                 });
             });
 
-            // Re-bind credits
+            // Credits & Easter Egg
             jQuery("#yp-credits-btn").off("click").on("click", function () { jQuery("#yp-credits-area").slideToggle(200); });
             jQuery("#yp-credits-close-inline").off("click").on("click", function () { jQuery("#yp-credits-area").slideUp(200); });
             
-            // Re-bind Easter Egg
             let titleClicks = 0;
             jQuery("#yp-title-text").off("click").on("click", function (e) {
                 e.stopPropagation();
@@ -3529,36 +3515,16 @@ async function injectYablochnyUI(htmlContent) {
         }
     };
 
-    // Use MutationObserver for instant reaction
-    const observer = new MutationObserver(() => {
-        // Debounce slightly to avoid thrashing if ST does multiple DOM updates
-        if (window._yablochny_insert_timeout) clearTimeout(window._yablochny_insert_timeout);
-        window._yablochny_insert_timeout = setTimeout(() => {
-            // Check visibility and existence before re-inserting
-            const isOpenAI = jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible");
-            const isMissing = jQuery("#yablochny-preset-container").length === 0 || !jQuery("#yablochny-preset-container").is(":visible");
-            
-            if (isOpenAI && isMissing) {
-                insertUI();
-            }
-        }, 10);
-    });
-
-    // Start observing the body or a specific container
-    // Watching '#rm_api_block' is efficient as it contains the settings
-    const targetNode = document.querySelector('#rm_api_block') || document.body;
-    if (targetNode) {
-        observer.observe(targetNode, { childList: true, subtree: true });
-    }
-
-    // Fallback polling just in case MutationObserver misses something (e.g. initial load)
+    // Use a fast polling interval instead of MutationObserver for now to guarantee stability
     setInterval(() => {
         const isOpenAI = jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible");
-        const isMissing = jQuery("#yablochny-preset-container").length === 0 || !jQuery("#yablochny-preset-container").is(":visible");
-        if (isOpenAI && isMissing) {
+        // Check if we need to insert (not exists OR not visible)
+        const needsInsert = jQuery("#yablochny-preset-container").length === 0 || !jQuery("#yablochny-preset-container").is(":visible");
+        
+        if (isOpenAI && needsInsert) {
             insertUI();
         }
-    }, 1000);
+    }, 500); // Check every 500ms
 }
         if (!inserted) {
             const advancedFormatting = jQuery("#openai_advanced_formatting");
