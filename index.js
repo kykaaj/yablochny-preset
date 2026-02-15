@@ -48,7 +48,7 @@ const VARIANT_PROMPT_IDS = new Set([
     "9adda56b-6f32-416a-b947-9aa9f41564eb",
     // ◈︎ pov (change)
     "5907aad3-0519-45e9-b6f7-40d9e434ef28",
-    // ◦︎ speech style (sample)
+    // ◦︎ speech style
     "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c",
     // ◈︎ prose style (change)
     "92f96f89-c01d-4a91-bea3-c8abb75b995a",
@@ -76,7 +76,51 @@ const VARIANT_PROMPT_IDS = new Set([
     "9c2536d8-2e0f-478d-8bef-3e4e75bcee83",
     // └︎ ◦︎ UA extras
     "d00a8bd2-d7ec-4a1e-919b-4089d2489e82",
+    // Focus
+    "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc",
+    // Deconstruction
+    "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6",
+    // Image Generation
+    "e12784ea-de67-48a7-99ef-3b0c1c45907c",
+    // Tense
+    "e0ce2a23-98e3-4772-8984-5e9aa4c5c551",
 ]);
+
+const PROMPT_TO_CONTROL_MAP = {
+    "28ec4454-b3c2-4c06-8fd0-52cb123b778f": "#yp-language",
+    "9adda56b-6f32-416a-b947-9aa9f41564eb": "#yp-length",
+    "5907aad3-0519-45e9-b6f7-40d9e434ef28": "#yp-pov",
+    "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c": "#yp-speech",
+    "92f96f89-c01d-4a91-bea3-c8abb75b995a": "#yp-prose",
+    "14bf3aa5-73cf-4112-8aca-437c48978663": "#yp-theme",
+    "6b235beb-7de9-4f84-9b09-6f20210eae6d": "#yp-things-title",
+    "e8c602e2-c7e7-4cc8-babf-7da12771c56a": "#yp-roleplay",
+    "a56a28d6-21fa-42d4-862e-fe688dea9fec": "#yp-roleplay",
+    "1efdd851-e336-44a3-8e08-3cbff9077ed5": "#yp-thoughts",
+    "d82dc302-0257-4bbf-99d0-c9a8149c98e6": "#yp-thoughts",
+    "85609813-6c7f-4df2-bee8-0ace5b10df91": "#yp-swearing",
+    "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4": "#yp-swearing",
+    "db9a9d36-a623-4ffb-8a96-13872c1c8999": "#yp-pace",
+    "7d81224c-eaf8-45ef-9af0-b3f52369c792": "#yp-pace",
+    "9c2536d8-2e0f-478d-8bef-3e4e75bcee83": "#yp-extras-lang",
+    "d00a8bd2-d7ec-4a1e-919b-4089d2489e82": "#yp-extras-lang",
+    "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc": "#yp-focus",
+    "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6": "#yp-deconstruction",
+    "e12784ea-de67-48a7-99ef-3b0c1c45907c": "#yp-image-mode",
+    "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": "#yp-tense"
+};
+
+const REGEX_PROMPT_MAP = {
+    "56907e71-68d2-4c89-b327-c728329d3921": "braille-blank-jb",
+    "5fe3d988-d5e5-4ab8-82ee-6f7842c99c01": "clocks",
+    "10c734cd-9356-4794-85a4-e24fc4e4eacd": "clocks-minimal",
+    "f5afba61-96c6-4699-acba-372237d828f3": "psychological-portraits-pc", // Default to PC
+    "07468205-1e0d-4d9a-ad3f-b3e6df7b852c": "diary-pc", // Default to PC
+    "c5a0deb0-cb0c-4934-a547-ac88d258abed": "phone (pc)", // Default to PC
+    "e8c4eebd-5452-4651-80d5-735c35a39b15": "transitions",
+    "42805823-bba7-44d6-a850-4a34473b816a": "infoblock",
+    "e7120351-e6a5-4dc8-91c0-8dba621cb21f": "music-player"
+};
 
 /** @typedef {{ version:number, hash:string }} PromptSyncMeta */
 
@@ -120,7 +164,7 @@ const UI_TEXT = {
         guideLabel: "Guide",
         presetLabel: "Preset:",
         lastSyncLabel: "Last sync:",
-        thingsTitle: "Things / Toggles",
+        thingsTitle: "Things",
         thingsNote: "Sync after checking/unchecking!",
         thingsManagedLabel: "Managed Toggles",
         groupMix: "◇ Mixable",
@@ -129,7 +173,7 @@ const UI_TEXT = {
         groupFancy: "✧ Fancy UI (only one)",
         groupComments: "✧ Comments (only one)",
         exclusiveTag: "[1 variant]",
-        regexTitle: "Regex packs for Yablochny",
+        regexTitle: "Regex packs",
         regexToggleOn: "Regex ON",
         regexToggleOff: "Regex OFF",
         regexDebug: "Debug",
@@ -174,7 +218,7 @@ const UI_TEXT = {
         guideLabel: "Гайд",
         presetLabel: "Пресет:",
         lastSyncLabel: "Синхронизация:",
-        thingsTitle: "Дополнения (Things)",
+        thingsTitle: "Things",
         thingsNote: "Не забудьте синхронизировать после выбора!",
         groupMix: "◇ Можно смешивать",
         groupHidden: "👁 Скрытые блоки",
@@ -182,7 +226,7 @@ const UI_TEXT = {
         groupFancy: "✧ Fancy UI (только один)",
         groupComments: "✧ Комментарии (только один)",
         exclusiveTag: "[1 вариант]",
-        regexTitle: "Регекс-паки для Yablochny",
+        regexTitle: "Regex packs",
         regexToggleOn: "Регексы ВКЛ",
         regexToggleOff: "Регексы ВЫКЛ",
         regexDebug: "Отладка",
@@ -229,7 +273,7 @@ const UI_TEXT = {
         guideLabel: "Гайд",
         presetLabel: "Пресет:",
         lastSyncLabel: "Синхронізація:",
-        thingsTitle: "✎ Штуки та екстра",
+        thingsTitle: "Things",
         thingsNote: "Додаткові «штуки» для тогла ◦︎ ✎ things. Деякі можна змішувати, інші — по одному.",
         thingsManagedLabel: "Керувати вмістом тогла звідси (інакше — не чіпаємо)",
         groupMix: "◇ Можна змішувати",
@@ -240,7 +284,7 @@ const UI_TEXT = {
         groupUi: "◈︎ Fancy elements (Штуки)",
         groupSupport: "◈︎ Support (Мова допів)",
         exclusiveTag: "exclusive",
-        regexTitle: "Регекс-паки для Yablochny",
+        regexTitle: "Regex packs",
         regexToggleOn: "Регекси УВІМК",
         regexToggleOff: "Регекси ВИМК",
         regexDebug: "Відладка",
@@ -2821,17 +2865,26 @@ async function loadRegexPacksIntoYablochny() {
     window.YablochnyRegexData.enabled = Array.from(cfg.regexEnabled || []);
     window.YablochnyRegexData.active = cfg.regexActive !== false;
 
-    for (const file of REGEX_PACK_FILES) {
-        try {
-            const response = await fetch(`${SCRIPT_PATH}/regexes/${file}.json`);
-            const pack = await response.json();
-            window.YablochnyRegexData.packs[file] = pack;
-            // eslint-disable-next-line no-console
-            console.log(`[Yablochny] Regex pack loaded: ${pack.name} (${pack.scripts.length} scripts)`);
-        } catch (e) {
-            console.error(`[Yablochny] Failed to load regex pack ${file}`, e);
-        }
-    }
+    // Use jQuery.get for better compatibility and simple cache busting
+    const promises = REGEX_PACK_FILES.map(file => {
+        return new Promise((resolve) => {
+            jQuery.getJSON(`${SCRIPT_PATH}/regexes/${file}.json?t=${Date.now()}`)
+                .done((pack) => {
+                    if (pack) {
+                        pack.id = file; // Ensure ID is set
+                        window.YablochnyRegexData.packs[file] = pack;
+                        // console.log(`[Yablochny] Loaded ${file}`);
+                    }
+                    resolve();
+                })
+                .fail((jqxhr, textStatus, error) => {
+                    console.error(`[Yablochny] Failed to load ${file}: ${textStatus}, ${error}`);
+                    resolve(); // Resolve anyway to let others finish
+                });
+        });
+    });
+
+    await Promise.all(promises);
 
     renderRegexPackList();
     updateRegexToggleButton();
@@ -2875,22 +2928,39 @@ function renderRegexPackList() {
     container.empty();
 
     const data = window.YablochnyRegexData || { packs: {}, enabled: [], active: true };
-    const lang = getUiLang();
-    const dict = UI_TEXT[lang] || UI_TEXT.en;
+    
+    // Iterate strictly in the order of REGEX_PACK_FILES to ensure consistent rendering
+    const packs = [];
+    if (typeof REGEX_PACK_FILES !== 'undefined') {
+        for (const file of REGEX_PACK_FILES) {
+            if (data.packs[file]) {
+                packs.push(data.packs[file]);
+            }
+        }
+    } else {
+        // Fallback if array is not accessible (should not happen)
+        Object.values(data.packs).forEach(p => packs.push(p));
+    }
 
-    for (const [id, pack] of Object.entries(data.packs)) {
-        const enabled = data.enabled.includes(id);
+    if (packs.length === 0) {
+        container.append(`<div style="font-size:12px;color:#888;padding:5px;">No regex packs found.</div>`);
+        return;
+    }
 
+    const enabled = data.enabled || [];
+
+    for (const pack of packs) {
+        const isChecked = enabled.includes(pack.id) ? "checked" : "";
+        // Clean name: remove suffix like " (x regexes)"
+        const displayName = pack.name;
+        
         const html = `
-      <div class="yp-regex-pack">
-        <label class="checkbox-label">
-          <input type="checkbox" data-pack="${id}" ${enabled ? "checked" : ""} ${!data.active ? "disabled" : ""}>
-          <span class="yp-regex-pack-name">${pack.name}</span>
-        </label>
-        <div class="yp-regex-pack-desc">${pack.description}</div>
-        <div class="yp-regex-pack-count">${pack.scripts.length} ${dict.regexCount}</div>
-      </div>
-    `;
+        <div class="yp-regex-pack" data-pack-id="${pack.id}">
+            <label class="checkbox-label">
+                <input type="checkbox" data-pack="${pack.id}" ${isChecked} class="yp-regex-checkbox">
+                <span class="yp-regex-pack-name">${displayName}</span>
+            </label>
+        </div>`;
         container.append(html);
     }
 
@@ -3513,10 +3583,253 @@ async function injectYablochnyUI(htmlContent) {
                 }
             });
         }
+        
+        // Helper to inject button into a prompt element
+        const processPromptItem = (el) => {
+            const id = el.attr("data-pm-identifier");
+            if (!id) return;
+
+            const isGreen = PROMPT_TO_CONTROL_MAP[id];
+            const isGold = REGEX_PROMPT_MAP[id];
+
+            if (isGreen || isGold) {
+                // Determine class and color based on type
+                // DISABLED: Using CSS-only virtual buttons to prevent flickering
+                /*
+                const btnColor = isGold ? "#f1c40f" : "#6bcb77";
+                const hoverColor = isGold ? "#f39c12" : "#8be096";
+                const className = isGold ? "yp-redirect-regex-btn" : "yp-redirect-btn";
+                
+                // Add button if missing
+                const controls = el.find("[class*='prompt_manager_prompt_controls']");
+                if (controls.length > 0 && controls.find(`.${className}`).length === 0) {
+                    const btn = jQuery(`<span class="prompt-manager-action ${className} fa-solid fa-sliders" title="Go to Settings" style="margin-right: 8px; cursor: pointer; color: ${btnColor}; transition: color 0.2s;"></span>`);
+                    
+                    btn.hover(
+                        function() { jQuery(this).css("color", hoverColor); },
+                        function() { jQuery(this).css("color", btnColor); }
+                    );
+
+                    btn.on("click", function(e) {
+                       // ... logic ...
+                    });
+
+                    controls.prepend(btn);
+                }
+                */
+            }
+        };
+
+        // Highlight logic - Full Scan
+        const highlightManagedPrompts = () => {
+            const items = jQuery("li[data-pm-identifier]");
+            items.each(function() {
+                processPromptItem(jQuery(this));
+            });
+        };
+        
+        // Setup MutationObserver for instant updates
+        const pmList = document.getElementById("completion_prompt_manager_list");
+        if (pmList) {
+            const observer = new MutationObserver((mutations) => {
+                // Simple, robust check: if anything changed in the list structure, re-scan managed prompts.
+                // This avoids missing complex nested updates.
+                // Scanning ~20-30 items is negligible for performance.
+                if (mutations.some(m => m.addedNodes.length > 0)) {
+                    highlightManagedPrompts();
+                }
+            });
+            observer.observe(pmList, { childList: true, subtree: true });
+        }
+        
+        // Keep interval as a fail-safe, faster check
+        setInterval(highlightManagedPrompts, 500);
     };
 
     setInterval(insertUI, 500);
     setTimeout(insertUI, 500);
+}
+
+function injectDynamicStyles() {
+    const styleId = "yablochny-dynamic-styles";
+    if (document.getElementById(styleId)) return;
+
+    const greenIds = Object.keys(PROMPT_TO_CONTROL_MAP);
+    const goldIds = Object.keys(REGEX_PROMPT_MAP);
+
+    let css = "";
+
+    // Common Button Style
+    css += `
+        .yp-virtual-btn-controls {
+            position: relative;
+            padding-left: 24px !important; /* Make space for icon */
+        }
+        .yp-virtual-btn-controls::before {
+            content: "\\f1de";
+            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.2s;
+            width: 20px;
+            text-align: center;
+            z-index: 10;
+        }
+    `;
+
+    // Green Prompts (Standard)
+    if (greenIds.length > 0) {
+        const selectors = greenIds.map(id => `li[data-pm-identifier="${id}"]`).join(",\n");
+        const controlSelectors = greenIds.map(id => `li[data-pm-identifier="${id}"] [class*='prompt_manager_prompt_controls']`).join(",\n");
+        
+        css += `
+        ${selectors} {
+            border-left: 3px solid rgba(107, 203, 119, 0.6) !important;
+            background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important;
+        }
+        ${selectors.replace(/]/g, '] [class*="prompt_manager_prompt_name"]')} {
+            color: #6bcb77 !important;
+            text-decoration: none !important;
+        }
+        
+        /* Virtual Button Green */
+        ${controlSelectors} {
+            position: relative;
+            padding-left: 28px !important; 
+        }
+        ${controlSelectors.replace(/controls']/g, "controls']::before")} {
+            content: "\\f1de";
+            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px; 
+            cursor: pointer;
+            color: #6bcb77;
+            opacity: 0.6; /* Dimmed by default */
+            transition: all 0.2s;
+        }
+        ${controlSelectors.replace(/controls']/g, "controls']:hover::before")} {
+            color: #8be096;
+            opacity: 1; /* Bright on hover */
+        }
+        `;
+    }
+
+    // Gold Prompts (Regex)
+    if (goldIds.length > 0) {
+        const selectors = goldIds.map(id => `li[data-pm-identifier="${id}"]`).join(",\n");
+        const controlSelectors = goldIds.map(id => `li[data-pm-identifier="${id}"] [class*='prompt_manager_prompt_controls']`).join(",\n");
+
+        css += `
+        ${selectors} {
+            border-left: 4px solid #f1c40f !important;
+            background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important;
+        }
+        ${selectors.replace(/]/g, '] [class*="prompt_manager_prompt_name"]')} {
+            color: #f1c40f !important;
+            text-decoration: none !important;
+        }
+
+        /* Virtual Button Gold */
+        ${controlSelectors} {
+            position: relative;
+            padding-left: 28px !important; 
+        }
+        ${controlSelectors.replace(/controls']/g, "controls']::before")} {
+            content: "\\f1de";
+            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px; 
+            cursor: pointer;
+            color: #f1c40f;
+            opacity: 0.6; /* Dimmed by default */
+            transition: all 0.2s;
+        }
+        ${controlSelectors.replace(/controls']/g, "controls']:hover::before")} {
+            color: #f39c12;
+            opacity: 1; /* Bright on hover */
+        }
+        `;
+    }
+
+    const style = document.createElement("style");
+    style.id = styleId;
+    style.textContent = css;
+    document.head.appendChild(style);
+    
+    // Add global listener for virtual buttons if not exists
+    if (!window.yablochnyVirtualListenerAdded) {
+        window.yablochnyVirtualListenerAdded = true;
+        jQuery(document).on("click", "[class*='prompt_manager_prompt_controls']", function(e) {
+            // Check if click is on the pseudo-element area (left side)
+            // And ensure it is NOT on a child element (standard buttons)
+            if (e.target !== this) return;
+            
+            // Check boundaries (approx first 25px)
+            if (e.offsetX > 30) return;
+
+            const li = jQuery(this).closest("li[data-pm-identifier]");
+            const id = li.attr("data-pm-identifier");
+            
+            if (!id) return;
+            
+            const isGreen = PROMPT_TO_CONTROL_MAP[id];
+            const isGold = REGEX_PROMPT_MAP[id];
+            
+            if (!isGreen && !isGold) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const controlId = isGreen ? PROMPT_TO_CONTROL_MAP[id] : REGEX_PROMPT_MAP[id];
+            let control;
+            
+            if (isGreen) {
+                control = jQuery(controlId);
+            } else {
+                control = jQuery(`.yp-regex-pack[data-pack-id="${controlId}"]`);
+            }
+            
+            if (control.length > 0) {
+                const container = jQuery("#yablochny-preset-container");
+                const mainDrawer = container.find(".inline-drawer").first();
+                const mainContent = mainDrawer.find(".inline-drawer-content").first();
+                
+                if (mainContent.length > 0 && !mainContent.is(":visible")) {
+                    mainDrawer.find(".inline-drawer-toggle").first().click();
+                }
+                
+                setTimeout(() => {
+                    const parentDrawer = control.closest(".yp-drawer");
+                    if (parentDrawer.length > 0) {
+                        const parentContent = parentDrawer.find(".yp-drawer-content");
+                        if (parentContent.length > 0 && !parentContent.is(":visible")) {
+                            parentDrawer.find(".yp-drawer-toggle").click();
+                        }
+                    }
+                    
+                    setTimeout(() => {
+                        control[0].scrollIntoView({ behavior: "smooth", block: "center" });
+                        const flashClass = isGold ? "yp-highlight-active" : "yp-flash";
+                        control.addClass(flashClass);
+                        setTimeout(() => control.removeClass(flashClass), 2000);
+                    }, 300);
+                }, 100);
+            }
+        });
+    }
 }
 
 jQuery(async () => {
@@ -3539,4 +3852,6 @@ jQuery(async () => {
     if (cfg.autoSyncOnStart) {
         syncPreset(false);
     }
+    
+    injectDynamicStyles();
 });

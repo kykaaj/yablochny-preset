@@ -102,11 +102,6 @@
         </div>
       </div>
 
-      <div class="yablochny-desc" id="yp-desc-text">
-        Managed chat-completion preset. The extension creates/updates a normal preset in the list and keeps your toggle
-        state and custom prompts.
-      </div>
-
       <div class="yablochny-row" style="margin-top: 10px;">
         <div class="yablochny-field">
           <div class="yablochny-label">Mode:</div>
@@ -391,7 +386,7 @@
       <!-- Things (collapsible) -->
       <div class="yp-drawer yablochny-subdrawer">
         <div class="yp-drawer-toggle inline-drawer-header">
-          <div class="yablochny-subtitle" id="yp-things-title">✎ Things & extras</div>
+          <div class="yablochny-subtitle" id="yp-things-title">Things</div>
           <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
         </div>
         <div class="yp-drawer-content" style="display: none;">
@@ -432,26 +427,20 @@
       <!-- Regex packs, merged here (collapsible) -->
       <div class="yp-drawer yablochny-subdrawer">
         <div class="yp-drawer-toggle inline-drawer-header">
-          <div class="yablochny-subtitle" id="yp-regex-title">Regex packs for Yablochny</div>
+          <div class="yablochny-subtitle" id="yp-regex-title">Regex packs</div>
           <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
         </div>
         <div class="yp-drawer-content" style="display: none;">
           <div class="regex-manager-section">
-            <div class="yablochny-controls">
-              <button id="yp-regex-toggle" class="menu_button secondary">
+            <div class="yablochny-controls" style="justify-content: center; gap: 6px;">
+              <button id="yp-regex-toggle" class="menu_button secondary small-btn">
                 <i class="fa-solid fa-power-off"></i>
                 <span id="yp-regex-toggle-label">Regex ON</span>
               </button>
-              <button id="yp-regex-debug" class="menu_button secondary">
+              <button id="yp-regex-debug" class="menu_button secondary small-btn">
                 <i class="fa-solid fa-bug"></i>
                 <span id="yp-regex-debug-label">Debug</span>
               </button>
-            </div>
-
-            <div class="regex-manager-desc">
-              <span id="yp-regex-desc">
-                Packs of regex helpers for formatting Yablochny preset output. Enable only what you use.
-              </span>
             </div>
 
             <div id="yp-regex-list"></div>

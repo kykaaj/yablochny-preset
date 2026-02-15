@@ -11,20 +11,22 @@
 }
 
 .yablochny-main-toggle {
-  background: linear-gradient(135deg, rgba(107, 203, 119, 0.15) 0%, rgba(231, 76, 60, 0.15) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.05) 0%, rgba(231, 76, 60, 0.05) 100%) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
   border-radius: 15px !important;
   margin-bottom: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
 .yablochny-main-toggle:hover {
-  background: linear-gradient(135deg, rgba(107, 203, 119, 0.25) 0%, rgba(231, 76, 60, 0.25) 100%) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  border-color: rgba(255, 255, 255, 0.25) !important;
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.1) 0%, rgba(231, 76, 60, 0.1) 100%) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 255, 255, 0.5) !important;
   transform: translateY(-1px);
 }
 
@@ -113,16 +115,18 @@
 }
 
 .yablochny-controls .menu_button.primary {
-  background: linear-gradient(135deg, rgba(107, 203, 119, 0.2) 0%, rgba(241, 196, 15, 0.2) 100%);
-  border: 1px solid rgba(107, 203, 119, 0.4);
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.1) 0%, rgba(241, 196, 15, 0.1) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(107, 203, 119, 0.2);
   color: #e0e0e0;
   transition: all 0.2s ease;
 }
 
 .yablochny-controls .menu_button.primary:hover {
-  background: linear-gradient(135deg, rgba(107, 203, 119, 0.3) 0%, rgba(241, 196, 15, 0.3) 100%);
-  border-color: rgba(241, 196, 15, 0.5);
-  box-shadow: 0 0 8px rgba(241, 196, 15, 0.2);
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.15) 0%, rgba(241, 196, 15, 0.15) 100%);
+  border-color: rgba(241, 196, 15, 0.3);
+  box-shadow: 0 0 8px rgba(241, 196, 15, 0.1);
 }
 
 .yp-model-btn.active {
@@ -163,15 +167,18 @@
 
 /* Distinct headers for extension sub-drawers */
 .yablochny-subdrawer .yp-drawer-toggle {
-  background: linear-gradient(90deg, rgba(231, 76, 60, 0.15) 0%, rgba(241, 196, 15, 0.05) 100%) !important;
-  border-left: 3px solid #e74c3c !important;
-  border-radius: 4px 0 0 4px;
+  background: linear-gradient(90deg, rgba(231, 76, 60, 0.05) 0%, rgba(241, 196, 15, 0.02) 100%) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
   margin-bottom: 2px;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
 }
 
 .yablochny-subdrawer .yp-drawer-toggle:hover {
-   background: linear-gradient(90deg, rgba(231, 76, 60, 0.25) 0%, rgba(241, 196, 15, 0.1) 100%) !important;
+   background: linear-gradient(90deg, rgba(231, 76, 60, 0.1) 0%, rgba(241, 196, 15, 0.05) 100%) !important;
+   border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
 .yablochny-subtitle {
@@ -416,18 +423,6 @@
   opacity: 0.8;
 }
 
-.yablochny-info-link:hover {
-  background: rgba(107, 203, 119, 0.1);
-  border-color: rgba(107, 203, 119, 0.3);
-  color: #fff;
-  text-decoration: none;
-}
-
-.yablochny-info-link i {
-  color: #6bcb77;
-  font-size: 14px;
-}
-
 /* Styles for yp-drawer (custom inline drawer) */
 .yp-drawer {
   background-color: rgba(0, 0, 0, 0.2);
@@ -452,10 +447,31 @@
 
 /* Distinct headers for extension sub-drawers */
 .yablochny-subdrawer .yp-drawer-toggle {
-  background: linear-gradient(90deg, rgba(107, 203, 119, 0.15) 0%, rgba(0, 0, 0, 0) 100%) !important;
-  border-left: 3px solid #6bcb77 !important;
-  border-radius: 4px 0 0 4px;
-  margin-bottom: 2px;
+  background: linear-gradient(90deg, rgba(107, 203, 119, 0.1), transparent) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.25) !important; /* Brighter frame like main button */
+  border-left: 4px solid #6bcb77 !important;
+  border-radius: 10px !important; /* More rounded */
+  margin-bottom: 4px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  justify-content: center;
+  position: relative;
+  padding: 10px 14px !important; /* Slightly smaller than before */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.yablochny-subdrawer .yp-drawer-toggle:hover {
+   background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(241, 196, 15, 0.15)) !important;
+   border-color: rgba(255, 255, 255, 0.4) !important;
+   border-left-color: #e74c3c !important;
+   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+   transform: translateY(-1px);
+}
+
+.yablochny-subdrawer .inline-drawer-icon {
+  position: absolute;
+  right: 10px;
 }
 
 .yablochny-subtitle {
@@ -463,6 +479,11 @@
   font-weight: 600;
   color: #fff;
   text-shadow: 0 0 5px rgba(107, 203, 119, 0.5);
+}
+
+.small-btn {
+  padding: 4px 10px !important;
+  font-size: 11px !important;
 }
 
 /* Visual feedback for disabled mods */
@@ -523,4 +544,57 @@
   border: 1px dashed rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   background: rgba(0, 0, 0, 0.2);
+}
+
+/* Managed Prompt Highlighting in ST UI */
+.yp-managed-prompt {
+  border-left: 3px solid rgba(107, 203, 119, 0.6) !important;
+  background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important;
+}
+
+/* Use attribute selector to catch prompt_manager_prompt_name even if prefix is used */
+.yp-managed-prompt [class*="prompt_manager_prompt_name"] {
+  color: #6bcb77 !important;
+  /* cursor: pointer !important;  <-- Removed to avoid confusion if only button is clickable */
+  text-decoration: none !important; /* Clean text */
+}
+
+.yp-managed-prompt .prompt_name:hover {
+  text-decoration: underline;
+  color: #8be096 !important;
+}
+
+/* Flash animation for controls */
+@keyframes yp-flash {
+  0% { box-shadow: 0 0 10px rgba(107, 203, 119, 0.8); border-color: #6bcb77; }
+  100% { box-shadow: none; border-color: var(--SmartThemeBorderColor); }
+}
+
+.yp-flash {
+  animation: yp-flash 1.5s ease-out;
+}
+
+/* Managed Regex Prompt Highlighting in ST UI */
+.yp-managed-regex-prompt {
+  border-left: 4px solid #f1c40f !important;
+  background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important;
+}
+
+.yp-managed-regex-prompt [class*="prompt_manager_prompt_name"] {
+  color: #f1c40f !important;
+  text-decoration: none !important;
+}
+
+/* Highlight State for Regex (Class-based transition) */
+.yp-highlight-active {
+  background-color: rgba(241, 196, 15, 0.5) !important;
+  box-shadow: 0 0 20px rgba(241, 196, 15, 0.8) !important;
+  border: 2px solid #f1c40f !important;
+  z-index: 100;
+  position: relative;
+  transform: scale(1.02);
+}
+
+.yp-regex-pack {
+  transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease, transform 0.3s ease;
 }
