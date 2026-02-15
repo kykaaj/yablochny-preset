@@ -3163,12 +3163,11 @@ function initControls() {
         }
     });
 
-    async function onPresetOptionChanged(updater) {
-        if (document.activeElement) document.activeElement.blur();
+    function onPresetOptionChanged(updater) {
         updater();
         saveSettingsDebounced();
         // Автоматически пересинхронизируем пресет при смене варианта
-        await syncPreset(true);
+        syncPreset(true);
     }
 
     jQuery("#yp-language").on("change", function () {
@@ -3375,6 +3374,7 @@ async function waitForOpenAI() {
     }
 }
 
+
 // Injected UI Management
 async function injectYablochnyUI(htmlContent) {
     // Helper to log if dev mode
@@ -3384,16 +3384,7 @@ async function injectYablochnyUI(htmlContent) {
 
     // Helper to insert our UI
     const insertUI = () => {
-        // Simple check: Does our container exist?
-        const container = jQuery("#yablochny-preset-container");
-        if (container.length > 0) {
-            if (!container.is(":visible")) {
-                if (container.parent().is(":visible")) {
-                    container.show();
-                }
-            }
-            return; 
-        }
+        if (jQuery("#yablochny-preset-container").length > 0) return;
 
         // Target: The persistent OpenAI presets container.
         const presetsBlock = jQuery("#openai_api-presets");
@@ -3402,8 +3393,8 @@ async function injectYablochnyUI(htmlContent) {
         // Safety check: Are we visible?
         if ((!presetsBlock.length || !presetsBlock.is(":visible")) && (!promptManager.length || !promptManager.is(":visible"))) return;
 
-        // Create wrapper - No padding needed as the drawer handles it
-        const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 10px; margin-bottom: 5px;"></div>`);
+        // Create wrapper
+        const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 10px; margin-bottom: 5px; padding: 0 5px;"></div>`);
         wrapper.html(htmlContent);
 
         let inserted = false;
@@ -3426,13 +3417,11 @@ async function injectYablochnyUI(htmlContent) {
             initControls();
             loadRegexPacksIntoYablochny();
             
-            // --- STATE RESTORATION ---
+            // --- STATE RESTORATION (Only for Regex Drawer) ---
             const restoreDrawer = (key, selector) => {
                 const isOpen = localStorage.getItem(key) === "true";
                 const el = wrapper.find(selector);
-                // Find the toggle button associated with this content
-                // Usually it's the previous sibling .inline-drawer-toggle
-                const toggle = el.closest(".inline-drawer").find(".inline-drawer-toggle").first();
+                const toggle = el.closest(".inline-drawer").find(".inline-drawer-toggle");
                 const icon = toggle.find(".inline-drawer-icon");
                 
                 const updateIcon = (open) => {
@@ -3469,28 +3458,12 @@ async function injectYablochnyUI(htmlContent) {
                 });
             };
 
-            // Restore Main Drawer (Root)
-            // Selector needs to find the content relative to wrapper
-            // Wrapper -> .inline-drawer -> .inline-drawer-content (Main content)
-            // But now we have multiple drawers. We need to be specific.
-            // The first drawer is the Main one.
-            const mainDrawerContent = wrapper.children(".inline-drawer").first().children(".inline-drawer-content");
-            if (mainDrawerContent.length) {
-                restoreDrawer("yablochny_main_drawer_open", mainDrawerContent);
-            }
-
-            // Restore Sub Drawers (Things, Regex, More Settings)
-            // Look inside the main drawer content
-            mainDrawerContent.find(".inline-drawer").each(function(i) {
-                const subContent = jQuery(this).find(".inline-drawer-content");
+            // Restore Regex Drawer
+            wrapper.find(".inline-drawer").each(function() {
                 const title = jQuery(this).find(".inline-drawer-toggle").text().trim();
-                
-                let keySuffix = "sub_" + i;
-                if (title.includes("Things")) keySuffix = "things";
-                else if (title.includes("Regex")) keySuffix = "regex";
-                else if (title.includes("More")) keySuffix = "more_settings";
-                
-                restoreDrawer("yablochny_drawer_" + keySuffix, subContent);
+                if (title.includes("Regex")) {
+                    restoreDrawer("yablochny_drawer_regex", jQuery(this).find(".inline-drawer-content"));
+                }
             });
 
             // Credits & Easter Egg
@@ -3511,10 +3484,10 @@ async function injectYablochnyUI(htmlContent) {
         }
     };
 
-    // Use a fast polling interval
     setInterval(insertUI, 500);
     setTimeout(insertUI, 500);
 }
+
 jQuery(async () => {
     try {
         const settingsHtml = await jQuery.get(`${SCRIPT_PATH}/settings.html`);
@@ -3526,9 +3499,13 @@ jQuery(async () => {
 
     await waitForOpenAI();
 
+    // Regex packs loading is handled in injectYablochnyUI now? 
+    // Wait, loadRegexPacksIntoYablochny is called in injectYablochnyUI.
+    // But we should check if we need to load them initially if UI isn't inserted yet?
+    // No, logic is self-contained.
+
     const cfg = getConfig();
     if (cfg.autoSyncOnStart) {
         syncPreset(false);
     }
 });
-
