@@ -3376,31 +3376,37 @@ async function waitForOpenAI() {
 
 // Injected UI Management
 async function injectYablochnyUI(htmlContent) {
+    // We target the OpenAI settings area to be near the Preset settings.
     
-    // Simplified insertion logic
+    // Helper to log if dev mode
+    const log = (msg) => {
+        if (extension_settings[EXTENSION_NAME]?.devMode) console.log(`[Yablochny] ${msg}`);
+    };
+
+    // Helper to insert our UI
     const insertUI = () => {
-        // Check if UI already exists
-        if (jQuery("#yablochny-preset-container").length > 0) {
-            // If it exists but is hidden (display: none), show it (unless parent is hidden)
-            if (!jQuery("#yablochny-preset-container").is(":visible")) {
-               // checking if we need to re-insert or just show isn't trivial, 
-               // usually ST removes elements entirely. 
-               // If element exists but not visible, it might be in a hidden tab.
-               // We'll assume if it exists, it's fine.
+        // Simple check: Does our container exist?
+        const container = jQuery("#yablochny-preset-container");
+        if (container.length > 0) {
+            // If it exists but hidden, show it
+            if (!container.is(":visible")) {
+                // If the parent is visible, show it
+                if (container.parent().is(":visible")) {
+                    container.show();
+                }
             }
-            return;
+            return; // Already exists
         }
 
         // Target containers
-        const settingsContainer = jQuery("#openai_settings");
         const promptManager = jQuery("#completion_prompt_manager_list");
+        const settingsBlock = jQuery("#openai_settings");
         
-        // Only insert if one of the targets is visible (meaning tab is open)
-        if (!settingsContainer.is(":visible") && !promptManager.is(":visible")) {
-            return;
-        }
+        // Safety check: Are we even on the right tab?
+        // If neither prompt manager nor settings block are in DOM, wait.
+        if (promptManager.length === 0 && settingsBlock.length === 0) return;
 
-        // Create wrapper
+        // Create wrapper - CLEAN, no borders, full width
         const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"></div>`);
         wrapper.html(htmlContent);
 
@@ -3420,8 +3426,9 @@ async function injectYablochnyUI(htmlContent) {
         } 
         
         // Fallback: Append to main settings
-        if (!inserted && settingsContainer.length > 0) {
-            settingsContainer.prepend(wrapper); // Prepend to be at top if prompt manager not found
+        if (!inserted && settingsBlock.length > 0) {
+            // Prepend to be at top if prompt manager not found but settings block exists
+            settingsBlock.prepend(wrapper);
             inserted = true;
         }
 
@@ -3435,7 +3442,10 @@ async function injectYablochnyUI(htmlContent) {
             const restoreDrawer = (key, selector) => {
                 const isOpen = localStorage.getItem(key) === "true";
                 const el = wrapper.find(selector);
-                const toggle = el.closest(".inline-drawer").find(".inline-drawer-toggle");
+                // Find toggle button associated with this content
+                // In our HTML structure, it's the previous sibling usually, or part of .inline-drawer parent
+                const drawer = el.closest(".inline-drawer");
+                const toggle = drawer.find(".inline-drawer-toggle").first();
                 const icon = toggle.find(".inline-drawer-icon");
                 
                 if (isOpen) {
@@ -3463,18 +3473,20 @@ async function injectYablochnyUI(htmlContent) {
             };
 
             // Restore Main Drawer
+            // Selector for content relative to wrapper
             restoreDrawer("yablochny_main_drawer_open", ".yablochny-settings > .inline-drawer > .inline-drawer-content");
 
             // Restore Sub Drawers
+            // Iterate all .inline-drawer inside the main content
             wrapper.find(".yablochny-settings .inline-drawer .inline-drawer-content .inline-drawer").each(function(i) {
                 const subContent = jQuery(this).find(".inline-drawer-content");
                 const title = jQuery(this).find(".inline-drawer-toggle").text().trim();
                 let key = "yablochny_sub_" + i;
+                
                 if (title.includes("Things")) key = "yablochny_sub_things";
                 else if (title.includes("Regex")) key = "yablochny_sub_regex";
                 else if (title.includes("More")) key = "yablochny_sub_more";
                 
-                // Manually bind because helper above assumes structure relative to wrapper root for selector
                 const toggle = jQuery(this).find(".inline-drawer-toggle");
                 const icon = toggle.find(".inline-drawer-icon");
                 
@@ -3518,8 +3530,12 @@ async function injectYablochnyUI(htmlContent) {
         }
     };
 
-    // Polling only. Simple and reliable.
-    setInterval(insertUI, 500);
+    // Use setInterval for robustness. Check every 1s.
+    // If not found, try to insert.
+    setInterval(insertUI, 1000);
+    
+    // Initial attempt
+    setTimeout(insertUI, 1000);
 }
         
         // Fallback strategies
