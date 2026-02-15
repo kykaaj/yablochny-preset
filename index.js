@@ -3401,7 +3401,10 @@ async function injectYablochnyUI(htmlContent) {
         if (promptManager.length === 0 && settingsBlock.length === 0) return;
 
         // Create wrapper - CLEAN, no borders, full width
-        const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"></div>`);
+        // Reserve height to prevent layout shift (collapse) during re-render
+        const storedHeight = localStorage.getItem("yablochny_ui_height");
+        const minHeightStyle = storedHeight ? `min-height: ${storedHeight}px;` : "";
+        const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px; ${minHeightStyle}"></div>`);
         wrapper.html(htmlContent);
 
         let inserted = false;
@@ -3428,6 +3431,25 @@ async function injectYablochnyUI(htmlContent) {
             applyLocaleToUi();
             initControls();
             loadRegexPacksIntoYablochny();
+            
+            // Measure and save height after rendering
+            // Use a timeout to ensure DOM is settled (images/fonts etc)
+            setTimeout(() => {
+                const h = wrapper.outerHeight();
+                if (h && h > 50) { // Safety check to not save near-zero height
+                    localStorage.setItem("yablochny_ui_height", h);
+                    // Optional: relax min-height if content grows, but keeping it prevents jump on shrink
+                    // wrapper.css("min-height", ""); 
+                }
+            }, 500);
+
+            // Update height when user interacts (opens/closes drawers)
+            wrapper.on("click", ".inline-drawer-toggle", () => {
+                setTimeout(() => {
+                    const h = wrapper.outerHeight();
+                    if (h > 50) localStorage.setItem("yablochny_ui_height", h);
+                }, 300); // Wait for slide animation
+            });
             
             // --- STATE RESTORATION ---
             const restoreDrawer = (key, selector) => {
