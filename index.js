@@ -114,11 +114,11 @@ const REGEX_PROMPT_MAP = {
     "56907e71-68d2-4c89-b327-c728329d3921": "braille-blank-jb",
     "5fe3d988-d5e5-4ab8-82ee-6f7842c99c01": "clocks",
     "10c734cd-9356-4794-85a4-e24fc4e4eacd": "clocks-minimal",
-    "f5afba61-96c6-4699-acba-372237d828f3": "psychological-portraits-pc", // Default to PC
-    "07468205-1e0d-4d9a-ad3f-b3e6df7b852c": "diary-pc", // Default to PC
-    "c5a0deb0-cb0c-4934-a547-ac88d258abed": "phone (pc)", // Default to PC
+    "f5afba61-96c6-4699-acba-372237d828f3": ["psychological-portraits-pc", "psychological-portraits-mobile"],
+    "07468205-1e0d-4d9a-ad3f-b3e6df7b852c": ["diary-pc", "diary-mobile"],
+    "c5a0deb0-cb0c-4934-a547-ac88d258abed": "phone (pc)",
     "e8c4eebd-5452-4651-80d5-735c35a39b15": "transitions",
-    "42805823-bba7-44d6-a850-4a34473b816a": "infoblock",
+    "42805823-bba7-44d6-a850-4a34473b816a": ["infoblock", "infoblock-mobile"],
     "e7120351-e6a5-4dc8-91c0-8dba621cb21f": "music-player"
 };
 
@@ -3794,15 +3794,19 @@ function injectDynamicStyles() {
             e.stopPropagation();
             
             const controlId = isGreen ? PROMPT_TO_CONTROL_MAP[id] : REGEX_PROMPT_MAP[id];
-            let control;
+            let controls = jQuery();
             
             if (isGreen) {
-                control = jQuery(controlId);
+                controls = jQuery(controlId);
             } else {
-                control = jQuery(`.yp-regex-pack[data-pack-id="${controlId}"]`);
+                // Handle array or string
+                const packIds = Array.isArray(controlId) ? controlId : [controlId];
+                packIds.forEach(pid => {
+                    controls = controls.add(jQuery(`.yp-regex-pack[data-pack-id="${pid}"]`));
+                });
             }
             
-            if (control.length > 0) {
+            if (controls.length > 0) {
                 const container = jQuery("#yablochny-preset-container");
                 const mainDrawer = container.find(".inline-drawer").first();
                 const mainContent = mainDrawer.find(".inline-drawer-content").first();
@@ -3812,7 +3816,9 @@ function injectDynamicStyles() {
                 }
                 
                 setTimeout(() => {
-                    const parentDrawer = control.closest(".yp-drawer");
+                    // Find drawer for the first control
+                    const firstControl = controls.first();
+                    const parentDrawer = firstControl.closest(".yp-drawer");
                     if (parentDrawer.length > 0) {
                         const parentContent = parentDrawer.find(".yp-drawer-content");
                         if (parentContent.length > 0 && !parentContent.is(":visible")) {
@@ -3821,10 +3827,13 @@ function injectDynamicStyles() {
                     }
                     
                     setTimeout(() => {
-                        control[0].scrollIntoView({ behavior: "smooth", block: "center" });
+                        // Scroll to first
+                        firstControl[0].scrollIntoView({ behavior: "smooth", block: "center" });
+                        
+                        // Highlight ALL
                         const flashClass = isGold ? "yp-highlight-active" : "yp-flash";
-                        control.addClass(flashClass);
-                        setTimeout(() => control.removeClass(flashClass), 2000);
+                        controls.addClass(flashClass);
+                        setTimeout(() => controls.removeClass(flashClass), 2000);
                     }, 300);
                 }, 100);
             }
