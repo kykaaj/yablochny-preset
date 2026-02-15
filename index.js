@@ -3833,7 +3833,7 @@ function injectDynamicStyles() {
                         // Highlight ALL
                         const flashClass = isGold ? "yp-highlight-active" : "yp-flash";
                         controls.addClass(flashClass);
-                        setTimeout(() => controls.removeClass(flashClass), 2000);
+                        setTimeout(() => controls.removeClass(flashClass), 5500);
                     }, 300);
                 }, 100);
             }

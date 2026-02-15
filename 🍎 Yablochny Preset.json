@@ -1007,20 +1007,7 @@
             "injection_trigger": [],
             "forbid_overrides": false
         },
-        {
-            "identifier": "986beeb5-ee2e-44c6-a30f-578bd11c9af6",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "┌︎ ◦︎ anti-repetition",
-            "role": "system",
-            "content": "{{setvar::antirepet::\n\n[ANTI-REPETITION]\nStop the reuse of lighting or already said details, from previous scene and context. Each situation, is utterly different from one another and should be treated as such. Never reuse: verb combos, sentence structures, descriptive phrases — even paraphrased. Rebuild from scratch every time.}}",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
+
         {
             "identifier": "e12784ea-de67-48a7-99ef-3b0c1c45907c",
             "system_prompt": false,
