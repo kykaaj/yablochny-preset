@@ -97,7 +97,7 @@ const LANG_MAP = {
 
 const UI_TEXT = {
     en: {
-        title: "Yablochny Preset",
+        title: "Settings",
         desc: "Adaptive Yablochny chat preset. The extension creates/updates a normal preset and keeps your toggle state and custom prompts.",
         sync: "Sync preset",
         auto: "Sync on SillyTavern start",
@@ -116,8 +116,8 @@ const UI_TEXT = {
         focusLabel: "Focus",
         deconstructionLabel: "COT deconstruction",
         lastSyncNever: "never",
-        siteLabel: "Project Site",
-        guideLabel: "Full Instructions (Guide)",
+        siteLabel: "Site",
+        guideLabel: "Guide",
         presetLabel: "Preset:",
         lastSyncLabel: "Last sync:",
         thingsTitle: "Things / Toggles",
@@ -151,7 +151,7 @@ const UI_TEXT = {
         modelPresetLabel: "Model Preset:",
     },
     ru: {
-        title: "Яблочный пресет",
+        title: "Настройки",
         desc: "Адаптивный пресет Яблочный. Расширение создаёт/обновляет обычный пресет и сохраняет включённые тоглы и кастомные промпты.",
         sync: "Синхронизировать пресет",
         auto: "Синхронизировать при запуске SillyTavern",
@@ -170,8 +170,8 @@ const UI_TEXT = {
         focusLabel: "Фокус",
         deconstructionLabel: "COT деконструкция",
         lastSyncNever: "ещё ни разу",
-        siteLabel: "Сайт проекта",
-        guideLabel: "Полная инструкция (Гайд)",
+        siteLabel: "Сайт",
+        guideLabel: "Гайд",
         presetLabel: "Пресет:",
         lastSyncLabel: "Синхронизация:",
         thingsTitle: "Дополнения (Things)",
@@ -206,7 +206,7 @@ const UI_TEXT = {
         disableModsLabel: "Отключить моды (bypass settings)",
     },
     uk: {
-        title: "Яблучний пресет",
+        title: "Налаштування",
         desc: "Адаптивний пресет Яблучний. Розширення створює/оновлює звичайний пресет і зберігає увімкнені тогли та кастомні промпти.",
         sync: "Синхронізувати пресет",
         auto: "Синхронізувати при запуску SillyTavern",
@@ -225,8 +225,8 @@ const UI_TEXT = {
         focusLabel: "Фокус",
         deconstructionLabel: "COT деконструкція",
         lastSyncNever: "ще жодного разу",
-        siteLabel: "Сайт проєкту",
-        guideLabel: "Повна інструкція (Гайд)",
+        siteLabel: "Сайт",
+        guideLabel: "Гайд",
         presetLabel: "Пресет:",
         lastSyncLabel: "Синхронізація:",
         thingsTitle: "✎ Штуки та екстра",
@@ -1058,7 +1058,7 @@ Comments template:
 <br>
 ---
 <br>
-<div style="background-color: #1a1a1d; border: 1px solid #4a4e69; border-radius: 8px; padding: 15px; font-family: 'Courier New', Courier, monospace; color: #f2e9e4;'>
+<div style="background-color: #1a1a1d; border: 1px solid #4a4e69; border-radius: 8px; padding: 15px; font-family: 'Courier New', Courier, monospace; color: #f2e9e4;">
     <div style="border-bottom: 1px solid #4a4e69; padding-bottom: 10px; margin-bottom: 10px;">
         <span style="color: #c9ada7; font-weight: bold;">[Comments]</span>
     </div>
@@ -1069,7 +1069,6 @@ Comments template:
         },
     ],
 };
-
 function getUiLang() {
     const raw = (getCurrentLocale?.() || "en").toLowerCase();
     if (LANG_MAP[raw]) return LANG_MAP[raw];
@@ -3472,13 +3471,45 @@ async function injectYablochnyUI(htmlContent) {
             
             let titleClicks = 0;
             jQuery("#yp-title-text").off("click").on("click", function (e) {
-                e.stopPropagation();
+                // Allow propagation so the drawer toggles
                 titleClicks++;
                 if (titleClicks >= 5) {
                     titleClicks = 0;
                     const dev = jQuery("#yp-dev-container");
                     if (dev.css("display") === "none") { dev.show(); if (window.toastr) window.toastr.info("Developer Mode revealed!"); }
                     else { dev.hide(); if (jQuery("#yp-dev-mode").is(":checked")) jQuery("#yp-dev-mode").click(); }
+                }
+            });
+
+            // Generic Drawer Toggle (delegated)
+            wrapper.on("click", ".yp-drawer-toggle, .yablochny-main-toggle", function(e) {
+                // If the element has a direct click handler, this delegate might still run.
+                // But generally safe.
+                
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const toggle = jQuery(this);
+                // Determine drawer type
+                let drawer = toggle.closest(".yp-drawer");
+                if (drawer.length === 0) drawer = toggle.closest(".inline-drawer");
+                
+                // Find content - look for direct children first to avoid nested issues
+                let content = drawer.children(".yp-drawer-content");
+                if (content.length === 0) content = drawer.children(".inline-drawer-content");
+                
+                const icon = toggle.find(".inline-drawer-icon");
+                
+                if (content.is(":visible")) {
+                    content.slideUp(200);
+                    icon.removeClass("fa-circle-chevron-up").addClass("fa-circle-chevron-down");
+                    icon.removeClass("down"); 
+                    toggle.removeClass("open");
+                } else {
+                    content.slideDown(200);
+                    icon.removeClass("fa-circle-chevron-down").addClass("fa-circle-chevron-up");
+                    icon.removeClass("down");
+                    toggle.addClass("open");
                 }
             });
         }

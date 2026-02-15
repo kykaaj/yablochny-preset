@@ -5,16 +5,63 @@
 .yablochny-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  width: 100%;
   gap: 8px;
+}
+
+.yablochny-main-toggle {
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.15) 0%, rgba(231, 76, 60, 0.15) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 15px !important;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.yablochny-main-toggle:hover {
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.25) 0%, rgba(231, 76, 60, 0.25) 100%) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-1px);
+}
+
+.yablochny-main-toggle:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Accent line at the bottom to give it a "techy" apple feel */
+.yablochny-main-toggle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 30%;
+  width: 40%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(107, 203, 119, 0.5), rgba(231, 76, 60, 0.5), transparent);
+  opacity: 0.7;
+}
+
+.yablochny-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+  padding: 2px 0; /* Add slight breathing room */
 }
 
 .yablochny-title {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  letter-spacing: 0.5px;
 }
 
 .yablochny-info-links {
@@ -66,8 +113,72 @@
 }
 
 .yablochny-controls .menu_button.primary {
-  background: rgba(107, 203, 119, 0.18);
-  border-color: #6bcb77;
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.2) 0%, rgba(241, 196, 15, 0.2) 100%);
+  border: 1px solid rgba(107, 203, 119, 0.4);
+  color: #e0e0e0;
+  transition: all 0.2s ease;
+}
+
+.yablochny-controls .menu_button.primary:hover {
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.3) 0%, rgba(241, 196, 15, 0.3) 100%);
+  border-color: rgba(241, 196, 15, 0.5);
+  box-shadow: 0 0 8px rgba(241, 196, 15, 0.2);
+}
+
+.yp-model-btn.active {
+  opacity: 1;
+  font-weight: 700;
+  border-bottom-color: #f1c40f;
+  color: #f1c40f;
+  text-shadow: 0 0 5px rgba(241, 196, 15, 0.3);
+}
+
+.yablochny-info-link {
+  font-size: 12px;
+  color: #7a9a72;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.yablochny-info-link:hover {
+  text-decoration: underline;
+  color: #6bcb77;
+  background: none;
+  border: none;
+  transform: none;
+}
+
+.yablochny-info-link i {
+  color: inherit;
+  font-size: 14px;
+}
+
+/* Distinct headers for extension sub-drawers */
+.yablochny-subdrawer .yp-drawer-toggle {
+  background: linear-gradient(90deg, rgba(231, 76, 60, 0.15) 0%, rgba(241, 196, 15, 0.05) 100%) !important;
+  border-left: 3px solid #e74c3c !important;
+  border-radius: 4px 0 0 4px;
+  margin-bottom: 2px;
+  transition: background 0.2s;
+}
+
+.yablochny-subdrawer .yp-drawer-toggle:hover {
+   background: linear-gradient(90deg, rgba(231, 76, 60, 0.25) 0%, rgba(241, 196, 15, 0.1) 100%) !important;
+}
+
+.yablochny-subtitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
 }
 
 .yablochny-controls .menu_button.secondary {
@@ -268,24 +379,41 @@
 .yablochny-info-links {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
   margin-bottom: 12px;
+  justify-content: center; /* Center the links */
 }
 
 .yablochny-info-link {
-  flex: 1;
+  font-size: 11px;
+  color: #999;
+  text-decoration: none;
+  font-weight: 500;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 10px;
-  background: rgba(107, 203, 119, 0.05);
-  border: 1px solid rgba(107, 203, 119, 0.2);
-  border-radius: 8px;
-  color: #ddd;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  padding: 4px 10px !important;
+  border-radius: 12px !important; /* Capsule shape */
+  flex: 0 0 auto !important;
+}
+
+.yablochny-info-link:hover {
   text-decoration: none;
+  color: #ccc;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-1px);
+}
+
+.yablochny-info-link i {
+  color: #e74c3c; /* Red accent for icons */
   font-size: 12px;
-  transition: all 0.2s;
-  white-space: nowrap;
+  opacity: 0.8;
 }
 
 .yablochny-info-link:hover {
@@ -300,8 +428,30 @@
   font-size: 14px;
 }
 
+/* Styles for yp-drawer (custom inline drawer) */
+.yp-drawer {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.yp-drawer-toggle {
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.yp-drawer-content {
+  padding: 5px;
+  border-top: 1px solid var(--SmartThemeBorderColor);
+}
+
 /* Distinct headers for extension sub-drawers */
-.yablochny-subdrawer .inline-drawer-header {
+.yablochny-subdrawer .yp-drawer-toggle {
   background: linear-gradient(90deg, rgba(107, 203, 119, 0.15) 0%, rgba(0, 0, 0, 0) 100%) !important;
   border-left: 3px solid #6bcb77 !important;
   border-radius: 4px 0 0 4px;
