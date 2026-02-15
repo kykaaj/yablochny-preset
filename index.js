@@ -3376,34 +3376,151 @@ async function waitForOpenAI() {
 
 // Injected UI Management
 async function injectYablochnyUI(htmlContent) {
-    // We target the OpenAI settings area to be near the Preset settings.
     
-    // Helper to log if dev mode
-    const log = (msg) => {
-        if (extension_settings[EXTENSION_NAME]?.devMode) console.log(`[Yablochny] ${msg}`);
-    };
-
-    // Helper to insert our UI
+    // Simplified insertion logic
     const insertUI = () => {
-        // If already exists and is visible, do nothing
-        if (jQuery("#yablochny-preset-container").length > 0 && jQuery("#yablochny-preset-container").is(":visible")) return;
+        // Check if UI already exists
+        if (jQuery("#yablochny-preset-container").length > 0) {
+            // If it exists but is hidden (display: none), show it (unless parent is hidden)
+            if (!jQuery("#yablochny-preset-container").is(":visible")) {
+               // checking if we need to re-insert or just show isn't trivial, 
+               // usually ST removes elements entirely. 
+               // If element exists but not visible, it might be in a hidden tab.
+               // We'll assume if it exists, it's fine.
+            }
+            return;
+        }
 
-        // If exists but hidden/detached, remove it to be safe and re-insert
-        jQuery("#yablochny-preset-container").remove();
+        // Target containers
+        const settingsContainer = jQuery("#openai_settings");
+        const promptManager = jQuery("#completion_prompt_manager_list");
+        
+        // Only insert if one of the targets is visible (meaning tab is open)
+        if (!settingsContainer.is(":visible") && !promptManager.is(":visible")) {
+            return;
+        }
 
-        // Create our wrapper - CLEAN, no borders, full width
+        // Create wrapper
         const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"></div>`);
         wrapper.html(htmlContent);
 
         let inserted = false;
 
-        // Strategy 1: Find the "Prompt Manager" list (toggles) and insert BEFORE its container
-        const promptList = jQuery("#completion_prompt_manager_list");
-        if (promptList.length > 0) {
-            const drawer = promptList.closest(".inline-drawer");
-            if (drawer.length > 0) { drawer.before(wrapper); inserted = true; } 
-            else { promptList.before(wrapper); inserted = true; }
+        // Try to insert before Prompt Manager (best spot)
+        if (promptManager.length > 0) {
+            // Check for drawer wrapper
+            const drawer = promptManager.closest(".inline-drawer");
+            if (drawer.length > 0) {
+                drawer.before(wrapper);
+                inserted = true;
+            } else {
+                promptManager.before(wrapper);
+                inserted = true;
+            }
+        } 
+        
+        // Fallback: Append to main settings
+        if (!inserted && settingsContainer.length > 0) {
+            settingsContainer.prepend(wrapper); // Prepend to be at top if prompt manager not found
+            inserted = true;
         }
+
+        if (inserted) {
+            // Re-init logic
+            applyLocaleToUi();
+            initControls();
+            loadRegexPacksIntoYablochny();
+            
+            // --- STATE RESTORATION ---
+            const restoreDrawer = (key, selector) => {
+                const isOpen = localStorage.getItem(key) === "true";
+                const el = wrapper.find(selector);
+                const toggle = el.closest(".inline-drawer").find(".inline-drawer-toggle");
+                const icon = toggle.find(".inline-drawer-icon");
+                
+                if (isOpen) {
+                    el.show();
+                    icon.removeClass("down").addClass("up");
+                    toggle.addClass("open");
+                } else {
+                    el.hide();
+                    icon.removeClass("up").addClass("down");
+                    toggle.removeClass("open");
+                }
+                
+                toggle.off("click").on("click", function(e) {
+                    e.preventDefault(); e.stopPropagation();
+                    if (el.is(":visible")) {
+                        el.slideUp(200);
+                        icon.removeClass("up").addClass("down");
+                        localStorage.setItem(key, "false");
+                    } else {
+                        el.slideDown(200);
+                        icon.removeClass("down").addClass("up");
+                        localStorage.setItem(key, "true");
+                    }
+                });
+            };
+
+            // Restore Main Drawer
+            restoreDrawer("yablochny_main_drawer_open", ".yablochny-settings > .inline-drawer > .inline-drawer-content");
+
+            // Restore Sub Drawers
+            wrapper.find(".yablochny-settings .inline-drawer .inline-drawer-content .inline-drawer").each(function(i) {
+                const subContent = jQuery(this).find(".inline-drawer-content");
+                const title = jQuery(this).find(".inline-drawer-toggle").text().trim();
+                let key = "yablochny_sub_" + i;
+                if (title.includes("Things")) key = "yablochny_sub_things";
+                else if (title.includes("Regex")) key = "yablochny_sub_regex";
+                else if (title.includes("More")) key = "yablochny_sub_more";
+                
+                // Manually bind because helper above assumes structure relative to wrapper root for selector
+                const toggle = jQuery(this).find(".inline-drawer-toggle");
+                const icon = toggle.find(".inline-drawer-icon");
+                
+                if (localStorage.getItem(key) === "true") {
+                    subContent.show();
+                    icon.removeClass("down").addClass("up");
+                } else {
+                    subContent.hide();
+                    icon.removeClass("up").addClass("down");
+                }
+                
+                toggle.off("click").on("click", function(e) {
+                    e.preventDefault(); e.stopPropagation();
+                    if (subContent.is(":visible")) {
+                        subContent.slideUp(200);
+                        icon.removeClass("up").addClass("down");
+                        localStorage.setItem(key, "false");
+                    } else {
+                        subContent.slideDown(200);
+                        icon.removeClass("down").addClass("up");
+                        localStorage.setItem(key, "true");
+                    }
+                });
+            });
+
+            // Credits & Easter Egg
+            jQuery("#yp-credits-btn").off("click").on("click", function () { jQuery("#yp-credits-area").slideToggle(200); });
+            jQuery("#yp-credits-close-inline").off("click").on("click", function () { jQuery("#yp-credits-area").slideUp(200); });
+            
+            let titleClicks = 0;
+            jQuery("#yp-title-text").off("click").on("click", function (e) {
+                e.stopPropagation();
+                titleClicks++;
+                if (titleClicks >= 5) {
+                    titleClicks = 0;
+                    const dev = jQuery("#yp-dev-container");
+                    if (dev.css("display") === "none") { dev.show(); if (window.toastr) window.toastr.info("Developer Mode revealed!"); }
+                    else { dev.hide(); if (jQuery("#yp-dev-mode").is(":checked")) jQuery("#yp-dev-mode").click(); }
+                }
+            });
+        }
+    };
+
+    // Polling only. Simple and reliable.
+    setInterval(insertUI, 500);
+}
         
         // Fallback strategies
         if (!inserted) {
