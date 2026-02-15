@@ -3450,7 +3450,7 @@ async function injectYablochnyUI(htmlContent) {
                 };
 
                 if (isOpen) {
-                    el.show();
+                    el.show(); // INSTANT show, no animation on restore
                     updateIcon(true);
                 } else {
                     el.hide();
@@ -3460,11 +3460,11 @@ async function injectYablochnyUI(htmlContent) {
                 toggle.off("click").on("click", function(e) {
                     e.preventDefault(); e.stopPropagation();
                     if (el.is(":visible")) {
-                        el.slideUp(200);
+                        el.slideUp(200); // Animation only on user click
                         updateIcon(false);
                         localStorage.setItem(key, "false");
                     } else {
-                        el.slideDown(200);
+                        el.slideDown(200); // Animation only on user click
                         updateIcon(true);
                         localStorage.setItem(key, "true");
                     }
