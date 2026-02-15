@@ -3536,9 +3536,17 @@ async function injectYablochnyUI(htmlContent) {
             });
 
             // Restore scroll position if we tracked it
-            if (window.yablochnyLastScroll > 0) {
-                const scrollable = jQuery("#rm_api_block").closest('.drawer-content');
-                if (scrollable.length) scrollable.scrollTop(window.yablochnyLastScroll);
+            if (typeof window.yablochnyLastScroll === 'number' && window.yablochnyLastScroll > 0) {
+                // Try standard containers
+                const s1 = jQuery("#rm_api_block").closest('.drawer-content');
+                const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
+                // Fallback to any visible drawer content if specific ones aren't found
+                const s3 = jQuery(".drawer-content:visible").first();
+                
+                const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
+                if (scrollable.length) {
+                    scrollable.scrollTop(window.yablochnyLastScroll);
+                }
             }
         }
     };
@@ -3546,22 +3554,13 @@ async function injectYablochnyUI(htmlContent) {
     // Use a fast polling interval instead of MutationObserver for now to guarantee stability
     setInterval(() => {
         // Track scroll position continuously
-        const scrollable = jQuery("#rm_api_block").closest('.drawer-content');
+        const s1 = jQuery("#rm_api_block").closest('.drawer-content');
+        const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
+        const s3 = jQuery(".drawer-content:visible").first();
+        const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
+        
         if (scrollable.length) {
-            // Only update if we have a valid scroll position (ignore 0 if we suspect a reset)
-            // But 0 is valid at the top. 
-            // Better strategy: attach a scroll listener ONCE.
-            if (!scrollable.data("yp-scroll-bound")) {
-                scrollable.on("scroll", function() {
-                    window.yablochnyLastScroll = jQuery(this).scrollTop();
-                });
-                scrollable.data("yp-scroll-bound", true);
-            }
-            
-            // Fallback for initial capture if scroll event hasn't fired yet
-            if (typeof window.yablochnyLastScroll === 'undefined') {
-                window.yablochnyLastScroll = scrollable.scrollTop();
-            }
+            window.yablochnyLastScroll = scrollable.scrollTop();
         }
 
         const isOpenAI = jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible");
