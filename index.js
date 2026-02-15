@@ -3390,18 +3390,12 @@ async function injectYablochnyUI(htmlContent) {
         // If already exists and is visible, do nothing
         if (jQuery("#yablochny-preset-container").length > 0 && jQuery("#yablochny-preset-container").is(":visible")) return;
 
-        // If exists but detached/hidden, maybe we need to move it?
-        // Let's just remove old one if we find a better spot to avoid duplicates
-        if (jQuery("#yablochny-preset-container").length > 0) {
-            // Check if it's in the right place
-            // If we are re-inserting, we should remove the old one first
-            // jQuery("#yablochny-preset-container").remove(); 
-            // Actually, let's just check if we need to move it.
-            // If it's already there, we might not need to do anything.
-        }
+        // If exists but detached/hidden... 
+        // NOTE: We don't remove old one here because ST might have just hidden the parent container. 
+        // We rely on jQuery checks below.
 
-        // Create our wrapper
-        const wrapper = jQuery(`<div id="yablochny-preset-container" class="yablochny-ui-wrapper" style="margin-top: 10px; margin-bottom: 15px; border: 1px solid var(--SmartThemeBorderColor); padding: 10px; border-radius: 10px; background-color: var(--SmartThemeBlurTintColor);"></div>`);
+        // Create our wrapper - NO STYLES, just a div to hold it
+        const wrapper = jQuery(`<div id="yablochny-preset-container" style="margin-top: 5px; margin-bottom: 5px;"></div>`);
         wrapper.html(htmlContent);
 
         let inserted = false;
@@ -3470,12 +3464,59 @@ async function injectYablochnyUI(htmlContent) {
             initControls();
             loadRegexPacksIntoYablochny();
             
-            // Re-bind credits handlers inside our new container scope if needed
+            // --- DRAWER STATE RESTORATION ---
+            const mainDrawerContent = jQuery("#yp-main-drawer-content");
+            const mainDrawerToggle = jQuery("#yp-main-drawer-toggle");
+            const mainDrawerIcon = mainDrawerToggle.find(".inline-drawer-icon");
+            
+            // Check stored state
+            const isMainDrawerOpen = localStorage.getItem("yp_main_drawer_open") === "true";
+            
+            if (isMainDrawerOpen) {
+                mainDrawerContent.show();
+                mainDrawerIcon.removeClass("down").addClass("up");
+                mainDrawerToggle.addClass("open"); // ST specific style sometimes
+            }
+
+            // Bind toggle click
+            mainDrawerToggle.off("click").on("click", function() {
+                const isOpen = mainDrawerContent.is(":visible");
+                if (isOpen) {
+                    mainDrawerContent.slideUp(200);
+                    mainDrawerIcon.removeClass("up").addClass("down");
+                    localStorage.setItem("yp_main_drawer_open", "false");
+                } else {
+                    mainDrawerContent.slideDown(200);
+                    mainDrawerIcon.removeClass("down").addClass("up");
+                    localStorage.setItem("yp_main_drawer_open", "true");
+                }
+            });
+            // --------------------------------
+
+            // Re-bind credits handlers inside our new container scope
             jQuery("#yp-credits-btn").off("click").on("click", function () {
                 jQuery("#yp-credits-area").slideToggle(200);
             });
             jQuery("#yp-credits-close-inline").off("click").on("click", function () {
                 jQuery("#yp-credits-area").slideUp(200);
+            });
+            
+             // Re-bind Easter Egg logic for new title element
+            let titleClicks = 0;
+            jQuery("#yp-title-text").off("click").on("click", function () {
+                titleClicks++;
+                if (titleClicks >= 5) {
+                    titleClicks = 0;
+                    const devContainer = jQuery("#yp-dev-container");
+                    const isHidden = devContainer.css("display") === "none";
+                    if (isHidden) {
+                        devContainer.show();
+                        if (window.toastr) window.toastr.info("Developer Mode revealed!");
+                    } else {
+                        devContainer.hide();
+                        if (jQuery("#yp-dev-mode").is(":checked")) jQuery("#yp-dev-mode").click();
+                    }
+                }
             });
         }
     };
