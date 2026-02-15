@@ -3377,9 +3377,7 @@ async function waitForOpenAI() {
 // Injected UI Management
 async function injectYablochnyUI(htmlContent) {
     // We target the OpenAI settings area to be near the Preset settings.
-    // The main container for OpenAI settings is usually #openai_settings.
-    // The most reliable anchor is the "Prompt Manager" section.
-
+    
     // Helper to log if dev mode
     const log = (msg) => {
         if (extension_settings[EXTENSION_NAME]?.devMode) console.log(`[Yablochny] ${msg}`);
@@ -3396,60 +3394,31 @@ async function injectYablochnyUI(htmlContent) {
 
         let inserted = false;
 
-        // Strategy 1: Find the "Prompt Manager" list (toggles) and insert BEFORE its container
+        // Try to insert (Strategies 1-5...)
         const promptList = jQuery("#completion_prompt_manager_list");
         if (promptList.length > 0) {
             const drawer = promptList.closest(".inline-drawer");
-            if (drawer.length > 0) {
-                // log("Found prompt manager drawer, inserting before.");
-                drawer.before(wrapper);
-                inserted = true;
-            } else {
-                // log("Found prompt list but no drawer, inserting before list.");
-                promptList.before(wrapper);
-                inserted = true;
-            }
+            if (drawer.length > 0) { drawer.before(wrapper); inserted = true; } 
+            else { promptList.before(wrapper); inserted = true; }
         }
-
-        // Strategy 2: Find "Advanced Formatting" block
         if (!inserted) {
             const advancedFormatting = jQuery("#openai_advanced_formatting");
-            if (advancedFormatting.length > 0) {
-                // log("Found Advanced Formatting block, inserting before.");
-                advancedFormatting.before(wrapper);
-                inserted = true;
-            }
+            if (advancedFormatting.length > 0) { advancedFormatting.before(wrapper); inserted = true; }
         }
-
-        // Strategy 3: Find "Context Template" block
         if (!inserted) {
             const contextTemplate = jQuery("#openai_context_template");
-            if (contextTemplate.length > 0) {
-                // log("Found Context Template block, inserting before.");
-                contextTemplate.before(wrapper);
-                inserted = true;
-            }
+            if (contextTemplate.length > 0) { contextTemplate.before(wrapper); inserted = true; }
         }
-
-        // Strategy 4: Find "Temperature" slider and insert AFTER its container
         if (!inserted) {
             const tempSlider = jQuery("#openai_temp"); 
             if (tempSlider.length > 0) {
                  const tempBlock = tempSlider.closest(".range-block") || tempSlider.parent();
-                 // log("Found Temperature slider, inserting after.");
-                 tempBlock.after(wrapper);
-                 inserted = true;
+                 tempBlock.after(wrapper); inserted = true;
             }
         }
-
-         // Strategy 5: Append to main settings container
         if (!inserted) {
              const mainContainer = jQuery("#openai_settings");
-             if (mainContainer.length > 0) {
-                 // log("Found main OpenAI settings container, appending.");
-                 mainContainer.append(wrapper);
-                 inserted = true;
-             }
+             if (mainContainer.length > 0) { mainContainer.append(wrapper); inserted = true; }
         }
 
         // Re-initialize controls since we added fresh HTML
@@ -3458,81 +3427,303 @@ async function injectYablochnyUI(htmlContent) {
             initControls();
             loadRegexPacksIntoYablochny();
             
-            // --- STATE RESTORATION LOGIC ---
-            // We need to find the main drawer toggle inside our inserted HTML
-            // In settings.html, the structure is .yablochny-settings > .inline-drawer > .inline-drawer-toggle
-            const mainContainer = wrapper.find(".yablochny-settings .inline-drawer").first();
-            const mainToggle = mainContainer.find(".inline-drawer-toggle").first();
-            const mainContent = mainContainer.find(".inline-drawer-content").first();
-            const mainIcon = mainToggle.find(".inline-drawer-icon");
-
-            // Define a unique key for local storage
-            const STORAGE_KEY = "yablochny_main_drawer_open";
-
-            // Restore state
-            const isSavedOpen = localStorage.getItem(STORAGE_KEY) === "true";
+            // --- STATE RESTORATION LOGIC (MAIN & SUB DRAWERS) ---
             
-            if (isSavedOpen) {
-                mainContent.show();
-                mainIcon.removeClass("down").addClass("up");
-                // Ensure parent container reflects open state if needed by CSS
-                mainToggle.addClass("open"); 
-            } else {
-                mainContent.hide();
-                mainIcon.removeClass("up").addClass("down");
-                mainToggle.removeClass("open");
-            }
-
-            // Bind click event to toggle and save state
-            mainToggle.off("click").on("click", function(e) {
-                // Prevent bubbling if needed, though usually fine
-                e.preventDefault();
-                e.stopPropagation();
-
-                const isVisible = mainContent.is(":visible");
+            // Helper to bind toggle logic
+            const bindDrawer = (toggleSelector, contentSelector, storageKey) => {
+                const toggle = wrapper.find(toggleSelector);
+                const content = wrapper.find(contentSelector);
+                const icon = toggle.find(".inline-drawer-icon");
                 
-                if (isVisible) {
-                    // Close it
-                    mainContent.slideUp(200);
-                    mainIcon.removeClass("up").addClass("down");
-                    localStorage.setItem(STORAGE_KEY, "false");
+                // Restore state
+                const isSavedOpen = localStorage.getItem(storageKey) === "true";
+                if (isSavedOpen) {
+                    content.show();
+                    icon.removeClass("down").addClass("up");
+                    toggle.addClass("open");
                 } else {
-                    // Open it
-                    mainContent.slideDown(200);
-                    mainIcon.removeClass("down").addClass("up");
-                    localStorage.setItem(STORAGE_KEY, "true");
+                    content.hide();
+                    icon.removeClass("up").addClass("down");
+                    toggle.removeClass("open");
                 }
-            });
-            // -------------------------------
 
-            // Re-bind credits handlers inside our new container scope
-            jQuery("#yp-credits-btn").off("click").on("click", function () {
-                jQuery("#yp-credits-area").slideToggle(200);
+                // Bind click
+                toggle.off("click").on("click", function(e) {
+                    e.preventDefault(); e.stopPropagation();
+                    const isVisible = content.is(":visible");
+                    if (isVisible) {
+                        content.slideUp(200);
+                        icon.removeClass("up").addClass("down");
+                        localStorage.setItem(storageKey, "false");
+                    } else {
+                        content.slideDown(200);
+                        icon.removeClass("down").addClass("up");
+                        localStorage.setItem(storageKey, "true");
+                    }
+                });
+            };
+
+            // 1. Main Drawer
+            bindDrawer(
+                ".yablochny-settings > .inline-drawer > .inline-drawer-toggle", 
+                ".yablochny-settings > .inline-drawer > .inline-drawer-content", 
+                "yablochny_main_drawer_open"
+            );
+
+            // 2. Sub-drawers (More Settings, Things, Regex)
+            const subDrawers = wrapper.find(".yablochny-settings > .inline-drawer > .inline-drawer-content .inline-drawer");
+            subDrawers.each(function(index) {
+                const subToggle = jQuery(this).find(".inline-drawer-toggle");
+                const subContent = jQuery(this).find(".inline-drawer-content");
+                const subIcon = subToggle.find(".inline-drawer-icon");
+                
+                // Generate a key based on title content for stability
+                const titleText = subToggle.text().trim();
+                let keySuffix = "sub_" + index;
+                if (titleText.includes("Things")) keySuffix = "things";
+                else if (titleText.includes("Regex")) keySuffix = "regex";
+                else if (titleText.includes("More Settings")) keySuffix = "more_settings";
+                
+                const storageKey = "yablochny_drawer_" + keySuffix;
+
+                // Restore
+                if (localStorage.getItem(storageKey) === "true") {
+                    subContent.show();
+                    subIcon.removeClass("down").addClass("up");
+                } else {
+                    subContent.hide();
+                    subIcon.removeClass("up").addClass("down");
+                }
+
+                // Bind
+                subToggle.off("click").on("click", function(e) {
+                    e.preventDefault(); e.stopPropagation();
+                    if (subContent.is(":visible")) {
+                        subContent.slideUp(200);
+                        subIcon.removeClass("up").addClass("down");
+                        localStorage.setItem(storageKey, "false");
+                    } else {
+                        subContent.slideDown(200);
+                        subIcon.removeClass("down").addClass("up");
+                        localStorage.setItem(storageKey, "true");
+                    }
+                });
             });
-            jQuery("#yp-credits-close-inline").off("click").on("click", function () {
-                jQuery("#yp-credits-area").slideUp(200);
-            });
+
+            // Re-bind credits
+            jQuery("#yp-credits-btn").off("click").on("click", function () { jQuery("#yp-credits-area").slideToggle(200); });
+            jQuery("#yp-credits-close-inline").off("click").on("click", function () { jQuery("#yp-credits-area").slideUp(200); });
             
-            // Re-bind Easter Egg logic
+            // Re-bind Easter Egg
             let titleClicks = 0;
             jQuery("#yp-title-text").off("click").on("click", function (e) {
-                e.stopPropagation(); // Don't trigger drawer toggle
+                e.stopPropagation();
                 titleClicks++;
                 if (titleClicks >= 5) {
                     titleClicks = 0;
-                    const devContainer = jQuery("#yp-dev-container");
-                    const isHidden = devContainer.css("display") === "none";
-                    if (isHidden) {
-                        devContainer.show();
-                        if (window.toastr) window.toastr.info("Developer Mode revealed!");
-                    } else {
-                        devContainer.hide();
-                        if (jQuery("#yp-dev-mode").is(":checked")) jQuery("#yp-dev-mode").click();
-                    }
+                    const dev = jQuery("#yp-dev-container");
+                    if (dev.css("display") === "none") { dev.show(); if (window.toastr) window.toastr.info("Developer Mode revealed!"); }
+                    else { dev.hide(); if (jQuery("#yp-dev-mode").is(":checked")) jQuery("#yp-dev-mode").click(); }
                 }
             });
         }
     };
+
+    // Use MutationObserver for instant reaction
+    const observer = new MutationObserver(() => {
+        // Debounce slightly to avoid thrashing if ST does multiple DOM updates
+        if (window._yablochny_insert_timeout) clearTimeout(window._yablochny_insert_timeout);
+        window._yablochny_insert_timeout = setTimeout(() => {
+            // Check visibility and existence before re-inserting
+            const isOpenAI = jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible");
+            const isMissing = jQuery("#yablochny-preset-container").length === 0 || !jQuery("#yablochny-preset-container").is(":visible");
+            
+            if (isOpenAI && isMissing) {
+                insertUI();
+            }
+        }, 10);
+    });
+
+    // Start observing the body or a specific container
+    // Watching '#rm_api_block' is efficient as it contains the settings
+    const targetNode = document.querySelector('#rm_api_block') || document.body;
+    if (targetNode) {
+        observer.observe(targetNode, { childList: true, subtree: true });
+    }
+
+    // Fallback polling just in case MutationObserver misses something (e.g. initial load)
+    setInterval(() => {
+        const isOpenAI = jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible");
+        const isMissing = jQuery("#yablochny-preset-container").length === 0 || !jQuery("#yablochny-preset-container").is(":visible");
+        if (isOpenAI && isMissing) {
+            insertUI();
+        }
+    }, 1000);
+}
+        if (!inserted) {
+            const advancedFormatting = jQuery("#openai_advanced_formatting");
+            if (advancedFormatting.length > 0) { advancedFormatting.before(wrapper); inserted = true; }
+        }
+        if (!inserted) {
+            const contextTemplate = jQuery("#openai_context_template");
+            if (contextTemplate.length > 0) { contextTemplate.before(wrapper); inserted = true; }
+        }
+        if (!inserted) {
+            const tempSlider = jQuery("#openai_temp"); 
+            if (tempSlider.length > 0) {
+                 const tempBlock = tempSlider.closest(".range-block") || tempSlider.parent();
+                 tempBlock.after(wrapper); inserted = true;
+            }
+        }
+        if (!inserted) {
+             const mainContainer = jQuery("#openai_settings");
+             if (mainContainer.length > 0) { mainContainer.append(wrapper); inserted = true; }
+        }
+
+        // Re-initialize controls since we added fresh HTML
+        if (inserted) {
+            applyLocaleToUi();
+            initControls();
+            loadRegexPacksIntoYablochny();
+            
+            // --- STATE RESTORATION LOGIC (MAIN & SUB DRAWERS) ---
+            
+            // Helper to bind toggle logic
+            const bindDrawer = (toggleSelector, contentSelector, storageKey) => {
+                const toggle = wrapper.find(toggleSelector);
+                const content = wrapper.find(contentSelector);
+                const icon = toggle.find(".inline-drawer-icon");
+                
+                // Restore state
+                const isSavedOpen = localStorage.getItem(storageKey) === "true";
+                if (isSavedOpen) {
+                    content.show();
+                    icon.removeClass("down").addClass("up");
+                    toggle.addClass("open");
+                } else {
+                    content.hide();
+                    icon.removeClass("up").addClass("down");
+                    toggle.removeClass("open");
+                }
+
+                // Bind click
+                toggle.off("click").on("click", function(e) {
+                    e.preventDefault(); e.stopPropagation();
+                    const isVisible = content.is(":visible");
+                    if (isVisible) {
+                        content.slideUp(200);
+                        icon.removeClass("up").addClass("down");
+                        localStorage.setItem(storageKey, "false");
+                    } else {
+                        content.slideDown(200);
+                        icon.removeClass("down").addClass("up");
+                        localStorage.setItem(storageKey, "true");
+                    }
+                });
+            };
+
+            // 1. Main Drawer
+            // Selector needs to find the first toggle/content relative to wrapper
+            // Structure: wrapper > .yablochny-settings > .inline-drawer > .inline-drawer-toggle
+            bindDrawer(
+                ".yablochny-settings > .inline-drawer > .inline-drawer-toggle", 
+                ".yablochny-settings > .inline-drawer > .inline-drawer-content", 
+                "yablochny_main_drawer_open"
+            );
+
+            // 2. Sub-drawer: More Settings
+            // Structure: ... > .inline-drawer-content > div > .inline-drawer:nth-child(1)
+            // It's hard to target by hierarchy, let's look for text or structure
+            // In settings.html: First .inline-drawer inside the main content is "More Settings"
+            // Actually, we can just iterate over all sub-drawers and assign unique keys based on their title or index
+            
+            const subDrawers = wrapper.find(".yablochny-settings > .inline-drawer > .inline-drawer-content .inline-drawer");
+            subDrawers.each(function(index) {
+                const subToggle = jQuery(this).find(".inline-drawer-toggle");
+                const subContent = jQuery(this).find(".inline-drawer-content");
+                const subIcon = subToggle.find(".inline-drawer-icon");
+                
+                // Generate a key based on index or title. Index is safer if titles change.
+                // 0: More Settings, 1: Things, 2: Regex
+                let keySuffix = "sub_" + index;
+                
+                // Try to identify by title for robustness
+                const titleText = subToggle.text().trim();
+                if (titleText.includes("Things")) keySuffix = "things";
+                else if (titleText.includes("Regex")) keySuffix = "regex";
+                else if (titleText.includes("More Settings")) keySuffix = "more_settings";
+                
+                const storageKey = "yablochny_drawer_" + keySuffix;
+
+                // Restore
+                if (localStorage.getItem(storageKey) === "true") {
+                    subContent.show();
+                    subIcon.removeClass("down").addClass("up");
+                } else {
+                    subContent.hide();
+                    subIcon.removeClass("up").addClass("down");
+                }
+
+                // Bind
+                subToggle.off("click").on("click", function(e) {
+                    e.preventDefault(); e.stopPropagation();
+                    if (subContent.is(":visible")) {
+                        subContent.slideUp(200);
+                        subIcon.removeClass("up").addClass("down");
+                        localStorage.setItem(storageKey, "false");
+                    } else {
+                        subContent.slideDown(200);
+                        subIcon.removeClass("down").addClass("up");
+                        localStorage.setItem(storageKey, "true");
+                    }
+                });
+            });
+
+            // -------------------------------
+
+            // Re-bind credits
+            jQuery("#yp-credits-btn").off("click").on("click", function () { jQuery("#yp-credits-area").slideToggle(200); });
+            jQuery("#yp-credits-close-inline").off("click").on("click", function () { jQuery("#yp-credits-area").slideUp(200); });
+            
+            // Re-bind Easter Egg
+            let titleClicks = 0;
+            jQuery("#yp-title-text").off("click").on("click", function (e) {
+                e.stopPropagation();
+                titleClicks++;
+                if (titleClicks >= 5) {
+                    titleClicks = 0;
+                    const dev = jQuery("#yp-dev-container");
+                    if (dev.css("display") === "none") { dev.show(); if (window.toastr) window.toastr.info("Developer Mode revealed!"); }
+                    else { dev.hide(); if (jQuery("#yp-dev-mode").is(":checked")) jQuery("#yp-dev-mode").click(); }
+                }
+            });
+        }
+    };
+
+    // Use MutationObserver for instant reaction
+    const observer = new MutationObserver(() => {
+        // Debounce slightly to avoid thrashing if ST does multiple DOM updates
+        // But keep it fast enough to be invisible
+        if (window._yablochny_insert_timeout) clearTimeout(window._yablochny_insert_timeout);
+        window._yablochny_insert_timeout = setTimeout(() => {
+            if (jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible")) {
+                insertUI();
+            }
+        }, 10);
+    });
+
+    // Start observing the body or a specific container
+    // Watching 'body' is expensive but reliable. Watching '#rm_api_block' is better.
+    const targetNode = document.querySelector('#rm_api_block') || document.body;
+    observer.observe(targetNode, { childList: true, subtree: true });
+
+    // Fallback polling just in case MutationObserver misses something (e.g. initial load)
+    setInterval(() => {
+        if (!jQuery("#yablochny-preset-container").length && (jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible"))) {
+            insertUI();
+        }
+    }, 1000);
+}
 
     // Use a Polling strategy to ensure UI is injected when the tab is opened
     setInterval(() => {
