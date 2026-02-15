@@ -3376,11 +3376,9 @@ async function waitForOpenAI() {
 
 // Injected UI Management
 async function injectYablochnyUI(htmlContent) {
-    // We target the OpenAI settings area to be near the Preset settings.
-    
     // Helper to log if dev mode
     const log = (msg) => {
-        if (extension_settings[EXTENSION_NAME]?.devMode) console.log(`[Yablochny] ${msg}`);
+        if (extension_settings['yablochny-preset']?.devMode) console.log(`[Yablochny] ${msg}`);
     };
 
     // Helper to insert our UI
@@ -3388,22 +3386,18 @@ async function injectYablochnyUI(htmlContent) {
         // Simple check: Does our container exist?
         const container = jQuery("#yablochny-preset-container");
         if (container.length > 0) {
-            // If it exists but hidden, show it
             if (!container.is(":visible")) {
-                // If the parent is visible, show it
                 if (container.parent().is(":visible")) {
                     container.show();
                 }
             }
-            return; // Already exists
+            return; 
         }
 
         // Target containers
         const promptManager = jQuery("#completion_prompt_manager_list");
         const settingsBlock = jQuery("#openai_settings");
         
-        // Safety check: Are we even on the right tab?
-        // If neither prompt manager nor settings block are in DOM, wait.
         if (promptManager.length === 0 && settingsBlock.length === 0) return;
 
         // Create wrapper - CLEAN, no borders, full width
@@ -3412,9 +3406,8 @@ async function injectYablochnyUI(htmlContent) {
 
         let inserted = false;
 
-        // Strategy 1: Try to insert before Prompt Manager (best spot)
+        // Strategy 1: Try to insert before Prompt Manager
         if (promptManager.length > 0) {
-            // Check for drawer wrapper
             const drawer = promptManager.closest(".inline-drawer");
             if (drawer.length > 0) {
                 drawer.before(wrapper);
@@ -3427,13 +3420,11 @@ async function injectYablochnyUI(htmlContent) {
         
         // Fallback: Append to main settings
         if (!inserted && settingsBlock.length > 0) {
-            // Prepend to be at top if prompt manager not found but settings block exists
             settingsBlock.prepend(wrapper);
             inserted = true;
         }
 
         if (inserted) {
-            // Re-init logic
             applyLocaleToUi();
             initControls();
             loadRegexPacksIntoYablochny();
@@ -3527,47 +3518,6 @@ async function injectYablochnyUI(htmlContent) {
                     }
                 });
             });
-            };
-
-            // Restore Main Drawer
-            // Selector for content relative to wrapper
-            restoreDrawer("yablochny_main_drawer_open", ".yablochny-settings > .inline-drawer > .inline-drawer-content");
-
-            // Restore Sub Drawers
-            // Iterate all .inline-drawer inside the main content
-            wrapper.find(".yablochny-settings .inline-drawer .inline-drawer-content .inline-drawer").each(function(i) {
-                const subContent = jQuery(this).find(".inline-drawer-content");
-                const title = jQuery(this).find(".inline-drawer-toggle").text().trim();
-                let key = "yablochny_sub_" + i;
-                
-                if (title.includes("Things")) key = "yablochny_sub_things";
-                else if (title.includes("Regex")) key = "yablochny_sub_regex";
-                else if (title.includes("More")) key = "yablochny_sub_more";
-                
-                const toggle = jQuery(this).find(".inline-drawer-toggle");
-                const icon = toggle.find(".inline-drawer-icon");
-                
-                if (localStorage.getItem(key) === "true") {
-                    subContent.show();
-                    icon.removeClass("down").addClass("up");
-                } else {
-                    subContent.hide();
-                    icon.removeClass("up").addClass("down");
-                }
-                
-                toggle.off("click").on("click", function(e) {
-                    e.preventDefault(); e.stopPropagation();
-                    if (subContent.is(":visible")) {
-                        subContent.slideUp(200);
-                        icon.removeClass("up").addClass("down");
-                        localStorage.setItem(key, "false");
-                    } else {
-                        subContent.slideDown(200);
-                        icon.removeClass("down").addClass("up");
-                        localStorage.setItem(key, "true");
-                    }
-                });
-            });
 
             // Credits & Easter Egg
             jQuery("#yp-credits-btn").off("click").on("click", function () { jQuery("#yp-credits-area").slideToggle(200); });
@@ -3587,11 +3537,7 @@ async function injectYablochnyUI(htmlContent) {
         }
     };
 
-    // Use setInterval for robustness. Check every 1s.
-    // If not found, try to insert.
     setInterval(insertUI, 1000);
-    
-    // Initial attempt
     setTimeout(insertUI, 1000);
 }
 
