@@ -3552,18 +3552,27 @@ async function injectYablochnyUI(htmlContent) {
                 }
             });
 
-            // Restore scroll position if we tracked it
+            // Restore scroll position REPEATEDLY to ensure it sticks as content expands
             if (typeof window.yablochnyLastScroll === 'number' && window.yablochnyLastScroll > 0) {
-                // Try standard containers
-                const s1 = jQuery("#rm_api_block").closest('.drawer-content');
-                const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
-                // Fallback to any visible drawer content if specific ones aren't found
-                const s3 = jQuery(".drawer-content:visible").first();
-                
-                const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
-                if (scrollable.length) {
-                    scrollable.scrollTop(window.yablochnyLastScroll);
-                }
+                const doRestore = () => {
+                    const s1 = jQuery("#rm_api_block").closest('.drawer-content');
+                    const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
+                    const s3 = jQuery(".drawer-content:visible").first();
+                    const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
+                    
+                    if (scrollable.length) {
+                        // Check if we can actually scroll that far yet
+                        // If not, scroll to max, and hope next retry gets further
+                        scrollable.scrollTop(window.yablochnyLastScroll);
+                    }
+                };
+
+                doRestore();
+                // Retry a few times to cover layout shifts/animations
+                setTimeout(doRestore, 50);
+                setTimeout(doRestore, 100);
+                setTimeout(doRestore, 200);
+                setTimeout(doRestore, 400);
             }
         }
     };
