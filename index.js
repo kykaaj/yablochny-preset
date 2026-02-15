@@ -3374,56 +3374,138 @@ async function waitForOpenAI() {
     }
 }
 
+// Injected UI Management
+async function injectYablochnyUI(htmlContent) {
+    // We target the "AI Response Configuration" tab content.
+    // The main container for preset settings is usually within #rm_api_block (for API settings) 
+    // BUT specifically for preset params (temp, etc) it's often dynamically rendered.
+    // A good stable anchor is usually the "Prompt Manager" section or "Advanced Formatting".
+
+    const targetContainerSelector = "#preset_manager"; // The main preset tab container
+    const anchorSelector = "#prompt-order-content"; // The container for prompt toggles/order
+
+    // Helper to insert our UI
+    const insertUI = () => {
+        // If already exists, do nothing
+        if (jQuery("#yablochny-preset-container").length > 0) return;
+
+        // Create our wrapper
+        const wrapper = jQuery(`<div id="yablochny-preset-container" class="yablochny-ui-wrapper" style="margin-bottom: 15px; border: 1px solid var(--SmartThemeBorderColor); padding: 10px; border-radius: 10px; background-color: var(--SmartThemeBlurTintColor);"></div>`);
+        wrapper.html(htmlContent);
+
+        // Try to find the anchor
+        const anchor = jQuery(anchorSelector);
+        
+        if (anchor.length > 0) {
+            // Insert BEFORE the prompt order (toggles)
+            // But usually prompt order has a header "Prompt Manager". We might want to be before that entire block.
+            // Let's try to find the parent container of the anchor if possible, or just insert before.
+            // The prompt order is usually inside a details/summary block or just a div.
+            // Let's look for the "Prompt Manager" header if possible, or just insert before the content.
+            
+            // Heuristic: Insert before the prompt order container
+            anchor.parent().before(wrapper);
+        } else {
+            // Fallback: Append to the end of the preset manager if anchor not found (unlikely in standard ST)
+            jQuery(targetContainerSelector).append(wrapper);
+        }
+
+        // Re-initialize controls since we added fresh HTML
+        applyLocaleToUi();
+        initControls();
+        
+        // Re-bind easter egg
+        let titleClicks = 0;
+        jQuery("#yp-title-text").on("click", function () {
+            titleClicks++;
+            if (titleClicks >= 5) {
+                titleClicks = 0;
+                const devContainer = jQuery("#yp-dev-container");
+                const isHidden = devContainer.css("display") === "none";
+
+                if (isHidden) {
+                    devContainer.show();
+                    if (window.toastr) window.toastr.info("Developer Mode revealed!");
+                } else {
+                    devContainer.hide();
+                    if (jQuery("#yp-dev-mode").is(":checked")) {
+                        jQuery("#yp-dev-mode").click();
+                    }
+                }
+            }
+        });
+        
+        // Load regex packs again to ensure UI is updated
+        loadRegexPacksIntoYablochny();
+    };
+
+    // Initial insertion
+    insertUI();
+
+    // Observer to re-insert if ST wipes the container (happens on preset switch)
+    const observer = new MutationObserver((mutations) => {
+        let shouldReinsert = false;
+        for (const mutation of mutations) {
+            if (mutation.type === 'childList') {
+                // Check if our container was removed
+                const removedNodes = Array.from(mutation.removedNodes);
+                if (removedNodes.some(node => node.id === 'yablochny-preset-container')) {
+                    shouldReinsert = true;
+                    break;
+                }
+                
+                // Check if the anchor was re-added (indicating a full re-render)
+                const addedNodes = Array.from(mutation.addedNodes);
+                 if (addedNodes.some(node => node.id === 'prompt-order-content' || (node.querySelector && node.querySelector('#prompt-order-content')))) {
+                    shouldReinsert = true;
+                    break;
+                }
+            }
+        }
+
+        if (shouldReinsert) {
+            // Small delay to let ST finish rendering
+            setTimeout(insertUI, 50);
+        }
+    });
+
+    // Start observing the preset manager
+    const targetNode = document.querySelector(targetContainerSelector);
+    if (targetNode) {
+        observer.observe(targetNode, { childList: true, subtree: true });
+    } else {
+        console.warn("[Yablochny] Target container #preset_manager not found for observer.");
+    }
+}
+
 jQuery(async () => {
     try {
         const settingsHtml = await jQuery.get(`${SCRIPT_PATH}/settings.html`);
-        jQuery("#extensions_settings2").append(settingsHtml);
+        
+        // Old method: jQuery("#extensions_settings2").append(settingsHtml);
+        // New method: Inject into Preset UI
+        await injectYablochnyUI(settingsHtml);
+
     } catch (e) {
         console.error("[Yablochny] Failed to load settings.html", e);
         return;
     }
 
-    applyLocaleToUi();
-    initControls();
-
-    // Credits Logic - Inline
-    jQuery("#yp-credits-btn").on("click", function () {
+    // Credits Logic - Inline (Global handlers, might need re-binding if inside insertUI, but IDs are unique)
+    // We moved initControls inside insertUI so it runs on re-insertion.
+    
+    // Global credits handlers (delegated to document just in case)
+    jQuery(document).on("click", "#yp-credits-btn", function () {
         jQuery("#yp-credits-area").slideToggle(200);
     });
-    jQuery("#yp-credits-close-inline").on("click", function () {
+    jQuery(document).on("click", "#yp-credits-close-inline", function () {
         jQuery("#yp-credits-area").slideUp(200);
-    });
-
-    // Easter Egg: Click title 5 times to toggle Dev Mode visibility
-    let titleClicks = 0;
-    jQuery("#yp-title-text").on("click", function () {
-        titleClicks++;
-        if (titleClicks >= 5) {
-            titleClicks = 0;
-            const devContainer = jQuery("#yp-dev-container");
-            const isHidden = devContainer.css("display") === "none";
-
-            if (isHidden) {
-                devContainer.show();
-                if (window.toastr) window.toastr.info("Developer Mode revealed!");
-            } else {
-                devContainer.hide();
-                // Also turn off dev mode if hiding section
-                if (jQuery("#yp-dev-mode").is(":checked")) {
-                    jQuery("#yp-dev-mode").click();
-                }
-            }
-        }
     });
 
     await waitForOpenAI();
 
-    // Загрузить и отрисовать regex-паки (объединённый менеджер)
-    await loadRegexPacksIntoYablochny();
-
     const cfg = getConfig();
     if (cfg.autoSyncOnStart) {
-        // тихий автосинк при старте
         syncPreset(false);
     }
 });
