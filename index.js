@@ -3390,17 +3390,8 @@ async function injectYablochnyUI(htmlContent) {
         // If already exists and is visible, do nothing
         if (jQuery("#yablochny-preset-container").length > 0 && jQuery("#yablochny-preset-container").is(":visible")) return;
 
-        // Create our wrapper with explicit styling to fit ST theme
-        // Using var(--SmartTheme...) variables ensures it matches the theme
-        const wrapper = jQuery(`<div id="yablochny-preset-container" class="yablochny-ui-wrapper" style="
-            margin-top: 10px; 
-            margin-bottom: 15px; 
-            border: 1px solid var(--SmartThemeBorderColor); 
-            padding: 10px; 
-            border-radius: 10px; 
-            background-color: var(--SmartThemeBlurTintColor);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        "></div>`);
+        // Create our wrapper - CLEAN, no borders, full width
+        const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"></div>`);
         wrapper.html(htmlContent);
 
         let inserted = false;
@@ -3410,11 +3401,11 @@ async function injectYablochnyUI(htmlContent) {
         if (promptList.length > 0) {
             const drawer = promptList.closest(".inline-drawer");
             if (drawer.length > 0) {
-                log("Found prompt manager drawer, inserting before.");
+                // log("Found prompt manager drawer, inserting before.");
                 drawer.before(wrapper);
                 inserted = true;
             } else {
-                log("Found prompt list but no drawer, inserting before list.");
+                // log("Found prompt list but no drawer, inserting before list.");
                 promptList.before(wrapper);
                 inserted = true;
             }
@@ -3424,7 +3415,7 @@ async function injectYablochnyUI(htmlContent) {
         if (!inserted) {
             const advancedFormatting = jQuery("#openai_advanced_formatting");
             if (advancedFormatting.length > 0) {
-                log("Found Advanced Formatting block, inserting before.");
+                // log("Found Advanced Formatting block, inserting before.");
                 advancedFormatting.before(wrapper);
                 inserted = true;
             }
@@ -3434,7 +3425,7 @@ async function injectYablochnyUI(htmlContent) {
         if (!inserted) {
             const contextTemplate = jQuery("#openai_context_template");
             if (contextTemplate.length > 0) {
-                log("Found Context Template block, inserting before.");
+                // log("Found Context Template block, inserting before.");
                 contextTemplate.before(wrapper);
                 inserted = true;
             }
@@ -3445,7 +3436,7 @@ async function injectYablochnyUI(htmlContent) {
             const tempSlider = jQuery("#openai_temp"); 
             if (tempSlider.length > 0) {
                  const tempBlock = tempSlider.closest(".range-block") || tempSlider.parent();
-                 log("Found Temperature slider, inserting after.");
+                 // log("Found Temperature slider, inserting after.");
                  tempBlock.after(wrapper);
                  inserted = true;
             }
@@ -3455,7 +3446,7 @@ async function injectYablochnyUI(htmlContent) {
         if (!inserted) {
              const mainContainer = jQuery("#openai_settings");
              if (mainContainer.length > 0) {
-                 log("Found main OpenAI settings container, appending.");
+                 // log("Found main OpenAI settings container, appending.");
                  mainContainer.append(wrapper);
                  inserted = true;
              }
@@ -3467,6 +3458,53 @@ async function injectYablochnyUI(htmlContent) {
             initControls();
             loadRegexPacksIntoYablochny();
             
+            // --- STATE RESTORATION LOGIC ---
+            // We need to find the main drawer toggle inside our inserted HTML
+            // In settings.html, the structure is .yablochny-settings > .inline-drawer > .inline-drawer-toggle
+            const mainContainer = wrapper.find(".yablochny-settings .inline-drawer").first();
+            const mainToggle = mainContainer.find(".inline-drawer-toggle").first();
+            const mainContent = mainContainer.find(".inline-drawer-content").first();
+            const mainIcon = mainToggle.find(".inline-drawer-icon");
+
+            // Define a unique key for local storage
+            const STORAGE_KEY = "yablochny_main_drawer_open";
+
+            // Restore state
+            const isSavedOpen = localStorage.getItem(STORAGE_KEY) === "true";
+            
+            if (isSavedOpen) {
+                mainContent.show();
+                mainIcon.removeClass("down").addClass("up");
+                // Ensure parent container reflects open state if needed by CSS
+                mainToggle.addClass("open"); 
+            } else {
+                mainContent.hide();
+                mainIcon.removeClass("up").addClass("down");
+                mainToggle.removeClass("open");
+            }
+
+            // Bind click event to toggle and save state
+            mainToggle.off("click").on("click", function(e) {
+                // Prevent bubbling if needed, though usually fine
+                e.preventDefault();
+                e.stopPropagation();
+
+                const isVisible = mainContent.is(":visible");
+                
+                if (isVisible) {
+                    // Close it
+                    mainContent.slideUp(200);
+                    mainIcon.removeClass("up").addClass("down");
+                    localStorage.setItem(STORAGE_KEY, "false");
+                } else {
+                    // Open it
+                    mainContent.slideDown(200);
+                    mainIcon.removeClass("down").addClass("up");
+                    localStorage.setItem(STORAGE_KEY, "true");
+                }
+            });
+            // -------------------------------
+
             // Re-bind credits handlers inside our new container scope
             jQuery("#yp-credits-btn").off("click").on("click", function () {
                 jQuery("#yp-credits-area").slideToggle(200);
@@ -3475,9 +3513,10 @@ async function injectYablochnyUI(htmlContent) {
                 jQuery("#yp-credits-area").slideUp(200);
             });
             
-             // Re-bind Easter Egg logic
+            // Re-bind Easter Egg logic
             let titleClicks = 0;
-            jQuery("#yp-title-text").off("click").on("click", function () {
+            jQuery("#yp-title-text").off("click").on("click", function (e) {
+                e.stopPropagation(); // Don't trigger drawer toggle
                 titleClicks++;
                 if (titleClicks >= 5) {
                     titleClicks = 0;
