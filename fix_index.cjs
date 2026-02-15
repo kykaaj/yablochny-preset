@@ -28,33 +28,23 @@ if (startIndex !== -1 && endIndex !== -1) {
             return; 
         }
 
-        // Target containers
-        const promptManager = jQuery("#completion_prompt_manager_list");
+        // Target: Insert into #rm_api_block, BEFORE #openai_settings.
+        const mainContainer = jQuery("#rm_api_block");
         const settingsBlock = jQuery("#openai_settings");
         
-        if (promptManager.length === 0 && settingsBlock.length === 0) return;
+        if (mainContainer.length === 0 || !mainContainer.is(":visible")) return;
 
-        // Create wrapper - CLEAN, no borders, full width
-        const wrapper = jQuery(\`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"></div>\`);
+        // Create wrapper - Flat structure needs padding
+        const wrapper = jQuery(\`<div id="yablochny-preset-container" style="width: 100%; margin-bottom: 15px; padding: 0 5px;"></div>\`);
         wrapper.html(htmlContent);
 
         let inserted = false;
 
-        // Strategy 1: Try to insert before Prompt Manager
-        if (promptManager.length > 0) {
-            const drawer = promptManager.closest(".inline-drawer");
-            if (drawer.length > 0) {
-                drawer.before(wrapper);
-                inserted = true;
-            } else {
-                promptManager.before(wrapper);
-                inserted = true;
-            }
-        } 
-        
-        // Fallback: Append to main settings
-        if (!inserted && settingsBlock.length > 0) {
-            settingsBlock.prepend(wrapper);
+        if (settingsBlock.length > 0) {
+            settingsBlock.before(wrapper);
+            inserted = true;
+        } else {
+            mainContainer.prepend(wrapper);
             inserted = true;
         }
 
@@ -63,14 +53,13 @@ if (startIndex !== -1 && endIndex !== -1) {
             initControls();
             loadRegexPacksIntoYablochny();
             
-            // --- STATE RESTORATION ---
+            // --- STATE RESTORATION (Only for Regex Drawer now) ---
             const restoreDrawer = (key, selector) => {
                 const isOpen = localStorage.getItem(key) === "true";
                 const el = wrapper.find(selector);
                 const toggle = el.closest(".inline-drawer").find(".inline-drawer-toggle");
                 const icon = toggle.find(".inline-drawer-icon");
                 
-                // Helper to update icon
                 const updateIcon = (open) => {
                     if (open) {
                         icon.removeClass("fa-circle-chevron-down").addClass("fa-circle-chevron-up");
@@ -105,52 +94,12 @@ if (startIndex !== -1 && endIndex !== -1) {
                 });
             };
 
-            // Restore Main Drawer
-            restoreDrawer("yablochny_main_drawer_open", ".yablochny-settings > .inline-drawer > .inline-drawer-content");
-
-            // Restore Sub Drawers
-            wrapper.find(".yablochny-settings .inline-drawer .inline-drawer-content .inline-drawer").each(function(i) {
-                const subContent = jQuery(this).find(".inline-drawer-content");
+            // Restore Regex Drawer
+            wrapper.find(".inline-drawer").each(function() {
                 const title = jQuery(this).find(".inline-drawer-toggle").text().trim();
-                let key = "yablochny_sub_" + i;
-                
-                if (title.includes("Things")) key = "yablochny_sub_things";
-                else if (title.includes("Regex")) key = "yablochny_sub_regex";
-                else if (title.includes("More")) key = "yablochny_sub_more";
-                
-                const toggle = jQuery(this).find(".inline-drawer-toggle");
-                const icon = toggle.find(".inline-drawer-icon");
-                
-                const updateSubIcon = (open) => {
-                    if (open) {
-                        icon.removeClass("fa-circle-chevron-down").addClass("fa-circle-chevron-up");
-                        icon.removeClass("down");
-                    } else {
-                        icon.removeClass("fa-circle-chevron-up").addClass("fa-circle-chevron-down");
-                        icon.addClass("down");
-                    }
-                };
-
-                if (localStorage.getItem(key) === "true") {
-                    subContent.show();
-                    updateSubIcon(true);
-                } else {
-                    subContent.hide();
-                    updateSubIcon(false);
+                if (title.includes("Regex")) {
+                    restoreDrawer("yablochny_drawer_regex", jQuery(this).find(".inline-drawer-content"));
                 }
-                
-                toggle.off("click").on("click", function(e) {
-                    e.preventDefault(); e.stopPropagation();
-                    if (subContent.is(":visible")) {
-                        subContent.slideUp(200);
-                        updateSubIcon(false);
-                        localStorage.setItem(key, "false");
-                    } else {
-                        subContent.slideDown(200);
-                        updateSubIcon(true);
-                        localStorage.setItem(key, "true");
-                    }
-                });
             });
 
             // Credits & Easter Egg
@@ -171,10 +120,9 @@ if (startIndex !== -1 && endIndex !== -1) {
         }
     };
 
-    setInterval(insertUI, 1000);
-    setTimeout(insertUI, 1000);
+    setInterval(insertUI, 500);
+    setTimeout(insertUI, 500);
 }
-
 `;
     fs.writeFileSync('index.js', pre + newBody + post);
     console.log("Fixed");

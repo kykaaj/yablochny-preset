@@ -3164,28 +3164,7 @@ function initControls() {
     });
 
     async function onPresetOptionChanged(updater) {
-        // Remove focus to prevent browser auto-scrolling to restored element
-        if (document.activeElement) {
-            document.activeElement.blur();
-        }
-
-        // PRE-SAVE SCROLL LOCK
-        // Find scrollable container
-        const s1 = jQuery("#rm_api_block").closest('.drawer-content');
-        const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
-        const s3 = jQuery(".drawer-content:visible").first();
-        const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
-
-        if (scrollable.length) {
-            window.yablochnyLastScroll = scrollable.scrollTop();
-            // Lock tracking for 1.5s to ignore the 0 position during wipe
-            window.yablochnyScrollLocked = true;
-            if (window.yablochnyScrollLockTimeout) clearTimeout(window.yablochnyScrollLockTimeout);
-            window.yablochnyScrollLockTimeout = setTimeout(() => { 
-                window.yablochnyScrollLocked = false; 
-            }, 1500);
-        }
-
+        if (document.activeElement) document.activeElement.blur();
         updater();
         saveSettingsDebounced();
         // Автоматически пересинхронизируем пресет при смене варианта
@@ -3416,33 +3395,23 @@ async function injectYablochnyUI(htmlContent) {
             return; 
         }
 
-        // Target containers
-        const promptManager = jQuery("#completion_prompt_manager_list");
+        // Target: Insert into #rm_api_block, BEFORE #openai_settings.
+        const mainContainer = jQuery("#rm_api_block");
         const settingsBlock = jQuery("#openai_settings");
         
-        if (promptManager.length === 0 && settingsBlock.length === 0) return;
+        if (mainContainer.length === 0 || !mainContainer.is(":visible")) return;
 
-        // Create wrapper - CLEAN, no borders, full width
-        const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"></div>`);
+        // Create wrapper - Flat structure needs padding
+        const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-bottom: 15px; padding: 0 5px;"></div>`);
         wrapper.html(htmlContent);
 
         let inserted = false;
 
-        // Strategy 1: Try to insert before Prompt Manager
-        if (promptManager.length > 0) {
-            const drawer = promptManager.closest(".inline-drawer");
-            if (drawer.length > 0) {
-                drawer.before(wrapper);
-                inserted = true;
-            } else {
-                promptManager.before(wrapper);
-                inserted = true;
-            }
-        } 
-        
-        // Fallback: Append to main settings
-        if (!inserted && settingsBlock.length > 0) {
-            settingsBlock.prepend(wrapper);
+        if (settingsBlock.length > 0) {
+            settingsBlock.before(wrapper);
+            inserted = true;
+        } else {
+            mainContainer.prepend(wrapper);
             inserted = true;
         }
 
@@ -3451,14 +3420,13 @@ async function injectYablochnyUI(htmlContent) {
             initControls();
             loadRegexPacksIntoYablochny();
             
-            // --- STATE RESTORATION ---
+            // --- STATE RESTORATION (Only for Regex Drawer now) ---
             const restoreDrawer = (key, selector) => {
                 const isOpen = localStorage.getItem(key) === "true";
                 const el = wrapper.find(selector);
                 const toggle = el.closest(".inline-drawer").find(".inline-drawer-toggle");
                 const icon = toggle.find(".inline-drawer-icon");
                 
-                // Helper to update icon
                 const updateIcon = (open) => {
                     if (open) {
                         icon.removeClass("fa-circle-chevron-down").addClass("fa-circle-chevron-up");
@@ -3472,7 +3440,7 @@ async function injectYablochnyUI(htmlContent) {
                 };
 
                 if (isOpen) {
-                    el.show(); // INSTANT show, no animation on restore
+                    el.show();
                     updateIcon(true);
                 } else {
                     el.hide();
@@ -3482,63 +3450,23 @@ async function injectYablochnyUI(htmlContent) {
                 toggle.off("click").on("click", function(e) {
                     e.preventDefault(); e.stopPropagation();
                     if (el.is(":visible")) {
-                        el.slideUp(200); // Animation only on user click
+                        el.slideUp(200);
                         updateIcon(false);
                         localStorage.setItem(key, "false");
                     } else {
-                        el.slideDown(200); // Animation only on user click
+                        el.slideDown(200);
                         updateIcon(true);
                         localStorage.setItem(key, "true");
                     }
                 });
             };
 
-            // Restore Main Drawer
-            restoreDrawer("yablochny_main_drawer_open", ".yablochny-settings > .inline-drawer > .inline-drawer-content");
-
-            // Restore Sub Drawers
-            wrapper.find(".yablochny-settings .inline-drawer .inline-drawer-content .inline-drawer").each(function(i) {
-                const subContent = jQuery(this).find(".inline-drawer-content");
+            // Restore Regex Drawer
+            wrapper.find(".inline-drawer").each(function() {
                 const title = jQuery(this).find(".inline-drawer-toggle").text().trim();
-                let key = "yablochny_sub_" + i;
-                
-                if (title.includes("Things")) key = "yablochny_sub_things";
-                else if (title.includes("Regex")) key = "yablochny_sub_regex";
-                else if (title.includes("More")) key = "yablochny_sub_more";
-                
-                const toggle = jQuery(this).find(".inline-drawer-toggle");
-                const icon = toggle.find(".inline-drawer-icon");
-                
-                const updateSubIcon = (open) => {
-                    if (open) {
-                        icon.removeClass("fa-circle-chevron-down").addClass("fa-circle-chevron-up");
-                        icon.removeClass("down");
-                    } else {
-                        icon.removeClass("fa-circle-chevron-up").addClass("fa-circle-chevron-down");
-                        icon.addClass("down");
-                    }
-                };
-
-                if (localStorage.getItem(key) === "true") {
-                    subContent.show();
-                    updateSubIcon(true);
-                } else {
-                    subContent.hide();
-                    updateSubIcon(false);
+                if (title.includes("Regex")) {
+                    restoreDrawer("yablochny_drawer_regex", jQuery(this).find(".inline-drawer-content"));
                 }
-                
-                toggle.off("click").on("click", function(e) {
-                    e.preventDefault(); e.stopPropagation();
-                    if (subContent.is(":visible")) {
-                        subContent.slideUp(200);
-                        updateSubIcon(false);
-                        localStorage.setItem(key, "false");
-                    } else {
-                        subContent.slideDown(200);
-                        updateSubIcon(true);
-                        localStorage.setItem(key, "true");
-                    }
-                });
             });
 
             // Credits & Easter Egg
@@ -3556,63 +3484,12 @@ async function injectYablochnyUI(htmlContent) {
                     else { dev.hide(); if (jQuery("#yp-dev-mode").is(":checked")) jQuery("#yp-dev-mode").click(); }
                 }
             });
-
-            // Restore scroll position REPEATEDLY to ensure it sticks as content expands
-            if (typeof window.yablochnyLastScroll === 'number' && window.yablochnyLastScroll > 0) {
-                const doRestore = () => {
-                    const s1 = jQuery("#rm_api_block").closest('.drawer-content');
-                    const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
-                    const s3 = jQuery(".drawer-content:visible").first();
-                    const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
-                    
-                    if (scrollable.length) {
-                        // Check if we can actually scroll that far yet
-                        // If not, scroll to max, and hope next retry gets further
-                        scrollable.scrollTop(window.yablochnyLastScroll);
-                    }
-                };
-
-                doRestore();
-                // Retry a few times to cover layout shifts/animations
-                setTimeout(doRestore, 50);
-                setTimeout(doRestore, 100);
-                setTimeout(doRestore, 200);
-                setTimeout(doRestore, 400);
-            }
         }
     };
 
-    // Use a fast polling interval instead of MutationObserver for now to guarantee stability
-    setInterval(() => {
-        // Track scroll position continuously
-        if (!window.yablochnyScrollLocked) {
-            const s1 = jQuery("#rm_api_block").closest('.drawer-content');
-            const s2 = jQuery("#settings_preset_openai").closest('.drawer-content');
-            const s3 = jQuery(".drawer-content:visible").first();
-            const scrollable = s1.length ? s1 : (s2.length ? s2 : s3);
-            
-            if (scrollable.length) {
-                const currentScroll = scrollable.scrollTop();
-                // Only update if > 0 to avoid capturing the reset state if lock missed it
-                if (currentScroll > 0) {
-                    window.yablochnyLastScroll = currentScroll;
-                }
-            }
-        }
-
-        const isOpenAI = jQuery("#openai_settings").is(":visible") || jQuery("#completion_prompt_manager_list").is(":visible");
-        // Check if we need to insert (not exists OR not visible)
-        const needsInsert = jQuery("#yablochny-preset-container").length === 0 || !jQuery("#yablochny-preset-container").is(":visible");
-        
-        if (isOpenAI && needsInsert) {
-            insertUI();
-        }
-    }, 100); // Check every 100ms for snappiness
-    
-    // Initial attempt
-    setTimeout(insertUI, 1000);
+    setInterval(insertUI, 500);
+    setTimeout(insertUI, 500);
 }
-
 jQuery(async () => {
     try {
         const settingsHtml = await jQuery.get(`${SCRIPT_PATH}/settings.html`);
