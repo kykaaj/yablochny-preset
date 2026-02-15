@@ -3390,12 +3390,17 @@ async function injectYablochnyUI(htmlContent) {
         // If already exists and is visible, do nothing
         if (jQuery("#yablochny-preset-container").length > 0 && jQuery("#yablochny-preset-container").is(":visible")) return;
 
-        // If exists but detached/hidden... 
-        // NOTE: We don't remove old one here because ST might have just hidden the parent container. 
-        // We rely on jQuery checks below.
-
-        // Create our wrapper - NO STYLES, just a div to hold it
-        const wrapper = jQuery(`<div id="yablochny-preset-container" style="margin-top: 5px; margin-bottom: 5px;"></div>`);
+        // Create our wrapper with explicit styling to fit ST theme
+        // Using var(--SmartTheme...) variables ensures it matches the theme
+        const wrapper = jQuery(`<div id="yablochny-preset-container" class="yablochny-ui-wrapper" style="
+            margin-top: 10px; 
+            margin-bottom: 15px; 
+            border: 1px solid var(--SmartThemeBorderColor); 
+            padding: 10px; 
+            border-radius: 10px; 
+            background-color: var(--SmartThemeBlurTintColor);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        "></div>`);
         wrapper.html(htmlContent);
 
         let inserted = false;
@@ -3403,14 +3408,12 @@ async function injectYablochnyUI(htmlContent) {
         // Strategy 1: Find the "Prompt Manager" list (toggles) and insert BEFORE its container
         const promptList = jQuery("#completion_prompt_manager_list");
         if (promptList.length > 0) {
-            // The prompt list is usually inside a details/summary block with class 'inline-drawer'
             const drawer = promptList.closest(".inline-drawer");
             if (drawer.length > 0) {
                 log("Found prompt manager drawer, inserting before.");
                 drawer.before(wrapper);
                 inserted = true;
             } else {
-                // Fallback: Insert before the list itself if drawer not found
                 log("Found prompt list but no drawer, inserting before list.");
                 promptList.before(wrapper);
                 inserted = true;
@@ -3439,7 +3442,7 @@ async function injectYablochnyUI(htmlContent) {
 
         // Strategy 4: Find "Temperature" slider and insert AFTER its container
         if (!inserted) {
-            const tempSlider = jQuery("#openai_temp"); // or whatever ID standard ST uses
+            const tempSlider = jQuery("#openai_temp"); 
             if (tempSlider.length > 0) {
                  const tempBlock = tempSlider.closest(".range-block") || tempSlider.parent();
                  log("Found Temperature slider, inserting after.");
@@ -3464,35 +3467,6 @@ async function injectYablochnyUI(htmlContent) {
             initControls();
             loadRegexPacksIntoYablochny();
             
-            // --- DRAWER STATE RESTORATION ---
-            const mainDrawerContent = jQuery("#yp-main-drawer-content");
-            const mainDrawerToggle = jQuery("#yp-main-drawer-toggle");
-            const mainDrawerIcon = mainDrawerToggle.find(".inline-drawer-icon");
-            
-            // Check stored state
-            const isMainDrawerOpen = localStorage.getItem("yp_main_drawer_open") === "true";
-            
-            if (isMainDrawerOpen) {
-                mainDrawerContent.show();
-                mainDrawerIcon.removeClass("down").addClass("up");
-                mainDrawerToggle.addClass("open"); // ST specific style sometimes
-            }
-
-            // Bind toggle click
-            mainDrawerToggle.off("click").on("click", function() {
-                const isOpen = mainDrawerContent.is(":visible");
-                if (isOpen) {
-                    mainDrawerContent.slideUp(200);
-                    mainDrawerIcon.removeClass("up").addClass("down");
-                    localStorage.setItem("yp_main_drawer_open", "false");
-                } else {
-                    mainDrawerContent.slideDown(200);
-                    mainDrawerIcon.removeClass("down").addClass("up");
-                    localStorage.setItem("yp_main_drawer_open", "true");
-                }
-            });
-            // --------------------------------
-
             // Re-bind credits handlers inside our new container scope
             jQuery("#yp-credits-btn").off("click").on("click", function () {
                 jQuery("#yp-credits-area").slideToggle(200);
@@ -3501,7 +3475,7 @@ async function injectYablochnyUI(htmlContent) {
                 jQuery("#yp-credits-area").slideUp(200);
             });
             
-             // Re-bind Easter Egg logic for new title element
+             // Re-bind Easter Egg logic
             let titleClicks = 0;
             jQuery("#yp-title-text").off("click").on("click", function () {
                 titleClicks++;
