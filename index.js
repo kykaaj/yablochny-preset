@@ -3407,20 +3407,8 @@ async function injectYablochnyUI(htmlContent) {
         if (promptManager.length === 0 && settingsBlock.length === 0) return;
 
         // Create wrapper - CLEAN, no borders, full width
-        // Anti-jump: restore min-height from last session
-        const lastHeight = localStorage.getItem("yablochny_ui_height");
-        const wrapperStyle = `width: 100%; margin-top: 5px; margin-bottom: 5px; ${lastHeight ? `min-height: ${lastHeight}px;` : ''}`;
-        const wrapper = jQuery(`<div id="yablochny-preset-container" style="${wrapperStyle}"></div>`);
+        const wrapper = jQuery(`<div id="yablochny-preset-container" style="width: 100%; margin-top: 5px; margin-bottom: 5px;"></div>`);
         wrapper.html(htmlContent);
-
-        // Save height on resize or periodically
-        const saveHeight = () => {
-            if (wrapper.height() > 50) { // arbitrary small number to avoid saving 0
-                localStorage.setItem("yablochny_ui_height", wrapper.height());
-            }
-        };
-        // We can't easily detect resize, but we can save it when we interact or periodically
-        setTimeout(saveHeight, 1000); 
 
         let inserted = false;
 
@@ -3450,12 +3438,6 @@ async function injectYablochnyUI(htmlContent) {
             initControls();
             loadRegexPacksIntoYablochny();
             
-            // Allow height to adjust naturally after insertion, but keep min-height for stability during renders?
-            // Actually better to remove min-height after a moment so it can shrink if needed
-            // But if we remove it, it might jump next time. 
-            // Let's update the stored height on click events inside our UI.
-            wrapper.on("click", () => setTimeout(saveHeight, 300));
-
             // --- STATE RESTORATION ---
             const restoreDrawer = (key, selector) => {
                 const isOpen = localStorage.getItem(key) === "true";
@@ -3467,8 +3449,6 @@ async function injectYablochnyUI(htmlContent) {
                 const updateIcon = (open) => {
                     if (open) {
                         icon.removeClass("fa-circle-chevron-down").addClass("fa-circle-chevron-up");
-                        // Also remove 'down' class if it interferes with ST rotation styles, 
-                        // but usually swapping the icon is enough and safer.
                         icon.removeClass("down"); 
                         toggle.addClass("open");
                     } else {
@@ -3489,11 +3469,11 @@ async function injectYablochnyUI(htmlContent) {
                 toggle.off("click").on("click", function(e) {
                     e.preventDefault(); e.stopPropagation();
                     if (el.is(":visible")) {
-                        el.slideUp(200, saveHeight); // Save height after animation
+                        el.slideUp(200);
                         updateIcon(false);
                         localStorage.setItem(key, "false");
                     } else {
-                        el.slideDown(200, saveHeight);
+                        el.slideDown(200);
                         updateIcon(true);
                         localStorage.setItem(key, "true");
                     }
@@ -3537,11 +3517,11 @@ async function injectYablochnyUI(htmlContent) {
                 toggle.off("click").on("click", function(e) {
                     e.preventDefault(); e.stopPropagation();
                     if (subContent.is(":visible")) {
-                        subContent.slideUp(200, saveHeight);
+                        subContent.slideUp(200);
                         updateSubIcon(false);
                         localStorage.setItem(key, "false");
                     } else {
-                        subContent.slideDown(200, saveHeight);
+                        subContent.slideDown(200);
                         updateSubIcon(true);
                         localStorage.setItem(key, "true");
                     }
