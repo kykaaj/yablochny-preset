@@ -2182,7 +2182,51 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
     }
 
-    const newPrompts = masterPrompts.map(p => ({ ...p }));
+    const MANAGED_VARIANT_IDS = [
+        "28ec4454-b3c2-4c06-8fd0-52cb123b778f", // Language
+        "9adda56b-6f32-416a-b947-9aa9f41564eb", // Length
+        "5907aad3-0519-45e9-b6f7-40d9e434ef28", // POV
+        "e0ce2a23-98e3-4772-8984-5e9aa4c5c551", // Tense
+        "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c", // Speech
+        "92f96f89-c01d-4a91-bea3-c8abb75b995a", // Prose
+        "14bf3aa5-73cf-4112-8aca-437c48978663", // Html Theme
+        "6b235beb-7de9-4f84-9b09-6f20210eae6d", // Things
+        "e8c602e2-c7e7-4cc8-babf-7da12771c56a", // Roleplay
+        "1efdd851-e336-44a3-8e08-3cbff9077ed5", // Thoughts
+        "85609813-6c7f-4df2-bee8-0ace5b10df91", // Swearing
+        "db9a9d36-a623-4ffb-8a96-13872c1c8999", // Pace
+        "9c2536d8-2e0f-478d-8bef-3e4e75bcee83", // Extras Lang
+        "e12784ea-de67-48a7-99ef-3b0c1c45907c", // Image
+        "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc", // Focus
+        "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6", // Deconstruction
+    ];
+
+    const OBSOLETE_IDS = [
+        "a56a28d6-21fa-42d4-862e-fe688dea9fec", // Speak for user
+        "d82dc302-0257-4bbf-99d0-c9a8149c98e6", // More thoughts
+        "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4", // Ua Swearing
+        "7d81224c-eaf8-45ef-9af0-b3f52369c792", // Quickpace
+        "d00a8bd2-d7ec-4a1e-919b-4089d2489e82", // Ua Extras
+        "c575de0e-713a-4e91-a9e7-537279ac5852", // Deprecated: Details Focus
+        "1bfb787b-8a33-4dc0-a45b-bad7aa928f48", // Deprecated: Mini Deconstruction
+    ];
+
+    const newPrompts = masterPrompts.map(p => {
+        const u = existingPrompts.find(o => o.identifier === p.identifier);
+        if (u) {
+            const merged = { ...p, ...u };
+            if (MANAGED_VARIANT_IDS.includes(p.identifier)) {
+                // Let the extension dynamically manage the content for variant prompts
+                merged.content = p.content;
+            } else if (OBSOLETE_IDS.includes(p.identifier)) {
+                // Obsolete prompts must be kept empty and disabled
+                merged.content = "";
+                merged.enabled = false;
+            }
+            return merged;
+        }
+        return { ...p };
+    });
 
     for (const p of customPrompts) {
         newPrompts.push({ ...p });
