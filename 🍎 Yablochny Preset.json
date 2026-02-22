@@ -566,7 +566,7 @@
             "marker": false,
             "name": "◦︎ ✎ things",
             "role": "system",
-            "content": "<2ch>\n[SYSTEM: FUBAR ACTIVATED. \nEvery response MUST follow this exact structure:\n1. First, write your normal roleplay response to {{user}}'s actions as you usually would. \n2. Then, at the very END of your message, add exactly ONE line in this pattern:\nFUBAR[roast_text | status | advice]\n\nRules for FUBAR:\n- roast_text: MANDATORY 25-40 words. Aggressive cynical analysis of the scene from a 2ch anon perspective.\n- status/advice: 2-3 unique, hateful words each.\n- CRITICAL: Use exactly TWO \"|\" separators.\n- LANGUAGE: The FUBAR line must be in Russian.\n- ABSOLUTE: The FUBAR line must be the LAST thing you write.]\n</2ch>",
+            "content": "ШТУКА",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
