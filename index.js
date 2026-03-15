@@ -104,7 +104,7 @@ const PROMPT_TO_CONTROL_MAP = {
     "d00a8bd2-d7ec-4a1e-919b-4089d2489e82": "#yp-extras-lang",
     "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc": "#yp-focus",
     "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6": "#yp-deconstruction",
-    "fbab97af-a0e4-4111-ae8b-65a64420671c": "#yp-thing-mix-anewpill",
+    "fbab97af-a0e4-4111-ae8b-65a64420671c": "#yp-anewpill",
 
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": "#yp-tense"
 };
@@ -783,14 +783,6 @@ Formatting Criterias: Keep it short (2-3 lines per character maximum). Genuine r
             label: "Типографика",
             content: `[TYPOGRAPHICS]
 For worded textual use! Signature Styled Embedded Micro-Text: Unique font/styling for physical elements observed in the environment and embedded directly within the prose (e.g., an engraved word on a weapon, a single line of graffiti, a short warning label on a container, words etched in walls, a name tag, etc.). Subsume more distinct font-family, color, and/or font-style to provide a quick visual cue about the text's nature, age, and origin. Use Google Font family libraries.`,
-        },
-        {
-            id: "anewpill",
-            label: "◦ Anew Pill",
-            content: `[ANEW PILL]
-This instruction is activated because you screwed up and user doesn't like your writing. Forget the entire old structure from previous responses; do not rely on it. Sit and analyze the prompt ANEW and start based on instructions rather than going with the flow.
-{{setvar::annoy::
-- ANEW PILL: Identify annoying patterns in old responses and don't repeat them.}}`,
         },
     ],
     hidden: [
@@ -2206,6 +2198,11 @@ function buildMergedPreset(existingPreset, master, cfg) {
                 merged.content = "";
                 merged.enabled = false;
             }
+
+            if (p.identifier === "fbab97af-a0e4-4111-ae8b-65a64420671c") {
+                merged.enabled = !!cfg.anewPillEnabled;
+            }
+
             return merged;
         }
         return { ...p };
@@ -3108,6 +3105,7 @@ function initControls() {
     window.YablochnyThingsSelection = cfg.thingsSelected || {};
     jQuery("#yp-auto-sync").prop("checked", !!cfg.autoSyncOnStart);
     jQuery("#yp-disable-mods").prop("checked", !!cfg.disableMods);
+    jQuery("#yp-anewpill").prop("checked", !!cfg.anewPillEnabled);
     jQuery("#yp-dev-mode").prop("checked", !!cfg.devMode);
 
     updateMetaUi();
@@ -3173,6 +3171,11 @@ function initControls() {
         if (cfg.modelPreset) {
             applyModelPreset(cfg.modelPreset);
         }
+    });
+
+    jQuery("#yp-anewpill").on("change", function () {
+        cfg.anewPillEnabled = jQuery(this).is(":checked");
+        saveSettings();
     });
 
     jQuery("#yp-dev-mode").on("change", function () {
