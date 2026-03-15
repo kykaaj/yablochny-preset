@@ -251,7 +251,7 @@ const UI_TEXT = {
         title: "Налаштування",
         desc: "Адаптивний пресет Яблучний. Розширення створює/оновлює звичайний пресет і зберігає увімкнені тогли та кастомні промпти.",
         sync: "Синхронізувати пресет",
-        auto: "Синхронізувати при запуску SillyTavern",
+        auto: "Авто-синхронізація",
         langLabel: "Промпт мови",
         lengthLabel: "Довжина відповіді",
         POVLabel: "Обличчя оповідання",
@@ -271,8 +271,8 @@ const UI_TEXT = {
         guideLabel: "Гайд",
         presetLabel: "Пресет:",
         lastSyncLabel: "Синхронізація:",
-        thingsTitle: "Things",
-        thingsNote: "Додаткові «штуки» для тогла ◦︎ ✎ things. Деякі можна змішувати, інші — по одному.",
+        thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Additional elements (◦︎ ✎ things)",
+        thingsNote: "Не забудьте синхронізувати після вибору!",
         thingsManagedLabel: "Керувати вмістом тогла звідси (інакше — не чіпаємо)",
         groupMix: "◇ Можна змішувати",
         groupHidden: "👁 Приховані блоки",
@@ -282,7 +282,7 @@ const UI_TEXT = {
         groupUi: "◈︎ Fancy elements (Штуки)",
         groupSupport: "◈︎ Support (Мова допів)",
         exclusiveTag: "exclusive",
-        regexTitle: "Regex packs",
+        regexTitle: "<i class=\"fa-solid fa-code\" style=\"margin-right:8px; opacity:0.8;\"></i>Regex packs",
         regexToggleOn: "Регекси УВІМК",
         regexToggleOff: "Регекси ВИМК",
         regexDebug: "Відладка",
@@ -2175,6 +2175,18 @@ function buildMergedPreset(existingPreset, master, cfg) {
         const u = existingPrompts.find(o => o.identifier === p.identifier);
         if (u) {
             const merged = { ...p, ...u };
+            
+            // FORCE structural properties from master so author updates to names/anchors are reflected!
+            merged.name = p.name;
+            merged.role = p.role;
+            if (p.marker !== undefined) merged.marker = p.marker;
+            if (p.prefix !== undefined) merged.prefix = p.prefix;
+            if (p.suffix !== undefined) merged.suffix = p.suffix;
+            if (p.separator !== undefined) merged.separator = p.separator;
+            if (p.system_prompt !== undefined) merged.system_prompt = p.system_prompt;
+            if (p.injection_position !== undefined) merged.injection_position = p.injection_position;
+            if (p.insertion_order !== undefined) merged.insertion_order = p.insertion_order;
+            // Content and Enabled states are the only things the user is allowed to retain, unless specifically managed.
             if (MANAGED_VARIANT_IDS.includes(p.identifier)) {
                 // Let the extension dynamically manage the content for variant prompts
                 merged.content = p.content;
