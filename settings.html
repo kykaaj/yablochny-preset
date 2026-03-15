@@ -115,27 +115,40 @@
         </div>
       </div>
 
-      <div class="yablochny-controls">
-        <button id="yp-sync" class="menu_button primary">
+      <div class="yablochny-controls" style="flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.95em;">
+          <strong id="yp-preset-label">Preset:</strong> <span id="yp-preset-name">—</span>
+        </div>
+        <button id="yp-sync" class="menu_button primary" style="padding: 5px 15px; margin: 0;" title="Синхронизировать настройки расширения">
           <i class="fa-solid fa-rotate"></i>
           <span id="yp-sync-label">Sync preset</span>
         </button>
+      </div>
 
-        <div class="yablochny-inline">
+      <div style="display: flex; gap: 15px; width: 100%; justify-content: flex-start; align-items: center; font-size: 0.85em; opacity: 0.85; margin-bottom: 10px;">
+        <div class="yablochny-inline" title="Автоматически синхронизировать при старте Таверны">
           <input type="checkbox" id="yp-auto-sync">
-          <label for="yp-auto-sync" id="yp-auto-label">Sync on SillyTavern start</label>
+          <label for="yp-auto-sync" id="yp-auto-label">Sync on start</label>
+        </div>
+        <div class="yablochny-inline" id="yp-dev-container" title="Показывать логи синхронизации (F12)">
+          <input type="checkbox" id="yp-dev-mode">
+          <label for="yp-dev-mode" id="yp-dev-label">Dev logs</label>
+        </div>
+        <div style="margin-left: auto;" title="Время последней успешной синхронизации">
+          <span id="yp-last-sync-label" style="display:none;">Last sync:</span>
+          <i class="fa-solid fa-clock"></i> <span id="yp-last-sync">—</span>
         </div>
       </div>
       <div class="yablochny-row">
 
         <!-- Language & Localization -->
-        <div style="flex-basis: 100%; margin-top: 15px; margin-bottom: 5px; border-bottom: 1px solid var(--SmartThemeBorderColor); padding-bottom: 4px;">
+        <div style="flex-basis: 100%; margin-top: 5px; margin-bottom: 2px; border-bottom: 1px solid var(--SmartThemeBorderColor); padding-bottom: 2px;">
           <strong style="color: var(--SmartThemeBodyText); opacity: 0.8;"><i class="fa-solid fa-language"></i> Language & Localization</strong>
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-lang-label">Language prompt</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-lang-label" title="Язык основного ответа.">Language prompt</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Язык основного ответа.">
             <select id="yp-language" class="yablochny-select" style="flex: 1;">
               <option value="custom">Custom / Manual</option>
               <option value="auto">Auto (match ST language)</option>
@@ -151,8 +164,8 @@
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-extras-lang-label">Extras language</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-extras-lang-label" title="Язык для дополнительных команд.">Extras language</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Язык для дополнительных команд.">
             <select id="yp-extras-lang" class="yablochny-select" style="flex: 1;">
               <option value="custom">Off / Custom</option>
               <option value="ru">Russian</option>
@@ -166,8 +179,8 @@
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-swearing-label">Swearing</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-swearing-label" title="Регулирует наличие и локализацию мата в ответах бота.">Swearing</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Регулирует наличие и локализацию мата в ответах бота.">
             <select id="yp-swearing" class="yablochny-select" style="flex: 1;">
               <option value="custom">Off / Custom</option>
               <option value="ru">Russian</option>
@@ -182,13 +195,13 @@
 
 
         <!-- Format & Style -->
-        <div style="flex-basis: 100%; margin-top: 15px; margin-bottom: 5px; border-bottom: 1px solid var(--SmartThemeBorderColor); padding-bottom: 4px;">
+        <div style="flex-basis: 100%; margin-top: 5px; margin-bottom: 2px; border-bottom: 1px solid var(--SmartThemeBorderColor); padding-bottom: 2px;">
           <strong style="color: var(--SmartThemeBodyText); opacity: 0.8;"><i class="fa-solid fa-pen-nib"></i> Format & Style</strong>
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-length-label">Length</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-length-label" title="Целевой размер ответа.">Length</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Целевой размер ответа.">
             <select id="yp-length" class="yablochny-select" style="flex: 1;">
               <option value="custom">Custom / Manual</option>
               <option value="200-400">200–400 words</option>
@@ -204,8 +217,8 @@
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-prose-label">Prose style</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-prose-label" title="Художественный стиль повествования.">Prose style</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Художественный стиль повествования.">
             <select id="yp-prose" class="yablochny-select" style="flex: 1;">
               <option value="custom">Custom / Manual</option>
               <option value="ao3">AO3 Fanfic (default)</option>
@@ -224,8 +237,8 @@
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-speech-label">Speech style</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-speech-label" title="Стиль речи (диалогов) персонажа.">Speech style</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Стиль речи (диалогов) персонажа.">
             <select id="yp-speech" class="yablochny-select" style="flex: 1;">
               <option value="none">Off / Custom</option>
               <option value="salinger">J.D. Salinger</option>
@@ -242,13 +255,13 @@
 
 
         <!-- Roleplay Settings -->
-        <div style="flex-basis: 100%; margin-top: 15px; margin-bottom: 5px; border-bottom: 1px solid var(--SmartThemeBorderColor); padding-bottom: 4px;">
+        <div style="flex-basis: 100%; margin-top: 5px; margin-bottom: 2px; border-bottom: 1px solid var(--SmartThemeBorderColor); padding-bottom: 2px;">
           <strong style="color: var(--SmartThemeBodyText); opacity: 0.8;"><i class="fa-solid fa-masks-theater"></i> Roleplay Settings</strong>
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-roleplay-label">Roleplay Mode</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-roleplay-label" title="Влияет на то, будет ли бот отыгрывать действия за вас.">Roleplay Mode</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Влияет на то, будет ли бот отыгрывать действия за вас.">
             <select id="yp-roleplay" class="yablochny-select" style="flex: 1;">
               <option value="dont_speak">Don't speak for user (default)</option>
               <option value="speak">Speak for user</option>
@@ -261,8 +274,8 @@
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-pov-label">POV</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-pov-label" title="Лицо повествования (1st - я, 2nd - ты, 3rd - он/она).">POV</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Лицо повествования (1st - я, 2nd - ты, 3rd - он/она).">
             <select id="yp-pov" class="yablochny-select" style="flex: 1;">
               <option value="1st">1st person</option>
               <option value="2nd">2nd person</option>
@@ -276,8 +289,8 @@
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-tense-label">Tense</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-tense-label" title="Время повествования.">Tense</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Время повествования.">
             <select id="yp-tense" class="yablochny-select" style="flex: 1;">
               <option value="Present">Present (default)</option>
               <option value="Past">Past</option>
@@ -291,8 +304,8 @@
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-thoughts-label">Thoughts</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-thoughts-label" title="Отвечает за наличие и объем рефлексии персонажа.">Thoughts</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Отвечает за наличие и объем рефлексии персонажа.">
             <select id="yp-thoughts" class="yablochny-select" style="flex: 1;">
               <option value="off">Off / Empty</option>
               <option value="thoughts">Thoughts (default)</option>
@@ -307,13 +320,13 @@
 
 
         <!-- Focus & Logic -->
-        <div style="flex-basis: 100%; margin-top: 15px; margin-bottom: 5px; border-bottom: 1px solid var(--SmartThemeBorderColor); padding-bottom: 4px;">
+        <div style="flex-basis: 100%; margin-top: 5px; margin-bottom: 2px; border-bottom: 1px solid var(--SmartThemeBorderColor); padding-bottom: 2px;">
           <strong style="color: var(--SmartThemeBodyText); opacity: 0.8;"><i class="fa-solid fa-brain"></i> Focus & Logic</strong>
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-pace-label">Pace</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-pace-label" title="Скорость развития событий в ролевой.">Pace</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Скорость развития событий в ролевой.">
             <select id="yp-pace" class="yablochny-select" style="flex: 1;">
               <option value="slowburn">Slowburn (default)</option>
               <option value="quickpace">Quickpace</option>
@@ -326,8 +339,8 @@
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-focus-label">Focus</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-focus-label" title="Фокус ответов: диалоги или детальное описание.">Focus</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Фокус ответов: диалоги или детальное описание.">
             <select id="yp-focus" class="yablochny-select" style="flex: 1;">
               <option value="off">Off / Custom</option>
               <option value="dialogues">Dialogues</option>
@@ -341,8 +354,8 @@
         </div>
 
         <div class="yablochny-field">
-          <div class="yablochny-label" id="yp-deconstruction-label">COT deconstruction</div>
-          <div style="display: flex; gap: 4px; align-items: center;">
+          <div class="yablochny-label" id="yp-deconstruction-label" title="Объем разбора контекста перед ответом (COT).">COT deconstruction</div>
+          <div style="display: flex; gap: 4px; align-items: center;" title="Объем разбора контекста перед ответом (COT).">
             <select id="yp-deconstruction" class="yablochny-select" style="flex: 1;">
               <option value="large">Large (Default)</option>
               <option value="mini">Mini</option>
@@ -356,32 +369,13 @@
       </div>
 
       </div>
-      <div class="yablochny-meta">
-        <div id="yp-preset-name-row">
-          <strong id="yp-preset-label">Preset:</strong> <span id="yp-preset-name">—</span>
-        </div>
-        <div class="yablochny-row">
-          <div class="yablochny-field">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong id="yp-last-sync-label">Last sync:</strong> <span id="yp-last-sync">—</span>
-            </div>
-            <!-- Hidden Dev Mode Section -->
-            <div id="yp-dev-container">
-              <div class="yablochny-inline">
-                <input type="checkbox" id="yp-dev-mode">
-                <label for="yp-dev-mode" id="yp-dev-label">Developer mode (log sync to console)</label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <hr>
 
       <!-- Things (collapsible) -->
       <div class="yp-drawer yablochny-subdrawer">
         <div class="yp-drawer-toggle inline-drawer-header">
-          <div class="yablochny-subtitle" id="yp-things-title">Things</div>
+          <div class="yablochny-subtitle" id="yp-things-title"><i class="fa-solid fa-puzzle-piece" style="margin-right:8px; opacity:0.8;"></i>Additional elements (◦︎ ✎ things)</div>
           <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
         </div>
         <div class="yp-drawer-content" style="display: none;">
@@ -422,7 +416,7 @@
       <!-- Regex packs, merged here (collapsible) -->
       <div class="yp-drawer yablochny-subdrawer">
         <div class="yp-drawer-toggle inline-drawer-header">
-          <div class="yablochny-subtitle" id="yp-regex-title">Regex packs</div>
+          <div class="yablochny-subtitle" id="yp-regex-title"><i class="fa-solid fa-code" style="margin-right:8px; opacity:0.8;"></i>Regex packs</div>
           <div class="inline-drawer-icon fa-solid fa-circle-chevron-down"></div>
         </div>
         <div class="yp-drawer-content" style="display: none;">

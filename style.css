@@ -23,6 +23,12 @@
   overflow: hidden;
 }
 
+.yablochny-main-toggle b {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
 .yablochny-main-toggle:hover {
   background: linear-gradient(135deg, rgba(107, 203, 119, 0.1) 0%, rgba(231, 76, 60, 0.1) 100%) !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -64,6 +70,7 @@
   gap: 8px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
   letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .yablochny-info-links {
@@ -207,8 +214,9 @@
 .yablochny-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
+  column-gap: 10px;
+  row-gap: 4px;
+  margin-top: 4px;
 }
 
 .yablochny-field {
@@ -425,10 +433,14 @@
 
 /* Styles for yp-drawer (custom inline drawer) */
 .yp-drawer {
-  background-color: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--SmartThemeBorderColor);
-  border-radius: 10px;
-  margin-bottom: 5px;
+  background-color: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .yp-drawer-toggle {
@@ -447,24 +459,24 @@
 
 /* Distinct headers for extension sub-drawers */
 .yablochny-subdrawer .yp-drawer-toggle {
-  background: linear-gradient(90deg, rgba(107, 203, 119, 0.1), transparent) !important;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.25) !important; /* Brighter frame like main button */
-  border-left: 4px solid #6bcb77 !important;
-  border-radius: 10px !important; /* More rounded */
-  margin-bottom: 4px;
+  background: linear-gradient(90deg, rgba(107, 203, 119, 0.08), transparent) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 2px solid rgba(107, 203, 119, 0.8) !important;
+  border-radius: 8px !important;
+  margin-bottom: 0px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   justify-content: center;
   position: relative;
-  padding: 10px 14px !important; /* Slightly smaller than before */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  padding: 8px 12px !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .yablochny-subdrawer .yp-drawer-toggle:hover {
-   background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(241, 196, 15, 0.15)) !important;
-   border-color: rgba(255, 255, 255, 0.4) !important;
-   border-left-color: #e74c3c !important;
+   background: linear-gradient(135deg, rgba(231, 76, 60, 0.08), transparent) !important;
+   border-color: rgba(255, 255, 255, 0.2) !important;
+   border-left-color: rgba(231, 76, 60, 0.8) !important;
    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
    transform: translateY(-1px);
 }

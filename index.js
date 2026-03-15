@@ -142,7 +142,7 @@ const UI_TEXT = {
         title: "Settings",
         desc: "Adaptive Yablochny chat preset. The extension creates/updates a normal preset and keeps your toggle state and custom prompts.",
         sync: "Sync preset",
-        auto: "Sync on SillyTavern start",
+        auto: "Sync on start",
         langLabel: "Language prompt",
         lengthLabel: "Length",
         POVLabel: "POV",
@@ -162,7 +162,7 @@ const UI_TEXT = {
         guideLabel: "Guide",
         presetLabel: "Preset:",
         lastSyncLabel: "Last sync:",
-        thingsTitle: "Things",
+        thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Additional elements (◦︎ ✎ things)",
         thingsNote: "Sync after checking/unchecking!",
         thingsManagedLabel: "Managed Toggles",
         groupMix: "◇ Mixable",
@@ -171,7 +171,7 @@ const UI_TEXT = {
         groupFancy: "✧ Fancy UI (only one)",
         groupComments: "✧ Comments (only one)",
         exclusiveTag: "[1 variant]",
-        regexTitle: "Regex packs",
+        regexTitle: "<i class=\"fa-solid fa-code\" style=\"margin-right:8px; opacity:0.8;\"></i>Regex packs",
         regexToggleOn: "Regex ON",
         regexToggleOff: "Regex OFF",
         regexDebug: "Debug",
@@ -196,7 +196,7 @@ const UI_TEXT = {
         title: "Настройки",
         desc: "Адаптивный пресет Яблочный. Расширение создаёт/обновляет обычный пресет и сохраняет включённые тоглы и кастомные промпты.",
         sync: "Синхронизировать пресет",
-        auto: "Синхронизировать при запуске SillyTavern",
+        auto: "Авто-синхронизация",
         langLabel: "Промпт языка",
         lengthLabel: "Длина ответа",
         POVLabel: "Лицо повествования",
@@ -216,7 +216,7 @@ const UI_TEXT = {
         guideLabel: "Гайд",
         presetLabel: "Пресет:",
         lastSyncLabel: "Синхронизация:",
-        thingsTitle: "Things",
+        thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Additional elements (◦︎ ✎ things)",
         thingsNote: "Не забудьте синхронизировать после выбора!",
         groupMix: "◇ Можно смешивать",
         groupHidden: "👁 Скрытые блоки",
@@ -224,7 +224,7 @@ const UI_TEXT = {
         groupFancy: "✧ Fancy UI (только один)",
         groupComments: "✧ Комментарии (только один)",
         exclusiveTag: "[1 вариант]",
-        regexTitle: "Regex packs",
+        regexTitle: "<i class=\"fa-solid fa-code\" style=\"margin-right:8px; opacity:0.8;\"></i>Regex packs",
         regexToggleOn: "Регексы ВКЛ",
         regexToggleOff: "Регексы ВЫКЛ",
         regexDebug: "Отладка",
@@ -2778,11 +2778,10 @@ function applyLocaleToUi() {
     jQuery("#yp-porn-label").text(dict.pornLabel);
     jQuery("#yp-manga-label").text(dict.mangaLabel);
     jQuery("#yp-deconstruction-label").text(dict.deconstructionLabel);
-    jQuery("#yp-site-label").text(dict.siteLabel);
     jQuery("#yp-guide-label").text(dict.guideLabel);
-    jQuery("#yp-preset-label").text(dict.presetLabel);
+    jQuery("#yp-preset-label").html(dict.presetLabel);
     jQuery("#yp-last-sync-label").text(dict.lastSyncLabel);
-    jQuery("#yp-things-title").text(dict.thingsTitle);
+    jQuery("#yp-things-title").html(dict.thingsTitle);
     jQuery("#yp-things-note").text(dict.thingsNote);
     jQuery("#yp-things-managed-label").text(dict.thingsManagedLabel);
     jQuery("#yp-things-group-mix").text(dict.groupMix);
@@ -2790,16 +2789,16 @@ function applyLocaleToUi() {
     jQuery("#yp-things-group-cyoa").text(dict.groupCyoa);
     jQuery("#yp-things-group-fancy").text(dict.groupFancy);
     jQuery("#yp-things-group-comments").text(dict.groupComments);
-    jQuery("#yp-regex-title").text(dict.regexTitle);
+    jQuery("#yp-regex-title").html(dict.regexTitle);
     jQuery("#yp-regex-debug-label").text(dict.regexDebug);
     jQuery("#yp-regex-desc").text(dict.regexDesc);
     updateRegexToggleButton();
     const devLabel =
         lang === "ru"
-            ? "Режим разработчика (лог синка в консоль)"
+            ? "Dev logs"
             : lang === "uk"
-                ? "Режим розробника (лог синка в консолі)"
-                : "Developer mode (log sync to console)";
+                ? "Dev logs"
+                : "Dev logs";
     jQuery("#yp-dev-label").text(devLabel);
     if (dict.disableModsLabel) jQuery("#yp-disable-mods-label").text(dict.disableModsLabel);
 }
@@ -3541,17 +3540,7 @@ async function injectYablochnyUI(htmlContent) {
             jQuery("#yp-credits-btn").off("click").on("click", function () { jQuery("#yp-credits-area").slideToggle(200); });
             jQuery("#yp-credits-close-inline").off("click").on("click", function () { jQuery("#yp-credits-area").slideUp(200); });
             
-            let titleClicks = 0;
-            jQuery("#yp-title-text").off("click").on("click", function (e) {
-                // Allow propagation so the drawer toggles
-                titleClicks++;
-                if (titleClicks >= 5) {
-                    titleClicks = 0;
-                    const dev = jQuery("#yp-dev-container");
-                    if (dev.css("display") === "none") { dev.show(); if (window.toastr) window.toastr.info("Developer Mode revealed!"); }
-                    else { dev.hide(); if (jQuery("#yp-dev-mode").is(":checked")) jQuery("#yp-dev-mode").click(); }
-                }
-            });
+
 
             // Generic Drawer Toggle (delegated)
             wrapper.on("click", ".yp-drawer-toggle, .yablochny-main-toggle", function(e) {
