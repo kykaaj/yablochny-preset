@@ -104,7 +104,6 @@ const PROMPT_TO_CONTROL_MAP = {
     "d00a8bd2-d7ec-4a1e-919b-4089d2489e82": "#yp-extras-lang",
     "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc": "#yp-focus",
     "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6": "#yp-deconstruction",
-    "fbab97af-a0e4-4111-ae8b-65a64420671c": "#yp-anewpill",
 
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": "#yp-tense"
 };
@@ -2200,7 +2199,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
             }
 
             if (p.identifier === "fbab97af-a0e4-4111-ae8b-65a64420671c") {
-                merged.enabled = !!cfg.anewPillEnabled;
+                // Keep it in KNOWN_PRESET_IDS but no special enabled override
             }
 
             return merged;
@@ -3105,7 +3104,6 @@ function initControls() {
     window.YablochnyThingsSelection = cfg.thingsSelected || {};
     jQuery("#yp-auto-sync").prop("checked", !!cfg.autoSyncOnStart);
     jQuery("#yp-disable-mods").prop("checked", !!cfg.disableMods);
-    jQuery("#yp-anewpill").prop("checked", !!cfg.anewPillEnabled);
     jQuery("#yp-dev-mode").prop("checked", !!cfg.devMode);
 
     updateMetaUi();
@@ -3171,11 +3169,6 @@ function initControls() {
         if (cfg.modelPreset) {
             applyModelPreset(cfg.modelPreset);
         }
-    });
-
-    jQuery("#yp-anewpill").on("change", function () {
-        cfg.anewPillEnabled = jQuery(this).is(":checked");
-        saveSettings();
     });
 
     jQuery("#yp-dev-mode").on("change", function () {
