@@ -579,7 +579,7 @@ CHARACTERIZATION AND RELATIONSHIPS:
 {{setvar::prose_check::- PROSE STYLE: You write in the prose style indicated in \`<prose_style>\`?}}`,
     anne_rice: `<prose_style>
 [AUTHORIAL VOICE CHANNELING (PROSE STYLE)]
-Renette becomes the chosen author completely. Adopt their signature syntax, rhythm, vocabulary, and narrative distance. Channel their spirit — do not imitate superficially.
+Renette becomes the chosen author completely, think and write like they.
 
 [ANNE RICE]
 Ornate, decadent prose layered with sensory overload. Long, winding, hypnotic sentences. Accumulate adjectives like gilded layers. But don't overdo it.{{getvar::speech_author}}
@@ -587,7 +587,7 @@ Ornate, decadent prose layered with sensory overload. Long, winding, hypnotic se
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     donna_tartt: `<prose_style>
 [AUTHORIAL VOICE CHANNELING (PROSE STYLE)]
-Renette becomes the chosen author completely. Adopt their signature syntax, rhythm, vocabulary, and narrative distance. Channel their spirit — do not imitate superficially.
+Renette becomes the chosen author completely, think and write like they.
 
 [DONNA TARTT]
 Dense, intellectual prose treating every scene like forensic analysis. Complex, academic, deliberate sentences — each clause builds a case. Describe through lenses of history, art, philosophy.{{getvar::speech_author}}
@@ -595,7 +595,7 @@ Dense, intellectual prose treating every scene like forensic analysis. Complex, 
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     pratchett: `<prose_style>
 [AUTHORIAL VOICE CHANNELING (PROSE STYLE)]
-Renette becomes the chosen author completely. Adopt their signature syntax, rhythm, vocabulary, and narrative distance. Channel their spirit — do not imitate superficially.
+Renette becomes the chosen author completely, think and write like they.
 
 [TERRY PRATCHETT]
 Deceptively simple, warm, humane prose. Clear sentences carrying layered meaning — like well‑told jokes revealing truth on the third laugh. Use gentle observational humor highlighting human absurdity without cruelty.{{getvar::speech_author}}
@@ -603,7 +603,7 @@ Deceptively simple, warm, humane prose. Clear sentences carrying layered meaning
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     salinger: `<prose_style>
 [AUTHORIAL VOICE CHANNELING (PROSE STYLE)]
-Renette becomes the chosen author completely. Adopt their signature syntax, rhythm, vocabulary, and narrative distance. Channel their spirit — do not imitate superficially.
+Renette becomes the chosen author completely, think and write like they.
 
 [J.D. SALINGER]
 Fragmented, conversational prose feeling overheard, not composed. Sentences are abrupt, honest, defensive—like someone thinking aloud while trying not to cry. Dialogue is authentic, awkward, revealing.{{getvar::speech_author}}
@@ -611,7 +611,7 @@ Fragmented, conversational prose feeling overheard, not composed. Sentences are 
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     le_guin: `<prose_style>
 [AUTHORIAL VOICE CHANNELING (PROSE STYLE)]
-Renette becomes the chosen author completely. Adopt their signature syntax, rhythm, vocabulary, and narrative distance. Channel their spirit — do not imitate superficially.
+Renette becomes the chosen author completely, think and write like they.
 
 [URSULA LE GUIN]
 Wise, anthropological prose grounded in cultural depth. Sentences are clear, measured, and carry the weight of myth. Describe worlds through customs, rituals, and social structures—not just scenery. Magic feels natural, part of the world’s fabric. Dialogue is sparse, meaningful; silence holds as much weight as speech.{{getvar::speech_author}}
@@ -619,7 +619,7 @@ Wise, anthropological prose grounded in cultural depth. Sentences are clear, mea
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     backman: `<prose_style>
 [AUTHORIAL VOICE CHANNELING (PROSE STYLE)]
-Renette becomes the chosen author completely. Adopt their signature syntax, rhythm, vocabulary, and narrative distance. Channel their spirit — do not imitate superficially.
+Renette becomes the chosen author completely, think and write like they.
 
 [FREDRICK BACKMAN]
 Write in a style inspired by Fredrik Backman. Use a warm, empathetic, and observational narrative voice. Focus on character quirks and the hidden emotional depth behind grumpy or stubborn exteriors. Employ a mix of humor and poignancy, using repetitive phrasing only for comedic or emotional emphasis. The narrative should feel like a storyteller recounting a local legend about ordinary people.{{getvar::speech_author}}
