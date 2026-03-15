@@ -2187,10 +2187,11 @@ function buildMergedPreset(existingPreset, master, cfg) {
             if (p.injection_position !== undefined) merged.injection_position = p.injection_position;
             if (p.insertion_order !== undefined) merged.insertion_order = p.insertion_order;
             // Content and Enabled states are the only things the user is allowed to retain, unless specifically managed.
-            if (MANAGED_VARIANT_IDS.includes(p.identifier)) {
-                // Let the extension dynamically manage the content for variant prompts
-                merged.content = p.content;
-            } else if (OBSOLETE_IDS.includes(p.identifier)) {
+            // FORCE content from master for all official prompts!
+            // This ensures that updates reach the user even if they edited the prompt locally.
+            merged.content = p.content;
+
+            if (OBSOLETE_IDS.includes(p.identifier)) {
                 // Obsolete prompts must be kept empty and disabled
                 merged.content = "";
                 merged.enabled = false;
