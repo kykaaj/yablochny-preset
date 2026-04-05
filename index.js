@@ -16,6 +16,22 @@ import { saveSettingsDebounced } from "/script.js";
 import { getCurrentLocale } from "/scripts/i18n.js";
 import { openai_settings, openai_setting_names } from "/scripts/openai.js";
 
+const IMAGE_STYLE_VARIANTS = {
+    anime_inspired_realism: "Delicate shoujo anime-inspired realism, thin elegant linework, vibrant tones, ethereal aesthetic, cinematic layered light, soft bloom highlights, glowing rim light, subtle color bounce light, dust and light particles, detailed expressive eyes, depth of field, elegant colors, ultra detailed, glossy shiny highlights on skin, god rays, cinematic composition, realistic proportions, expressive faces, dynamic poses",
+    painterly_anime: "Painterly anime style, cinematic realistic lighting on a painterly aesthetic, detailed rendering with soft impressionistic brushwork and blending, manga page layout",
+    semi_realistic_anime: "Semi-realistic anime style, volumetric soft shading, detailed cinematic lighting and shadows, realistic proportions mixed with anime features, high quality anime rendering",
+    soft_pastel_anime: "Delicate shoujo anime style, thin elegant linework, sparkling eye and hair highlights, soft pastel tones, minimal shading, ethereal romantic aesthetic",
+    toni_muntean: "Semi-realistic illustration style inspired by Toni Muntean, cinematic lighting, volumetric shadows, dramatic atmosphere, detailed textures, painterly quality, high detail",
+    photorealistic_illustration: "Masterpiece, best quality, ultra-detailed, cinematic photorealistic character illustration, highly realistic faces with attractive natural proportions, beautiful expressive eyes, realistic eyelids and lashes, natural lips, believable skin texture with subtle pores, healthy natural complexion, detailed realistic hair strands with natural volume and soft sheen, graceful anatomy, premium clothing textures, visible fabric detail, cinematic live lighting, soft rim light, realistic shadow depth, 85mm lens look, subtle film grain, tasteful color grading, high-end editorial realism",
+    digital_oil: "Digital oil painting aesthetic, dramatic lighting showcasing impasto brushstrokes and canvas texture, deep saturated colors, SFX blurs",
+    ethereal_oil: "Ethereal oil painting on canvas style, visible brushstrokes, high fantasy anime, vibrant glowing colors, thick impasto textures, volumetric lighting, divine atmosphere",
+    colored_pencil: "Colored pencil style, directional light enhancing layered hatching and paper grain texture, soft distinct lines, detailed finish",
+    uki_e: "Japanese Ukiyo-e woodblock print style mixed with modern anime, flat bold colors, strong black outlines, dynamic composition, traditional motifs, speech bubble with Russian text, manga panels layout",
+    indie_diary: "Personal indie diary illustration, mixed media sketchbook page aesthetic, soft delicate pencil sketching combined with loose transparent watercolor washes. Hand-drawn, cozy, nostalgic and intimate atmosphere. Muted pastel color bleeds, expressive and slightly messy ink linework. Drawn on textured off-white journal paper, teenage scrapbook feel. Traditional 2d art, no digital polish, no 3d rendering",
+    pixel_16bit: "HD-2D diorama aesthetic, highly detailed 16-bit pixel art characters in a rich 3D environment, glowing volumetric lighting",
+    "3d_cgi": "High-end 3D CGI animated film aesthetic, soft subsurface scattering on skin, vibrant highly detailed textures, cinematic studio lighting"
+};
+
 // Определяем путь к папке расширения автоматически
 const SCRIPT_PATH = import.meta.url.substring(0, import.meta.url.lastIndexOf('/'));
 const EXTENSION_NAME = "yablochny-preset";
@@ -82,6 +98,8 @@ const VARIANT_PROMPT_IDS = new Set([
 
     // Tense
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551",
+    // Image style
+    "65064e43-ef37-4d76-b6b8-6750033c4153",
 ]);
 
 const PROMPT_TO_CONTROL_MAP = {
@@ -106,7 +124,8 @@ const PROMPT_TO_CONTROL_MAP = {
     "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6": "#yp-deconstruction",
 
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": "#yp-tense",
-    "d9762c5c-d5a4-49b0-9d00-814ae57e9711": "#yp-addon"
+    "d9762c5c-d5a4-49b0-9d00-814ae57e9711": "#yp-addon",
+    "65064e43-ef37-4d76-b6b8-6750033c4153": "#yp-image-style"
 };
 
 const REGEX_PROMPT_MAP = {
@@ -159,9 +178,8 @@ const UI_TEXT = {
         focusLabel: "Focus",
         deconstructionLabel: "COT deconstruction",
         lastSyncNever: "never",
-        siteLabel: "Site",
-        guideLabel: "Guide",
-        creditsLabel: "Credits",
+        imageStyleLabel: "Image style",
+        optStyleCustom: "Custom / Manual",
         lastSyncLabel: "Last sync:",
         thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Additional elements (◦︎ ✎ things)",
         thingsNote: "Sync after checking/unchecking!",
@@ -344,9 +362,8 @@ const UI_TEXT = {
         focusLabel: "Фокус",
         deconstructionLabel: "COT деконструкция",
         lastSyncNever: "еще ни разу",
-        siteLabel: "Сайт",
-        guideLabel: "Гайд",
-        creditsLabel: "Авторы",
+        imageStyleLabel: "Стиль изображений",
+        optStyleCustom: "Свой / Вручную",
         lastSyncLabel: "Синхронизация:",
         thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Дополнительные элементы (◦︎ ✎ things)",
         thingsNote: "Не забудьте синхронизировать после выбора!",
@@ -531,9 +548,8 @@ const UI_TEXT = {
         focusLabel: "Фокус",
         deconstructionLabel: "COT деконструкція",
         lastSyncNever: "ще жодного разу",
-        siteLabel: "Сайт",
-        guideLabel: "Гайд",
-        creditsLabel: "Автори",
+        imageStyleLabel: "Стиль зображень",
+        optStyleCustom: "Свій / Вручну",
         lastSyncLabel: "Синхронізація:",
         thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Додаткові елементи (◦︎ ✎ things)",
         thingsNote: "Не забудьте синхронізувати після вибору!",
@@ -2381,6 +2397,31 @@ function applyDeconstructionVariant(master, cfg, existingPreset) {
     }
 }
 
+function applyImageStyleVariant(master, cfg, existingPreset) {
+    const id = "65064e43-ef37-4d76-b6b8-6750033c4153"; // Image Style
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Force enable
+    prompt.enabled = true;
+
+    if (cfg.imageStyleMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+    const mode = cfg.imageStyleMode || "anime_inspired_realism";
+    let text = IMAGE_STYLE_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.image_style && cfg.promptEdits.image_style[mode]) {
+        text = cfg.promptEdits.image_style[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = `{{setvar::imgstyle::${text}}}`;
+    }
+}
+
 function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null) {
     // Клонируем исходный пресет как есть
     const master = structuredClone(basePreset);
@@ -2422,6 +2463,7 @@ function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null)
     applyExtrasLangVariant(master, cfg, existingPreset);
     applyFocusVariant(master, cfg, existingPreset);
     applyDeconstructionVariant(master, cfg, existingPreset);
+    applyImageStyleVariant(master, cfg, existingPreset);
 
     // Disable Obsolete Prompts (Merged into Variants)
     const obsoleteIds = [
@@ -2662,6 +2704,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
 
         "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc", // Focus
         "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6", // Deconstruction
+        "65064e43-ef37-4d76-b6b8-6750033c4153", // Image style
     ];
 
     const OBSOLETE_IDS = [
@@ -3151,6 +3194,7 @@ const VARIANT_TYPE_MAP = {
     extras: { constants: "EXTRAS_LANG_VARIANTS", keys: ["custom", "ru", "uk"] },
     focus: { constants: "FOCUS_VARIANTS", keys: ["off", "dialogues", "details"] },
     deconstruction: { constants: "DECONSTRUCTION_VARIANTS", keys: ["large", "mini"] },
+    image_style: { constants: "IMAGE_STYLE_VARIANTS", keys: Object.keys(IMAGE_STYLE_VARIANTS) },
 };
 
 async function loadPromptEdits() {
@@ -3198,13 +3242,8 @@ function getVariantContent(variantType, variantKey) {
         case "SPEECH_VARIANTS": constants = SPEECH_VARIANTS; break;
 
 
-        case "ROLEPLAY_VARIANTS": constants = ROLEPLAY_VARIANTS; break;
-        case "THOUGHTS_VARIANTS": constants = THOUGHTS_VARIANTS; break;
-        case "SWEARING_VARIANTS": constants = SWEARING_VARIANTS; break;
-        case "PACE_VARIANTS": constants = PACE_VARIANTS; break;
-        case "EXTRAS_LANG_VARIANTS": constants = EXTRAS_LANG_VARIANTS; break;
-        case "FOCUS_VARIANTS": constants = FOCUS_VARIANTS; break;
         case "DECONSTRUCTION_VARIANTS": constants = DECONSTRUCTION_VARIANTS; break;
+        case "IMAGE_STYLE_VARIANTS": constants = IMAGE_STYLE_VARIANTS; break;
         default: return "";
     }
 
@@ -3734,6 +3773,7 @@ function initControls() {
     jQuery("#yp-pace").val(cfg.paceMode || "slowburn");
     jQuery("#yp-extras-lang").val(cfg.extrasLangMode || "custom");
     jQuery("#yp-deconstruction").val(cfg.deconstructionMode || "large");
+    jQuery("#yp-image-style").val(cfg.imageStyleMode || "anime_inspired_realism");
     jQuery("#yp-addon").val(cfg.addonMode || "off");
 
     window.YablochnyThingsSelection = cfg.thingsSelected || {};
@@ -4009,6 +4049,14 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.addonMode = value;
+        });
+    });
+
+    jQuery("#yp-image-style").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.imageStyleMode = value;
         });
     });
 

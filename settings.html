@@ -379,6 +379,32 @@
           <strong id="yp-hdr-additional">Additional Settings</strong>
         </div>
         <div class="yablochny-field-half">
+          <div class="yablochny-label" id="yp-image-style-label">Image style</div>
+          <div style="display: flex; gap: 4px; align-items: center;" id="yp-image-style-container">
+            <select id="yp-image-style" class="yablochny-select" style="flex: 1;">
+              <option value="custom" id="yp-opt-style-custom">Custom / Manual</option>
+              <option value="anime_inspired_realism">Anime-inspired realism</option>
+              <option value="painterly_anime">Painterly anime style</option>
+              <option value="semi_realistic_anime">Semi-realistic anime style</option>
+              <option value="soft_pastel_anime">Thin linework, soft pastel anime style</option>
+              <option value="toni_muntean">Toni Muntean</option>
+              <option value="photorealistic_illustration">Photorealistic illustration</option>
+              <option value="digital_oil">Digital oil</option>
+              <option value="ethereal_oil">Ethereal oil</option>
+              <option value="colored_pencil">Colored pencil</option>
+              <option value="uki_e">Japanese Ukiyo-e woodblock print</option>
+              <option value="indie_diary">Indie diary</option>
+              <option value="pixel_16bit">16-bit pixel art</option>
+              <option value="3d_cgi">3D CGI</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="image_style"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field-half">
           <div class="yablochny-label" id="yp-addon-label">Addon Mode</div>
           <div style="display: flex; gap: 4px; align-items: center;" id="yp-addon-container">
             <select id="yp-addon" class="yablochny-select" style="flex: 1;">
