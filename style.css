@@ -212,17 +212,51 @@
   margin: 0;
 }
 
-.yablochny-row {
+.yablochny-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-wrap: wrap;
   column-gap: 10px;
-  row-gap: 4px;
-  margin-top: 4px;
+  row-gap: 8px;
 }
 
 .yablochny-field {
-  flex: 1 1 160px;
-  min-width: 160px;
+  flex: 1 1 100%;
+}
+
+.yablochny-field-half {
+  flex: 0 0 calc(50% - 5px);
+  min-width: 150px;
+}
+
+.yablochny-field-full {
+  flex: 1 1 100%;
+}
+
+.yablochny-section-header {
+  flex-basis: 100%;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--SmartThemeBorderColor);
+  padding-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.yablochny-section-header strong {
+  color: var(--SmartThemeBodyText);
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.yablochny-section-header i {
+  color: var(--SmartThemeQuoteColor);
+  opacity: 0.8;
 }
 
 .yablochny-label {
@@ -244,7 +278,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 3px;
-  margin-bottom: 6px;
+  margin-bottom: 1px;
 }
 
 .yp-model-btn {
@@ -434,6 +468,7 @@
 
 /* Styles for yp-drawer (custom inline drawer) */
 .yp-drawer {
+  width: 100% !important;
   background-color: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -445,17 +480,20 @@
 }
 
 .yp-drawer-toggle {
-  padding: 5px;
+  padding: 8px 12px !important;
   cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
   user-select: none;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .yp-drawer-content {
-  padding: 5px;
+  padding: 8px;
   border-top: 1px solid var(--SmartThemeBorderColor);
+  width: 100% !important;
 }
 
 /* Distinct headers for extension sub-drawers */
@@ -468,9 +506,6 @@
   border-radius: 8px !important;
   margin-bottom: 0px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  justify-content: center;
-  position: relative;
-  padding: 8px 12px !important;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -483,8 +518,8 @@
 }
 
 .yablochny-subdrawer .inline-drawer-icon {
-  position: absolute;
-  right: 10px;
+  margin-left: 8px;
+  opacity: 0.8;
 }
 
 .yablochny-subtitle {
@@ -492,6 +527,8 @@
   font-weight: 600;
   color: #fff;
   text-shadow: 0 0 5px rgba(107, 203, 119, 0.5);
+  flex: 1;
+  text-align: left;
 }
 
 .small-btn {
@@ -514,38 +551,24 @@
   z-index: 99999;
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(2px);
-  /* ROBUST MOBILE LAYOUT: Block display + overflow scrolling */
-  display: none;
-  /* JS will toggle to 'block' */
   overflow-y: auto;
-  /* Scroll overlay if content is huge */
   padding: 10px;
   box-sizing: border-box;
   text-align: center;
-  /* Helper for inline-block centering if needed, but we use margin auto */
 }
 
 /* Credits Modal Content */
 .yp-credits-content {
   position: relative;
-  background: #151515;
   background: var(--SmartThemeHardwareBody, #151515);
-  color: #ccc;
   color: var(--SmartThemeBodyColor, #ccc);
-  border: 1px solid #444;
   border: 1px solid var(--SmartThemeBorderColor);
   border-radius: 12px;
   padding: 20px;
   text-align: left;
-  /* Reset text align */
-
   width: 100%;
   max-width: 500px;
-
-  /* ROBUST VERTICAL POSITIONING */
   margin: 10vh auto 5vh auto;
-  /* 10% from top, centered horizontally */
-
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
 }
 
@@ -565,11 +588,9 @@
   background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important;
 }
 
-/* Use attribute selector to catch prompt_manager_prompt_name even if prefix is used */
 .yp-managed-prompt [class*="prompt_manager_prompt_name"] {
   color: #6bcb77 !important;
-  /* cursor: pointer !important;  <-- Removed to avoid confusion if only button is clickable */
-  text-decoration: none !important; /* Clean text */
+  text-decoration: none !important;
 }
 
 .yp-managed-prompt .prompt_name:hover {
@@ -610,4 +631,4 @@
 
 .yp-regex-pack {
   transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease, transform 0.3s ease;
-}
+}
