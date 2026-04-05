@@ -4543,9 +4543,9 @@ function injectDynamicStyles() {
                         firstControl[0].scrollIntoView({ behavior: "smooth", block: "center" });
                         
                         // Highlight ALL
-                        const flashClass = isGold ? "yp-highlight-active" : "yp-flash";
-                        controls.addClass(flashClass);
-                        setTimeout(() => controls.removeClass(flashClass), 5500);
+                        const highlightClass = isGold ? "yp-pulse-gold" : "yp-pulse-green";
+                        controls.addClass(highlightClass);
+                        setTimeout(() => controls.removeClass(highlightClass), 5000);
                     }, 300);
                 }, 100);
             }
@@ -4581,10 +4581,27 @@ function setupLongPressSettingsNavigation() {
         
         const target = jQuery(this);
         isLongPress = false;
+        
+        // Reset any existing timer to avoid double triggers
+        clearTimeout(longPressTimer);
+        
         longPressTimer = setTimeout(() => {
             isLongPress = true;
+            // On PC/Mobile, prevent the dropdown from opening or keyboard from appearing
+            target.find("select, input").blur();
+            // Also close any currently open select if possible by focusing something else
+            jQuery(":focus").blur();
+            
             handleSettingLongPress(target);
         }, LONG_PRESS_DURATION);
+    });
+
+    jQuery(document).on("click", targetSelectors, function(e) {
+        if (isLongPress) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
     });
 
     jQuery(document).on("pointerup pointerleave", targetSelectors, function() {
@@ -4653,6 +4670,9 @@ function navigateToPromptManagerItem(identifier, isRegex = false) {
             item[0].scrollIntoView({ behavior: "smooth", block: "center" });
 
             // Apply highlight class
+            if (isRegex) {
+                item.addClass("yp-managed-regex-prompt"); // Ensure it has formatting
+            }
             const highlightClass = isRegex ? "yp-st-highlight-gold" : "yp-st-highlight-green";
             item.addClass(highlightClass);
             
