@@ -4353,361 +4353,151 @@ async function injectYablochnyUI(htmlContent) {
             });
             observer.observe(pmList, { childList: true, subtree: true });
         }
-        
-        // Keep interval as a fail-safe, faster check
-        setInterval(highlightManagedPrompts, 500);
     };
-
-    setInterval(insertUI, 500);
+    setInterval(insertUI, 1100);
     setTimeout(insertUI, 500);
+}
+
+/**
+ * Ultimate High-Precision Surgical Glow.
+ * Uses fixed positioning to target exact UI controls with 500ms post-scroll safety.
+ */
+function showStandaloneGlow(target, isGold) {
+    if (!target || target.length === 0) return;
+    const el = target[0];
+    const rect = el.getBoundingClientRect();
+    
+    // Fallback if rect is zero (item not visible)
+    if (rect.width === 0 || rect.height === 0) return;
+
+    const hClass = isGold ? "yp-overlay-gold" : "yp-overlay-green";
+    const overlay = jQuery("<div class='yp-highlight-overlay'></div>")
+        .addClass(hClass)
+        .css({
+            position: 'fixed',
+            top: (rect.top - 2) + 'px',
+            left: (rect.left - 2) + 'px',
+            width: (rect.width + 4) + 'px',
+            height: (rect.height + 4) + 'px',
+            borderRadius: '16px', // FORCED RADIUS
+            pointerEvents: 'none',
+            zIndex: 999999
+        });
+        
+    jQuery("body").append(overlay);
+    setTimeout(() => { overlay.fadeOut(700, () => overlay.remove()); }, 4000);
 }
 
 function injectDynamicStyles() {
     const styleId = "yablochny-dynamic-styles";
     if (document.getElementById(styleId)) return;
-
+    let css = ".yp-virtual-btn-controls { position: relative; padding-left: 24px !important; } .yp-virtual-btn-controls::before { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 0; top: 50%; transform: translateY(-50%); font-size: 14px; cursor: pointer; transition: color 0.2s; width: 20px; text-align: center; z-index: 10; } ";
     const greenIds = Object.keys(PROMPT_TO_CONTROL_MAP);
-    const goldIds = Object.keys(REGEX_PROMPT_MAP);
-
-    let css = "";
-
-    // Common Button Style
-    css += `
-        .yp-virtual-btn-controls {
-            position: relative;
-            padding-left: 24px !important; /* Make space for icon */
-        }
-        .yp-virtual-btn-controls::before {
-            content: "\\f1de";
-            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
-            font-weight: 900;
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 14px;
-            cursor: pointer;
-            transition: color 0.2s;
-            width: 20px;
-            text-align: center;
-            z-index: 10;
-        }
-    `;
-
-    // Green Prompts (Standard)
     if (greenIds.length > 0) {
-        const selectors = greenIds.map(id => `li[data-pm-identifier="${id}"]`).join(",\n");
-        const controlSelectors = greenIds.map(id => `li[data-pm-identifier="${id}"] [class*='prompt_manager_prompt_controls']`).join(",\n");
-        
-        css += `
-        ${selectors} {
-            border-left: 3px solid rgba(107, 203, 119, 0.6) !important;
-            background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important;
-        }
-        ${selectors.replace(/]/g, '] [class*="prompt_manager_prompt_name"]')} {
-            color: #6bcb77 !important;
-            text-decoration: none !important;
-        }
-        
-        /* Virtual Button Green */
-        ${controlSelectors} {
-            position: relative;
-            padding-left: 28px !important; 
-        }
-        ${controlSelectors.replace(/controls']/g, "controls']::before")} {
-            content: "\\f1de";
-            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
-            font-weight: 900;
-            position: absolute;
-            left: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px; 
-            cursor: pointer;
-            color: #6bcb77;
-            opacity: 0.6; /* Dimmed by default */
-            transition: all 0.2s;
-        }
-        ${controlSelectors.replace(/controls']/g, "controls']:hover::before")} {
-            color: #8be096;
-            opacity: 1; /* Bright on hover */
-        }
-        `;
+        const sel = greenIds.map(id => `li[data-pm-identifier='${id}']`).join(",");
+        const csel = greenIds.map(id => `li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']`).join(",");
+        css += `${sel} { border-left: 3px solid rgba(107, 203, 119, 0.6) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; } ${sel.replace(/]/g, "] [class*='prompt_manager_prompt_name']")} { color: #6bcb77 !important; text-decoration: none !important; } ${csel} { position: relative; padding-left: 28px !important; } ${csel.replace(/controls']/g, "controls']::before")} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 16px; cursor: pointer; color: #6bcb77; opacity: 0.6; transition: all 0.2s; } ${csel.replace(/controls']/g, "controls']:hover::before")} { color: #8be096; opacity: 1; } `;
     }
-
-    // Gold Prompts (Regex)
+    const goldIds = Object.keys(REGEX_PROMPT_MAP);
     if (goldIds.length > 0) {
-        const selectors = goldIds.map(id => `li[data-pm-identifier="${id}"]`).join(",\n");
-        const controlSelectors = goldIds.map(id => `li[data-pm-identifier="${id}"] [class*='prompt_manager_prompt_controls']`).join(",\n");
-
-        css += `
-        ${selectors} {
-            border-left: 4px solid #f1c40f !important;
-            background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important;
-        }
-        ${selectors.replace(/]/g, '] [class*="prompt_manager_prompt_name"]')} {
-            color: #f1c40f !important;
-            text-decoration: none !important;
-        }
-
-        /* Virtual Button Gold */
-        ${controlSelectors} {
-            position: relative;
-            padding-left: 28px !important; 
-        }
-        ${controlSelectors.replace(/controls']/g, "controls']::before")} {
-            content: "\\f1de";
-            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
-            font-weight: 900;
-            position: absolute;
-            left: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px; 
-            cursor: pointer;
-            color: #f1c40f;
-            opacity: 0.6; /* Dimmed by default */
-            transition: all 0.2s;
-        }
-        ${controlSelectors.replace(/controls']/g, "controls']:hover::before")} {
-            color: #f39c12;
-            opacity: 1; /* Bright on hover */
-        }
-        `;
+        const sel = goldIds.map(id => `li[data-pm-identifier='${id}']`).join(",");
+        const csel = goldIds.map(id => `li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']`).join(",");
+        css += `${sel} { border-left: 4px solid #f1c40f !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important; } ${sel.replace(/]/g, "] [class*='prompt_manager_prompt_name']")} { color: #f1c40f !important; text-decoration: none !important; } ${csel} { position: relative; padding-left: 28px !important; } ${csel.replace(/controls']/g, "controls']::before")} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 16px; cursor: pointer; color: #f1c40f; opacity: 0.6; transition: all 0.2s; } ${csel.replace(/controls']/g, "controls']:hover::before")} { color: #f39c12; opacity: 1; } `;
     }
-
-    const style = document.createElement("style");
-    style.id = styleId;
-    style.textContent = css;
-    document.head.appendChild(style);
-    
-    // Add global listener for virtual buttons if not exists
+    const style = document.createElement("style"); style.id = styleId; style.textContent = css; document.head.appendChild(style);
     if (!window.yablochnyVirtualListenerAdded) {
         window.yablochnyVirtualListenerAdded = true;
         jQuery(document).on("click", "[class*='prompt_manager_prompt_controls']", function(e) {
-            // Check if click is on the pseudo-element area (left side)
-            // And ensure it is NOT on a child element (standard buttons)
-            if (e.target !== this) return;
-            
-            // Check boundaries (approx first 25px)
-            if (e.offsetX > 30) return;
-
-            const li = jQuery(this).closest("li[data-pm-identifier]");
-            const id = li.attr("data-pm-identifier");
-            
-            if (!id) return;
-            
-            const isGreen = PROMPT_TO_CONTROL_MAP[id];
-            const isGold = REGEX_PROMPT_MAP[id];
-            
-            if (!isGreen && !isGold) return;
-            
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const controlId = isGreen ? PROMPT_TO_CONTROL_MAP[id] : REGEX_PROMPT_MAP[id];
-            let controls = jQuery();
-            
-            if (isGreen) {
-                controls = jQuery(controlId);
-            } else {
-                // Handle array or string
-                const packIds = Array.isArray(controlId) ? controlId : [controlId];
-                packIds.forEach(pid => {
-                    controls = controls.add(jQuery(`.yp-regex-pack[data-pack-id="${pid}"]`));
-                });
-            }
-            
-            if (controls.length > 0) {
-                const container = jQuery("#yablochny-preset-container");
-                const mainDrawer = container.find(".inline-drawer").first();
-                const mainContent = mainDrawer.find(".inline-drawer-content").first();
-                
-                if (mainContent.length > 0 && !mainContent.is(":visible")) {
-                    mainDrawer.find(".inline-drawer-toggle").first().click();
-                }
-                
-                setTimeout(() => {
-                    // Find drawer for the first control
-                    const firstControl = controls.first();
-                    const parentDrawer = firstControl.closest(".yp-drawer");
-                    if (parentDrawer.length > 0) {
-                        const parentContent = parentDrawer.find(".yp-drawer-content");
-                        if (parentContent.length > 0 && !parentContent.is(":visible")) {
-                            parentDrawer.find(".yp-drawer-toggle").click();
-                        }
-                    }
-                    
-                    setTimeout(() => {
-                        // Scroll to first
-                        firstControl[0].scrollIntoView({ behavior: "smooth", block: "center" });
-                        
-                        // Highlight ALL
-                        const highlightClass = isGold ? "yp-pulse-gold" : "yp-pulse-green";
-                        controls.addClass(highlightClass);
-                        setTimeout(() => controls.removeClass(highlightClass), 5000);
-                    }, 300);
-                }, 100);
-            }
+            if (e.target !== this) return; if (e.offsetX > 30) return;
+            const li = jQuery(this).closest("li[data-pm-identifier]"); const id = li.attr("data-pm-identifier");
+            if (id) handlePromptManagerClick(li, !!REGEX_PROMPT_MAP[id]);
         });
     }
 }
 
-/**
- * Setup long-press (PC hold) navigation from settings to ST Prompt Manager.
- */
-function setupLongPressSettingsNavigation() {
-    let longPressTimer = null;
-    let isLongPress = false;
-    const LONG_PRESS_DURATION = 500; // ms
-
-    // Select all fields that have a mapping
-    const promptSelectors = Object.values(PROMPT_TO_CONTROL_MAP);
-    const regexSelectors = [".yp-regex-pack"]; // Regex packs have data-pack-id
-
-    // Bind hold event to containers for better hit target
-    const targetSelectors = [
-        ".yablochny-field", 
-        ".yablochny-field-half", 
-        ".yablochny-field-full", 
-        ".yp-regex-pack"
-    ].join(", ");
-
-    jQuery(document).off("pointerdown pointerup pointerleave contextmenu", targetSelectors);
-
-    jQuery(document).on("pointerdown", targetSelectors, function(e) {
-        // Only primary button (left click)
-        if (e.pointerType === "mouse" && e.button !== 0) return;
-        
-        const target = jQuery(this);
-        isLongPress = false;
-        
-        // Reset any existing timer to avoid double triggers
-        clearTimeout(longPressTimer);
-        
-        longPressTimer = setTimeout(() => {
-            isLongPress = true;
-            // On PC/Mobile, prevent the dropdown from opening or keyboard from appearing
-            target.find("select, input").blur();
-            // Also close any currently open select if possible by focusing something else
-            jQuery(":focus").blur();
-            
-            handleSettingLongPress(target);
-        }, LONG_PRESS_DURATION);
-    });
-
-    jQuery(document).on("click", targetSelectors, function(e) {
-        if (isLongPress) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        }
-    });
-
-    jQuery(document).on("pointerup pointerleave", targetSelectors, function() {
-        clearTimeout(longPressTimer);
-    });
-
-    // Prevent context menu on long press (mobile)
-    jQuery(document).on("contextmenu", targetSelectors, function(e) {
-        if (isLongPress) {
-            e.preventDefault();
-            return false;
-        }
-    });
-
-    function handleSettingLongPress(container) {
-        let promptId = null;
-        let isRegex = false;
-
-        // Check if it's a prompt container
-        for (const [id, selector] of Object.entries(PROMPT_TO_CONTROL_MAP)) {
-            if (container.find(selector).length > 0 || container.is(selector)) {
-                promptId = id;
-                break;
-            }
-        }
-
-        // Check if it's a regex pack
-        if (!promptId && container.hasClass("yp-regex-pack")) {
-            const packId = container.attr("data-pack-id");
-            // Find prompt ID in mapping
-            for (const [id, mapping] of Object.entries(REGEX_PROMPT_MAP)) {
-                const ids = Array.isArray(mapping) ? mapping : [mapping];
-                if (ids.includes(packId)) {
-                    promptId = id;
-                    isRegex = true;
-                    break;
-                }
-            }
-        }
-
-        if (promptId) {
-            navigateToPromptManagerItem(promptId, isRegex);
+function handlePromptManagerClick(container, isGold) {
+    const id = container.attr("data-pm-identifier"); if (!id) return;
+    const controlId = isGold ? REGEX_PROMPT_MAP[id] : PROMPT_TO_CONTROL_MAP[id];
+    if (controlId) {
+        let controls = jQuery();
+        if (!isGold) { controls = jQuery(controlId); }
+        else { const packIds = Array.isArray(controlId) ? controlId : [controlId]; packIds.forEach(pid => { controls = controls.add(jQuery(`.yp-regex-pack[data-pack-id='${pid}']`)); }); }
+        if (controls.length > 0) {
+            const presetContainer = jQuery("#yablochny-preset-container"); const mainDrawer = presetContainer.find(".inline-drawer").first();
+            const mainContent = mainDrawer.find(".inline-drawer-content").first();
+            if (mainContent.length > 0 && !mainContent.is(":visible")) mainDrawer.find(".inline-drawer-toggle").first().click();
+            setTimeout(() => {
+                const firstControl = controls.first(); const parentDrawer = firstControl.closest(".yp-drawer");
+                if (parentDrawer.length > 0) { const parentContent = parentDrawer.find(".yp-drawer-content"); if (parentContent.length > 0 && !parentContent.is(":visible")) parentDrawer.find(".yp-drawer-toggle").click(); }
+                setTimeout(() => { firstControl[0].scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(() => showStandaloneGlow(firstControl, isGold), 500); }, 450);
+            }, 100);
         }
     }
 }
 
-/**
- * Navigates to a specific prompt in SillyTavern's Prompt Manager.
- * @param {string} identifier Prompt identifier
- */
-function navigateToPromptManagerItem(identifier, isRegex = false) {
-    // 1. Ensure Prompt Manager is open
-    const promptManager = jQuery("#prompt_manager");
-    if (promptManager.length === 0 || !promptManager.is(":visible")) {
-        // Try to find the button to open it. In ST it's usually the third icon in the top right or similar.
-        // But more reliably, we can trigger the prompt manager button.
-        const pmButton = jQuery("#prompt_manager_button");
-        if (pmButton.length > 0) pmButton.click();
-    }
+let longPressTimer = null; let isLongPressActive = false; let longPressStartPos = { x: 0, y: 0 };
 
-    // 2. Wait for it to be visible/rendered
-    setTimeout(() => {
-        const item = jQuery(`li[data-pm-identifier="${identifier}"]`);
-        if (item.length > 0) {
-            // Scroll to it
-            item[0].scrollIntoView({ behavior: "smooth", block: "center" });
+function setupLongPressSettingsNavigation() {
+    const LONG_PRESS_DURATION = 650; const MOVE_THRESHOLD = 20;
+    const targetSelectors = [".yablochny-field", ".yablochny-field-half", ".yablochny-field-full", ".yp-regex-pack", "select", "input"].join(", ");
+    jQuery(document).off(".yp-nav", targetSelectors); 
+    const container = jQuery("#yablochny-preset-container");
+    if (container.length === 0) return;
 
-            // Apply highlight class
-            if (isRegex) {
-                item.addClass("yp-managed-regex-prompt"); // Ensure it has formatting
-            }
-            const highlightClass = isRegex ? "yp-st-highlight-gold" : "yp-st-highlight-green";
-            item.addClass(highlightClass);
-            
-            // Remove highlight after some time
-            setTimeout(() => {
-                item.removeClass(highlightClass);
-            }, 5000);
-            
-            // Visual feedback on the extension side too? maybe.
-        } else {
-            toastr.info(UI_TEXT[getCurrentLocale().split("-")[0]]?.toastSyncNote || "Sync preset first to see this item in Prompt Manager.");
+    container.off(".yp-delegated").on("pointerdown.yp-delegated", targetSelectors, function(e) {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        const target = jQuery(this).closest(".yablochny-field, .yablochny-field-half, .yablochny-field-full, .yp-regex-pack");
+        if (target.length === 0) return;
+        isLongPressActive = false; longPressStartPos = { x: e.pageX || e.clientX, y: e.pageY || e.clientY };
+        target.addClass("yp-is-holding");
+        clearTimeout(longPressTimer);
+        longPressTimer = setTimeout(() => {
+            isLongPressActive = true; target.removeClass("yp-is-holding");
+            handleSettingLongPress(target);
+        }, LONG_PRESS_DURATION);
+    }).on("pointerup.yp-delegated pointerleave.yp-delegated", targetSelectors, function() {
+        clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding");
+    }).on("pointermove.yp-delegated", targetSelectors, function(e) {
+        if (longPressTimer) {
+            const dist = Math.sqrt(Math.pow((e.pageX||e.clientX) - longPressStartPos.x, 2) + Math.pow((e.pageY||e.clientY) - longPressStartPos.y, 2));
+            if (dist > MOVE_THRESHOLD) { clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding"); }
         }
-    }, 200);
+    }).on("click.yp-delegated", targetSelectors, function(e) {
+        if (isLongPressActive) { e.preventDefault(); e.stopPropagation(); setTimeout(() => { isLongPressActive = false; }, 100); return false; }
+    });
+
+    function handleSettingLongPress(target) {
+        const isRegex = target.hasClass("yp-regex-pack");
+        const control = target.find("input, select").first();
+        const controlId = isRegex ? target.attr("data-pack-id") : (control.attr("id") ? `#${control.attr("id")}` : null);
+        if (!controlId) return;
+        let targetId = null;
+        if (!isRegex) {
+            targetId = Object.entries(PROMPT_TO_CONTROL_MAP).find(([name, id]) => id === controlId)?.[0];
+        } else {
+            targetId = Object.entries(REGEX_PROMPT_MAP).find(([name, id]) => (Array.isArray(id) ? id : [id]).includes(controlId))?.[0];
+        }
+        if (targetId) navigateToPromptManagerItem(targetId, isRegex);
+    }
+}
+
+function navigateToPromptManagerItem(identifier, isGold = false) {
+    const pmButton = jQuery("#prompt_manager_button"); if (!jQuery("#prompt_manager").is(":visible")) { if (pmButton.length > 0) pmButton.click(); }
+    setTimeout(() => {
+        const item = jQuery(`li[data-pm-identifier='${identifier}']`);
+        if (item.length > 0) { 
+            item[0].scrollIntoView({ behavior: "smooth", block: "center" }); 
+            setTimeout(() => showStandaloneGlow(item, isGold), 500);
+            item.off(".yp-nav-back").on("click.yp-nav-back", function(e) { 
+                if (jQuery(e.target).closest('button, input, select, .prompt_manager_prompt_toggle').length > 0) return; 
+                handlePromptManagerClick(item, isGold); 
+            }); 
+        }
+    }, 450);
 }
 
 jQuery(async () => {
-    try {
-        const settingsHtml = await jQuery.get(`${SCRIPT_PATH}/settings.html`);
-        await injectYablochnyUI(settingsHtml);
-    } catch (e) {
-        console.error("[Yablochny] Failed to load settings.html", e);
-        return;
-    }
-
-    await waitForOpenAI();
-
-    // Regex packs loading is handled in injectYablochnyUI now? 
-    // Wait, loadRegexPacksIntoYablochny is called in injectYablochnyUI.
-    // But we should check if we need to load them initially if UI isn't inserted yet?
-    // No, logic is self-contained.
-
-    const cfg = getConfig();
-    if (cfg.autoSyncOnStart) {
-        syncPreset(false);
-    }
-    
-    injectDynamicStyles();
+    try { const settingsHtml = await jQuery.get(`${SCRIPT_PATH}/settings.html`); await injectYablochnyUI(settingsHtml); } 
+    catch (e) { console.error("[Yablochny] Failed to load settings.html", e); return; }
+    await waitForOpenAI(); const cfg = getConfig(); if (cfg.autoSyncOnStart) syncPreset(false); injectDynamicStyles();
 });

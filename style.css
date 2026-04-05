@@ -603,64 +603,74 @@
   color: #8be096 !important;
 }
 
-/* Flash animation for controls */
-@keyframes yp-flash {
-  0% { box-shadow: 0 0 10px rgba(107, 203, 119, 0.8); border-color: #6bcb77; }
-  100% { box-shadow: none; border-color: var(--SmartThemeBorderColor); }
+
+
+/* --- PREMIUM NEON GLOW PROJECTION SYSTEM --- */
+.yp-highlight-overlay {
+  position: fixed !important;
+  pointer-events: none !important;
+  z-index: 200000 !important;
+  border-radius: 16px !important;
+  box-sizing: border-box !important;
 }
 
-.yp-flash {
-  animation: yp-flash 5s ease-out;
+@keyframes yp-projection-ripple {
+  0% { 
+    box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7), 0 0 15px 5px rgba(46, 204, 113, 0.5);
+    background-color: rgba(46, 204, 113, 0.1);
+    opacity: 1;
+  }
+  40% {
+    box-shadow: 0 0 0 20px rgba(46, 204, 113, 0), 0 0 45px 15px rgba(46, 204, 113, 0.3);
+    background-color: rgba(46, 204, 113, 0.05);
+    opacity: 0.8;
+  }
+  100% { 
+    box-shadow: 0 0 0 0 rgba(46, 204, 113, 0), 0 0 0 0 rgba(46, 204, 113, 0);
+    background-color: transparent;
+    opacity: 0;
+  }
 }
 
-/* Managed Regex Prompt Highlighting in ST UI */
-.yp-managed-regex-prompt {
-  border-left: 4px solid #f1c40f !important;
-  background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important;
+@keyframes yp-projection-ripple-gold {
+  0% { 
+    box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.7), 0 0 15px 5px rgba(241, 196, 15, 0.5);
+    background-color: rgba(241, 196, 15, 0.1);
+    opacity: 1;
+  }
+  40% {
+    box-shadow: 0 0 0 20px rgba(241, 196, 15, 0), 0 0 45px 15px rgba(241, 196, 15, 0.3);
+    background-color: rgba(241, 196, 15, 0.05);
+    opacity: 0.8;
+  }
+  100% { 
+    box-shadow: 0 0 0 0 rgba(241, 196, 15, 0), 0 0 0 0 rgba(241, 196, 15, 0);
+    background-color: transparent;
+    opacity: 0;
+  }
 }
 
-.yp-managed-regex-prompt [class*="prompt_manager_prompt_name"] {
-  color: #f1c40f !important;
-  text-decoration: none !important;
+.yp-overlay-green {
+  animation: yp-projection-ripple 4.5s cubic-bezier(0.1, 0.7, 0.3, 1) forwards !important;
 }
 
-/* Highlight State for Regex (Class-based transition) */
-.yp-highlight-active {
-  background-color: rgba(241, 196, 15, 0.5) !important;
-  box-shadow: 0 0 20px rgba(241, 196, 15, 0.8) !important;
-  border: 2px solid #f1c40f !important;
-  z-index: 100;
-  position: relative;
-  transform: scale(1.02);
+.yp-overlay-gold {
+  animation: yp-projection-ripple-gold 4.5s cubic-bezier(0.1, 0.7, 0.3, 1) forwards !important;
 }
 
+/* Visual feedback for long-press (holding) a setting */
+.yp-is-holding {
+  transform: scale(0.97) !important;
+  opacity: 0.8 !important;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+  filter: brightness(0.9) !important;
+  transition: all 0.6s cubic-bezier(0.1, 0.7, 0.1, 1) !important;
+}
+
+.yablochny-field, 
+.yablochny-field-half, 
+.yablochny-field-full, 
 .yp-regex-pack {
-  transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease, transform 0.3s ease;
-}
-
-/* Pulsing green highlight for standard prompts in Prompt Manager */
-@keyframes yp-st-pulse-green {
-  0% { box-shadow: 0 0 0 0 rgba(107, 203, 119, 0.7); background-color: rgba(107, 203, 119, 0.2); }
-  70% { box-shadow: 0 0 0 15px rgba(107, 203, 119, 0); background-color: rgba(107, 203, 119, 0.1); }
-  100% { box-shadow: 0 0 0 0 rgba(107, 203, 119, 0); background-color: transparent; }
-}
-
-.yp-st-highlight-green {
-  animation: yp-st-pulse-green 2s infinite !important;
-  z-index: 10 !important;
-  position: relative !important;
-}
-
-/* Pulsing gold highlight for regex prompts in Prompt Manager */
-@keyframes yp-st-pulse-gold {
-  0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.7); background-color: rgba(241, 196, 15, 0.2); }
-  70% { box-shadow: 0 0 0 15px rgba(241, 196, 15, 0); background-color: rgba(241, 196, 15, 0.1); }
-  100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); background-color: transparent; }
-}
-
-.yp-st-highlight-gold {
-  animation: yp-st-pulse-gold 2s infinite !important;
-  z-index: 10 !important;
-  position: relative !important;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 1s ease, background-color 1s ease !important;
 }
 
