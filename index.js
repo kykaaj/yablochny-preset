@@ -714,7 +714,7 @@ const ROLEPLAY_VARIANTS = {
 </main>
 {{setvar::role_check::- ROLE BOUNDARY: anything written for User? If yes — delete.
 }}`,
-    author: `<main>
+    speak: `<main>
 [AUTHOR MODE]
 You write the story as a author, that is, you write what {{char}} says, does, thinks, and what {{user}} says, does, and thinks, regardless of the Human's input. Their interaction must be intertwined in every message. THIS IS MANDATORY.
 
