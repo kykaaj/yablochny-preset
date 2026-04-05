@@ -231,7 +231,7 @@
 
 .yablochny-field-half {
   flex: 0 0 calc(50% - 5px);
-  min-width: 150px;
+  min-width: 130px;
 }
 
 .yablochny-field-full {
