@@ -125,7 +125,7 @@ const PROMPT_TO_CONTROL_MAP = {
 
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": "#yp-tense",
     "d9762c5c-d5a4-49b0-9d00-814ae57e9711": "#yp-addon",
-    "65064e43-ef37-4d76-b6b8-6750033c4153": "#yp-image-style-toggle",
+    "65064e43-ef37-4d76-b6b8-6750033c4153": "#yp-image-style",
     "e12784ea-de67-48a7-99ef-3b0c1c45907c": "#yp-hdr-additional"
 };
 
@@ -2403,8 +2403,8 @@ function applyImageStyleVariant(master, cfg, existingPreset) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
-    // Set enabled state based on toggle
-    prompt.enabled = cfg.imageStyleEnabled !== false;
+    // Set enabled state based on toggle (default to false on first install)
+    prompt.enabled = cfg.imageStyleEnabled === true;
 
     if (cfg.imageStyleMode === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
@@ -3775,7 +3775,6 @@ function initControls() {
     jQuery("#yp-pace").val(cfg.paceMode || "slowburn");
     jQuery("#yp-extras-lang").val(cfg.extrasLangMode || "custom");
     jQuery("#yp-deconstruction").val(cfg.deconstructionMode || "large");
-    jQuery("#yp-image-style-toggle").prop("checked", cfg.imageStyleEnabled !== false);
     jQuery("#yp-image-style").val(cfg.imageStyleMode || "anime_inspired_realism");
     jQuery("#yp-addon").val(cfg.addonMode || "off");
 
@@ -4060,14 +4059,14 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.imageStyleMode = value;
-        });
-    });
-
-    jQuery("#yp-image-style-toggle").on("change", function () {
-        const value = jQuery(this).prop("checked");
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.imageStyleEnabled = value;
+            
+            // If the user selects a style, we usually want it to be enabled 
+            // when they click "Sync", but the user explicitly asked for it to be OFF by default.
+            // So we'll have SillyTavern's toggle be the source of truth if we can.
+            // BUT, if it's "green", the extension forces it.
+            // I'll make it so if they change it manually in the dropdown, 
+            // we'll update the 'enabled' state to true to make it easier for them to use.
+            cfg.imageStyleEnabled = true;
         });
     });
 
