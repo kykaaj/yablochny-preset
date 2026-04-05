@@ -125,7 +125,8 @@ const PROMPT_TO_CONTROL_MAP = {
 
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": "#yp-tense",
     "d9762c5c-d5a4-49b0-9d00-814ae57e9711": "#yp-addon",
-    "65064e43-ef37-4d76-b6b8-6750033c4153": "#yp-image-style"
+    "65064e43-ef37-4d76-b6b8-6750033c4153": "#yp-image-style-toggle",
+    "e12784ea-de67-48a7-99ef-3b0c1c45907c": "#yp-hdr-additional"
 };
 
 const REGEX_PROMPT_MAP = {
@@ -2705,6 +2706,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc", // Focus
         "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6", // Deconstruction
         "65064e43-ef37-4d76-b6b8-6750033c4153", // Image style
+        "e12784ea-de67-48a7-99ef-3b0c1c45907c", // Image generation
     ];
 
     const OBSOLETE_IDS = [

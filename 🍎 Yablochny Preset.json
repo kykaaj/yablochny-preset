@@ -1330,6 +1330,18 @@
                     "enabled": true
                 },
                 {
+                    "identifier": "65064e43-ef37-4d76-b6b8-6750033c4153",
+                    "enabled": true
+                },
+                {
+                    "identifier": "e12784ea-de67-48a7-99ef-3b0c1c45907c",
+                    "enabled": true
+                },
+                {
+                    "identifier": "d9762c5c-d5a4-49b0-9d00-814ae57e9711",
+                    "enabled": true
+                },
+                {
                     "identifier": "jailbreak",
                     "enabled": false
                 }
