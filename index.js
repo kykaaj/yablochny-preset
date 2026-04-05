@@ -2402,8 +2402,8 @@ function applyImageStyleVariant(master, cfg, existingPreset) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
-    // Force enable
-    prompt.enabled = true;
+    // Set enabled state based on toggle
+    prompt.enabled = cfg.imageStyleEnabled !== false;
 
     if (cfg.imageStyleMode === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
@@ -3773,6 +3773,7 @@ function initControls() {
     jQuery("#yp-pace").val(cfg.paceMode || "slowburn");
     jQuery("#yp-extras-lang").val(cfg.extrasLangMode || "custom");
     jQuery("#yp-deconstruction").val(cfg.deconstructionMode || "large");
+    jQuery("#yp-image-style-toggle").prop("checked", cfg.imageStyleEnabled !== false);
     jQuery("#yp-image-style").val(cfg.imageStyleMode || "anime_inspired_realism");
     jQuery("#yp-addon").val(cfg.addonMode || "off");
 
@@ -4057,6 +4058,14 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.imageStyleMode = value;
+        });
+    });
+
+    jQuery("#yp-image-style-toggle").on("change", function () {
+        const value = jQuery(this).prop("checked");
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.imageStyleEnabled = value;
         });
     });
 

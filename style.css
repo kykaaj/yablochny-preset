@@ -212,6 +212,11 @@
   margin: 0;
 }
 
+.yablochny-checkbox-green {
+  accent-color: #6bcb77;
+  cursor: pointer;
+}
+
 .yablochny-section {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--SmartThemeBorderColor);
