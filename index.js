@@ -4359,33 +4359,34 @@ async function injectYablochnyUI(htmlContent) {
 }
 
 /**
- * Ultimate High-Precision Surgical Glow.
- * Uses fixed positioning to target exact UI controls with 500ms post-scroll safety.
+ * Stable high-precision "Local" glow.
+ * Positions absolutely within the target's relative parent.
  */
 function showStandaloneGlow(target, isGold) {
     if (!target || target.length === 0) return;
-    const el = target[0];
-    const rect = el.getBoundingClientRect();
+    const parent = target.parent();
     
-    // Fallback if rect is zero (item not visible)
-    if (rect.width === 0 || rect.height === 0) return;
+    // Ensure parent is relative for absolute positioning
+    if (parent.css("position") === "static") parent.css("position", "relative");
 
+    const pos = target.position();
     const hClass = isGold ? "yp-overlay-gold" : "yp-overlay-green";
+    
     const overlay = jQuery("<div class='yp-highlight-overlay'></div>")
         .addClass(hClass)
         .css({
-            position: 'fixed',
-            top: (rect.top - 2) + 'px',
-            left: (rect.left - 2) + 'px',
-            width: (rect.width + 4) + 'px',
-            height: (rect.height + 4) + 'px',
-            borderRadius: '16px', // FORCED RADIUS
+            position: 'absolute',
+            top: (pos.top - 2) + 'px',
+            left: (pos.left - 2) + 'px',
+            width: (target.outerWidth() + 4) + 'px',
+            height: (target.outerHeight() + 4) + 'px',
+            borderRadius: '16px', // FORCED
             pointerEvents: 'none',
-            zIndex: 999999
+            zIndex: 1000
         });
         
-    jQuery("body").append(overlay);
-    setTimeout(() => { overlay.fadeOut(700, () => overlay.remove()); }, 4000);
+    parent.append(overlay);
+    setTimeout(() => { overlay.fadeOut(650, () => overlay.remove()); }, 4000);
 }
 
 function injectDynamicStyles() {
@@ -4429,7 +4430,7 @@ function handlePromptManagerClick(container, isGold) {
             setTimeout(() => {
                 const firstControl = controls.first(); const parentDrawer = firstControl.closest(".yp-drawer");
                 if (parentDrawer.length > 0) { const parentContent = parentDrawer.find(".yp-drawer-content"); if (parentContent.length > 0 && !parentContent.is(":visible")) parentDrawer.find(".yp-drawer-toggle").click(); }
-                setTimeout(() => { firstControl[0].scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(() => showStandaloneGlow(firstControl, isGold), 500); }, 450);
+                setTimeout(() => { firstControl[0].scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(() => showStandaloneGlow(firstControl, isGold), 200); }, 450);
             }, 100);
         }
     }
@@ -4487,7 +4488,7 @@ function navigateToPromptManagerItem(identifier, isGold = false) {
         const item = jQuery(`li[data-pm-identifier='${identifier}']`);
         if (item.length > 0) { 
             item[0].scrollIntoView({ behavior: "smooth", block: "center" }); 
-            setTimeout(() => showStandaloneGlow(item, isGold), 500);
+            setTimeout(() => showStandaloneGlow(item, isGold), 200);
             item.off(".yp-nav-back").on("click.yp-nav-back", function(e) { 
                 if (jQuery(e.target).closest('button, input, select, .prompt_manager_prompt_toggle').length > 0) return; 
                 handlePromptManagerClick(item, isGold); 

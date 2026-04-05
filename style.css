@@ -607,9 +607,9 @@
 
 /* --- PREMIUM NEON GLOW PROJECTION SYSTEM --- */
 .yp-highlight-overlay {
-  position: fixed !important;
+  position: absolute !important;
   pointer-events: none !important;
-  z-index: 200000 !important;
+  z-index: 1000 !important;
   border-radius: 16px !important;
   box-sizing: border-box !important;
 }
