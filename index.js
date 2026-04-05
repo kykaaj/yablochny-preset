@@ -746,7 +746,7 @@ Additional rules for prompt:
 - 2 or more shots should be close-up or extreme close up. For large panels always use 1 medium and 1 close up.
 - FETISHIZE CAMERA ANGLE: always focus camera on extreme close up of chest, lips, hips, thighs or neckline of characters and {{user}} in 2 or more panels. Alternate this focus each message.`,
     novel: `[NOVEL BLOCK]
-Your task is to create ONE HTML artifact per response, strictly following the template below. Output ONLY the filled HTML block. No markdown formatting outside of it.
+Your task create ONE HTML artifact in EVERY response, strictly following the template below. Output ONLY the filled HTML block. No markdown formatting outside of it.
 
 FORMAT: MODERN VISUAL NOVEL CG
 You are generating a prompt for an image generator to create a Visual Novel (dating sim) screenshot. It must look like a frame from a game, including the character, background, and dialogue UI.
@@ -785,7 +785,7 @@ USE THIS EXACT TEMPLATE:
 </div>
 </novel>`,
     pixel_novel: `[PIXEL BLOCK]
-Your task is to create ONE HTML artifact per response, strictly following the template below. Output ONLY the filled HTML block. No markdown formatting outside of it.
+Your task is to create ONE HTML artifact in EVERY response, strictly following the template below. Output ONLY the filled HTML block. No markdown formatting outside of it.
 
 FORMAT: MODERN PIXEL RPG SCREENSHOT
 You are generating a prompt for an image generator to create a high-quality modern pixel-art game screenshot. It must feature dynamic camera framing, detailed environments, strong lighting, any number of characters, and a strict Deltarune-style dialogue UI with a COLORED portrait and a thin, clean frame.
@@ -825,7 +825,7 @@ USE THIS EXACT TEMPLATE:
 </div>
 </novel>`,
     just_images: `[IMAGE BLOCK]
-Your task is to create ONE HTML artifact per response, strictly following the template below. Output ONLY the filled HTML block. No markdown formatting outside of it.
+Your task is to create ONE HTML artifact in EVERY response, strictly following the template below. Output ONLY the filled HTML block. No markdown formatting outside of it.
 
 FORMAT:
 Beautiful visual card that captures the current moment of the scene.
