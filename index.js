@@ -4206,6 +4206,7 @@ async function injectYablochnyUI(htmlContent) {
             applyLocaleToUi();
             initControls();
             loadRegexPacksIntoYablochny();
+            setupLongPressSettingsNavigation();
             
             // --- STATE RESTORATION (Only for Regex Drawer) ---
             const restoreDrawer = (key, selector) => {
@@ -4550,6 +4551,121 @@ function injectDynamicStyles() {
             }
         });
     }
+}
+
+/**
+ * Setup long-press (PC hold) navigation from settings to ST Prompt Manager.
+ */
+function setupLongPressSettingsNavigation() {
+    let longPressTimer = null;
+    let isLongPress = false;
+    const LONG_PRESS_DURATION = 500; // ms
+
+    // Select all fields that have a mapping
+    const promptSelectors = Object.values(PROMPT_TO_CONTROL_MAP);
+    const regexSelectors = [".yp-regex-pack"]; // Regex packs have data-pack-id
+
+    // Bind hold event to containers for better hit target
+    const targetSelectors = [
+        ".yablochny-field", 
+        ".yablochny-field-half", 
+        ".yablochny-field-full", 
+        ".yp-regex-pack"
+    ].join(", ");
+
+    jQuery(document).off("pointerdown pointerup pointerleave contextmenu", targetSelectors);
+
+    jQuery(document).on("pointerdown", targetSelectors, function(e) {
+        // Only primary button (left click)
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        
+        const target = jQuery(this);
+        isLongPress = false;
+        longPressTimer = setTimeout(() => {
+            isLongPress = true;
+            handleSettingLongPress(target);
+        }, LONG_PRESS_DURATION);
+    });
+
+    jQuery(document).on("pointerup pointerleave", targetSelectors, function() {
+        clearTimeout(longPressTimer);
+    });
+
+    // Prevent context menu on long press (mobile)
+    jQuery(document).on("contextmenu", targetSelectors, function(e) {
+        if (isLongPress) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    function handleSettingLongPress(container) {
+        let promptId = null;
+        let isRegex = false;
+
+        // Check if it's a prompt container
+        for (const [id, selector] of Object.entries(PROMPT_TO_CONTROL_MAP)) {
+            if (container.find(selector).length > 0 || container.is(selector)) {
+                promptId = id;
+                break;
+            }
+        }
+
+        // Check if it's a regex pack
+        if (!promptId && container.hasClass("yp-regex-pack")) {
+            const packId = container.attr("data-pack-id");
+            // Find prompt ID in mapping
+            for (const [id, mapping] of Object.entries(REGEX_PROMPT_MAP)) {
+                const ids = Array.isArray(mapping) ? mapping : [mapping];
+                if (ids.includes(packId)) {
+                    promptId = id;
+                    isRegex = true;
+                    break;
+                }
+            }
+        }
+
+        if (promptId) {
+            navigateToPromptManagerItem(promptId, isRegex);
+        }
+    }
+}
+
+/**
+ * Navigates to a specific prompt in SillyTavern's Prompt Manager.
+ * @param {string} identifier Prompt identifier
+ */
+function navigateToPromptManagerItem(identifier, isRegex = false) {
+    // 1. Ensure Prompt Manager is open
+    const promptManager = jQuery("#prompt_manager");
+    if (promptManager.length === 0 || !promptManager.is(":visible")) {
+        // Try to find the button to open it. In ST it's usually the third icon in the top right or similar.
+        // But more reliably, we can trigger the prompt manager button.
+        const pmButton = jQuery("#prompt_manager_button");
+        if (pmButton.length > 0) pmButton.click();
+    }
+
+    // 2. Wait for it to be visible/rendered
+    setTimeout(() => {
+        const item = jQuery(`li[data-pm-identifier="${identifier}"]`);
+        if (item.length > 0) {
+            // Scroll to it
+            item[0].scrollIntoView({ behavior: "smooth", block: "center" });
+
+            // Apply highlight class
+            const highlightClass = isRegex ? "yp-st-highlight-gold" : "yp-st-highlight-green";
+            item.addClass(highlightClass);
+            
+            // Remove highlight after some time
+            setTimeout(() => {
+                item.removeClass(highlightClass);
+            }, 5000);
+            
+            // Visual feedback on the extension side too? maybe.
+        } else {
+            toastr.info(UI_TEXT[getCurrentLocale().split("-")[0]]?.toastSyncNote || "Sync preset first to see this item in Prompt Manager.");
+        }
+    }, 200);
 }
 
 jQuery(async () => {

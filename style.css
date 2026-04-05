@@ -636,4 +636,31 @@
 
 .yp-regex-pack {
   transition: background-color 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease, transform 0.3s ease;
-}
+}
+
+/* Pulsing green highlight for standard prompts in Prompt Manager */
+@keyframes yp-st-pulse-green {
+  0% { box-shadow: 0 0 0 0 rgba(107, 203, 119, 0.7); background-color: rgba(107, 203, 119, 0.2); }
+  70% { box-shadow: 0 0 0 15px rgba(107, 203, 119, 0); background-color: rgba(107, 203, 119, 0.1); }
+  100% { box-shadow: 0 0 0 0 rgba(107, 203, 119, 0); background-color: transparent; }
+}
+
+.yp-st-highlight-green {
+  animation: yp-st-pulse-green 2s infinite !important;
+  z-index: 10 !important;
+  position: relative !important;
+}
+
+/* Pulsing gold highlight for regex prompts in Prompt Manager */
+@keyframes yp-st-pulse-gold {
+  0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.7); background-color: rgba(241, 196, 15, 0.2); }
+  70% { box-shadow: 0 0 0 15px rgba(241, 196, 15, 0); background-color: rgba(241, 196, 15, 0.1); }
+  100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); background-color: transparent; }
+}
+
+.yp-st-highlight-gold {
+  animation: yp-st-pulse-gold 2s infinite !important;
+  z-index: 10 !important;
+  position: relative !important;
+}
+
