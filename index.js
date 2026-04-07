@@ -4449,6 +4449,16 @@ function setupLongPressSettingsNavigation() {
         if (e.pointerType === "mouse" && e.button !== 0) return;
         if (e.originalEvent && e.originalEvent.isTrusted === false) return;
 
+        // Desktop Windows/Mac OS intercepts mouseup/pointerup entirely when a SELECT
+        // picker opens instantly on mousedown. We MUST NOT start the timer if a mouse 
+        // clicks a SELECT natively, otherwise it guarantees a phantom timer completion.
+        if (e.pointerType === "mouse") {
+            const tag = (e.target.tagName || "").toUpperCase();
+            if (tag === "SELECT" || tag === "OPTION") {
+                return;
+            }
+        }
+
         const target = jQuery(this).closest(targetSelectors);
         if (target.length === 0) return;
         isLongPressActive = false; longPressStartPos = { x: e.pageX || e.clientX, y: e.pageY || e.clientY };
