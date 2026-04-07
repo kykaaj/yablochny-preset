@@ -4751,7 +4751,7 @@ let longPressTimer = null; let isLongPressActive = false; let longPressStartPos 
 
 function setupLongPressSettingsNavigation() {
     const LONG_PRESS_DURATION = 400; const MOVE_THRESHOLD = 20;
-    const targetSelectors = ".yablochny-field, .yablochny-field-half, .yablochny-field-full, .yp-regex-pack";
+    const targetSelectors = ".yablochny-field, .yablochny-field-half, .yablochny-field-full, .yp-regex-pack, .yablochny-thing-item, #yp-things-title, .yablochny-things-group-title";
     jQuery(document).off(".yp-nav", targetSelectors); 
     const container = jQuery("#yablochny-preset-container");
     if (container.length === 0) return;
@@ -4822,8 +4822,19 @@ function setupLongPressSettingsNavigation() {
         }
 
         const isRegex = target.hasClass("yp-regex-pack");
+        const isThing = target.hasClass("yablochny-thing-item") || target.closest(".yablochny-things").length > 0;
+
+        if (isThing) {
+            // All specialized "Things" (macros) and their headers belong to the same core prompt:
+            // "6b235beb-7de9-4f84-9b09-6f20210eae6d" -> Additional elements (things)
+            navigateToPromptManagerItem("6b235beb-7de9-4f84-9b09-6f20210eae6d", false);
+            return;
+        }
+
         const control = target.find("input, select").first();
-        const controlId = isRegex ? target.attr("data-pack-id") : (control.attr("id") ? `#${control.attr("id")}` : null);
+        const targetIdAttr = target.attr("id") ? `#${target.attr("id")}` : null;
+        const controlId = isRegex ? target.attr("data-pack-id") : (targetIdAttr || (control.attr("id") ? `#${control.attr("id")}` : null));
+
         if (!controlId) return;
         let targetId = null;
         if (!isRegex) {
