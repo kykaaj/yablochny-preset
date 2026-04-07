@@ -172,11 +172,11 @@ const UI_TEXT = {
         speechLabel: "Speech style",
 
         roleplayLabel: "Roleplay Mode",
-        thoughtsLabel: "┌︎ ◈︎ thoughts",
-        swearingLabel: "┌︎ ◈︎ swearing",
+        thoughtsLabel: "Thoughts",
+        swearingLabel: "Swearing",
         paceLabel: "Pace",
-        extrasLangLabel: "└︎ ◈︎ extras lang",
-        focusLabel: "┌︎ ◈︎ focus",
+        extrasLangLabel: "Extras Language",
+        focusLabel: "Focus",
         deconstructionLabel: "COT deconstruction",
         lastSyncNever: "never",
         imageStyleLabel: "Image style",
@@ -356,11 +356,11 @@ const UI_TEXT = {
         speechLabel: "Манера речи",
 
         roleplayLabel: "Режим ролеплея",
-        thoughtsLabel: "┌︎ ◈︎ thoughts",
-        swearingLabel: "┌︎ ◈︎ swearing",
+        thoughtsLabel: "Мысли",
+        swearingLabel: "Мат",
         paceLabel: "Темп",
-        extrasLangLabel: "└︎ ◈︎ extras lang",
-        focusLabel: "┌︎ ◈︎ focus",
+        extrasLangLabel: "Язык дополнений",
+        focusLabel: "Фокус",
         deconstructionLabel: "COT деконструкция",
         lastSyncNever: "еще ни разу",
         imageStyleLabel: "Стиль изображений",
@@ -542,11 +542,11 @@ const UI_TEXT = {
         speechLabel: "Манера мовлення",
 
         roleplayLabel: "Режим рольової",
-        thoughtsLabel: "┌︎ ◈︎ thoughts",
-        swearingLabel: "┌︎ ◈︎ swearing",
+        thoughtsLabel: "Думки",
+        swearingLabel: "Мат",
         paceLabel: "Темп",
-        extrasLangLabel: "└︎ ◈︎ extras lang",
-        focusLabel: "┌︎ ◈︎ focus",
+        extrasLangLabel: "Мова доповнень",
+        focusLabel: "Фокус",
         deconstructionLabel: "COT деконструкція",
         lastSyncNever: "ще жодного разу",
         imageStyleLabel: "Стиль зображень",
@@ -2019,67 +2019,31 @@ function applySpeechVariant(master, cfg, existingPreset) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
-    // Known variants for detection
-    const knownVariants = [
-        SPEECH_VARIANTS.salinger,
-        SPEECH_VARIANTS.pratchett,
-        SPEECH_VARIANTS.le_guin,
-        SPEECH_VARIANTS.wilde,
-        SPEECH_VARIANTS.custom,
-        "",
-    ];
+    const mode = cfg.speechStyle || "none";
 
-    // Logic to preserve custom content
-    const existingContent = getContentFromExisting(existingPreset, id);
-    if (existingContent !== null) {
-        const normalizedExisting = existingContent.trim().replace(/\r\n/g, "\n");
-        const isKnown = knownVariants.some(v => v.trim().replace(/\r\n/g, "\n") === normalizedExisting);
-        
-        if (!isKnown && existingContent.length > 0) {
-            // It's non-standard content, save it to internal backup
-            cfg.customPromptContents = cfg.customPromptContents || {};
-            cfg.customPromptContents.speech = existingContent;
-        }
-    }
-
-    // Force enable if a style is selected (logic handles 'none' below)
-    if (cfg.speechStyle && cfg.speechStyle !== "none") {
-        prompt.enabled = true;
-    }
-
-    if (cfg.speechStyle === "none") {
-        return;
-    }
-
-    if (cfg.speechStyle === "custom") {
+    // CUSTOM MODE: Standard preservation logic
+    if (mode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
-            const normalizedExisting = existingContent.trim().replace(/\r\n/g, "\n");
-            const isKnown = knownVariants.some(v => v.trim().replace(/\r\n/g, "\n") === normalizedExisting);
-            
-            if (!isKnown && existingContent.length > 0) {
-                // Keep existing custom content
-                prompt.content = existingContent;
-            } else if (cfg.customPromptContents?.speech !== undefined) {
-                // Restore from backup
-                prompt.content = cfg.customPromptContents.speech;
-            } else {
-                prompt.content = "";
-            }
-        } else if (cfg.customPromptContents?.speech !== undefined) {
-            prompt.content = cfg.customPromptContents.speech;
-        } else {
-            prompt.content = "";
+            prompt.content = existingContent;
         }
         return;
     }
 
-    const mode = cfg.speechStyle;
+    // NONE MODE: Turn off the prompt
+    if (mode === "none") {
+        prompt.enabled = false;
+        return;
+    }
+
+    // PRESET MODES: Force enable and apply text
+    prompt.enabled = true;
     let text = SPEECH_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.speech && cfg.promptEdits.speech[mode]) {
         text = cfg.promptEdits.speech[mode];
     }
 
-    if (text) {
+    if (text !== undefined) {
         prompt.content = text;
     }
 }
@@ -2528,7 +2492,6 @@ function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null)
     applySpeechVariant(master, cfg, existingPreset);
     applyProseVariant(master, cfg, existingPreset);
 
-    
     // New Variants
     applyRoleplayVariant(master, cfg, existingPreset);
     applyThoughtsVariant(master, cfg, existingPreset);
