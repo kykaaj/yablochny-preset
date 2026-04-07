@@ -4449,14 +4449,9 @@ function setupLongPressSettingsNavigation() {
         if (e.pointerType === "mouse" && e.button !== 0) return;
         if (e.originalEvent && e.originalEvent.isTrusted === false) return;
 
-        // Desktop Windows/Mac OS intercepts mouseup/pointerup entirely when a SELECT
-        // picker opens instantly on mousedown. We MUST NOT start the timer if a mouse 
-        // clicks a SELECT natively, otherwise it guarantees a phantom timer completion.
-        if (e.pointerType === "mouse") {
-            const tag = (e.target.tagName || "").toUpperCase();
-            if (tag === "SELECT" || tag === "OPTION") {
-                return;
-            }
+        const tag = (e.target.tagName || "").toUpperCase();
+        if (tag === "SELECT" && typeof e.target.showPicker === "function" && e.pointerType === "mouse") {
+            e.preventDefault(); // Locks OS from prematurely taking native capture
         }
 
         const target = jQuery(this).closest(targetSelectors);
@@ -4469,7 +4464,15 @@ function setupLongPressSettingsNavigation() {
             handleSettingLongPress(target);
         }, LONG_PRESS_DURATION);
     }).on("pointerup.yp-delegated pointerleave.yp-delegated pointercancel.yp-delegated touchend.yp-delegated touchcancel.yp-delegated", targetSelectors, function(e) {
+        const wasLongPress = isLongPressActive;
         clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding");
+        
+        if (!wasLongPress && e.pointerType === "mouse") {
+            const tag = (e.target.tagName || "").toUpperCase();
+            if (tag === "SELECT" && typeof e.target.showPicker === "function") {
+                try { e.target.focus(); e.target.showPicker(); } catch(err) {}
+            }
+        }
     }).on("contextmenu.yp-delegated", targetSelectors, function(e) {
         e.preventDefault();
         clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding");
