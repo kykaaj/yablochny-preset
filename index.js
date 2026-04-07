@@ -17,19 +17,19 @@ import { getCurrentLocale } from "/scripts/i18n.js";
 import { openai_settings, openai_setting_names } from "/scripts/openai.js";
 
 const IMAGE_STYLE_VARIANTS = {
-    anime_inspired_realism: "Delicate shoujo anime-inspired realism, thin elegant linework, vibrant tones, ethereal aesthetic, cinematic layered light, soft bloom highlights, glowing rim light, subtle color bounce light, dust and light particles, detailed expressive eyes, depth of field, elegant colors, ultra detailed, glossy shiny highlights on skin, god rays, cinematic composition, realistic proportions, expressive faces, dynamic poses",
-    painterly_anime: "Painterly anime style, cinematic realistic lighting on a painterly aesthetic, detailed rendering with soft impressionistic brushwork and blending, manga page layout",
-    semi_realistic_anime: "Semi-realistic anime style, volumetric soft shading, detailed cinematic lighting and shadows, realistic proportions mixed with anime features, high quality anime rendering",
-    soft_pastel_anime: "Delicate shoujo anime style, thin elegant linework, sparkling eye and hair highlights, soft pastel tones, minimal shading, ethereal romantic aesthetic",
-    toni_muntean: "Semi-realistic illustration style inspired by Toni Muntean, cinematic lighting, volumetric shadows, dramatic atmosphere, detailed textures, painterly quality, high detail",
-    photorealistic_illustration: "Masterpiece, best quality, ultra-detailed, cinematic photorealistic character illustration, highly realistic faces with attractive natural proportions, beautiful expressive eyes, realistic eyelids and lashes, natural lips, believable skin texture with subtle pores, healthy natural complexion, detailed realistic hair strands with natural volume and soft sheen, graceful anatomy, premium clothing textures, visible fabric detail, cinematic live lighting, soft rim light, realistic shadow depth, 85mm lens look, subtle film grain, tasteful color grading, high-end editorial realism",
-    digital_oil: "Digital oil painting aesthetic, dramatic lighting showcasing impasto brushstrokes and canvas texture, deep saturated colors, SFX blurs",
-    ethereal_oil: "Ethereal oil painting on canvas style, visible brushstrokes, high fantasy anime, vibrant glowing colors, thick impasto textures, volumetric lighting, divine atmosphere",
-    colored_pencil: "Colored pencil style, directional light enhancing layered hatching and paper grain texture, soft distinct lines, detailed finish",
-    uki_e: "Japanese Ukiyo-e woodblock print style mixed with modern anime, flat bold colors, strong black outlines, dynamic composition, traditional motifs, speech bubble with Russian text, manga panels layout",
-    indie_diary: "Personal indie diary illustration, mixed media sketchbook page aesthetic, soft delicate pencil sketching combined with loose transparent watercolor washes. Hand-drawn, cozy, nostalgic and intimate atmosphere. Muted pastel color bleeds, expressive and slightly messy ink linework. Drawn on textured off-white journal paper, teenage scrapbook feel. Traditional 2d art, no digital polish, no 3d rendering",
-    pixel_16bit: "HD-2D diorama aesthetic, highly detailed 16-bit pixel art characters in a rich 3D environment, glowing volumetric lighting",
-    "3d_cgi": "High-end 3D CGI animated film aesthetic, soft subsurface scattering on skin, vibrant highly detailed textures, cinematic studio lighting"
+    anime_inspired_realism: "{{setvar::imgstyle::Delicate shoujo anime-inspired realism, thin elegant linework, vibrant tones, ethereal aesthetic, cinematic layered light, soft bloom highlights, glowing rim light, subtle color bounce light, dust and light particles, detailed expressive eyes, depth of field, elegant colors, ultra detailed, glossy shiny highlights on skin, god rays, cinematic composition, realistic proportions, expressive faces, dynamic poses}}",
+    painterly_anime: "{{setvar::imgstyle::Painterly anime style, cinematic realistic lighting on a painterly aesthetic, detailed rendering with soft impressionistic brushwork and blending, manga page layout}}",
+    semi_realistic_anime: "{{setvar::imgstyle::Semi-realistic anime style, volumetric soft shading, detailed cinematic lighting and shadows, realistic proportions mixed with anime features, high quality anime rendering}}",
+    soft_pastel_anime: "{{setvar::imgstyle::Delicate shoujo anime style, thin elegant linework, sparkling eye and hair highlights, soft pastel tones, minimal shading, ethereal romantic aesthetic}}",
+    toni_muntean: "{{setvar::imgstyle::Semi-realistic illustration style inspired by Toni Muntean, cinematic lighting, volumetric shadows, dramatic atmosphere, detailed textures, painterly quality, high detail}}",
+    photorealistic_illustration: "{{setvar::imgstyle::Masterpiece, best quality, ultra-detailed, cinematic photorealistic character illustration, highly realistic faces with attractive natural proportions, beautiful expressive eyes, realistic eyelids and lashes, natural lips, believable skin texture with subtle pores, healthy natural complexion, detailed realistic hair strands with natural volume and soft sheen, graceful anatomy, premium clothing textures, visible fabric detail, cinematic live lighting, soft rim light, realistic shadow depth, 85mm lens look, subtle film grain, tasteful color grading, high-end editorial realism}}",
+    digital_oil: "{{setvar::imgstyle::Digital oil painting aesthetic, dramatic lighting showcasing impasto brushstrokes and canvas texture, deep saturated colors, SFX blurs}}",
+    ethereal_oil: "{{setvar::imgstyle::Ethereal oil painting on canvas style, visible brushstrokes, high fantasy anime, vibrant glowing colors, thick impasto textures, volumetric lighting, divine atmosphere}}",
+    colored_pencil: "{{setvar::imgstyle::Colored pencil style, directional light enhancing layered hatching and paper grain texture, soft distinct lines, detailed finish}}",
+    uki_e: "{{setvar::imgstyle::Japanese Ukiyo-e woodblock print style mixed with modern anime, flat bold colors, strong black outlines, dynamic composition, traditional motifs, speech bubble with Russian text, manga panels layout}}",
+    indie_diary: "{{setvar::imgstyle::Personal indie diary illustration, mixed media sketchbook page aesthetic, soft delicate pencil sketching combined with loose transparent watercolor washes. Hand-drawn, cozy, nostalgic and intimate atmosphere. Muted pastel color bleeds, expressive and slightly messy ink linework. Drawn on textured off-white journal paper, teenage scrapbook feel. Traditional 2d art, no digital polish, no 3d rendering}}",
+    pixel_16bit: "{{setvar::imgstyle::HD-2D diorama aesthetic, highly detailed 16-bit pixel art characters in a rich 3D environment, glowing volumetric lighting}}",
+    "3d_cgi": "{{setvar::imgstyle::High-end 3D CGI animated film aesthetic, soft subsurface scattering on skin, vibrant highly detailed textures, cinematic studio lighting}}"
 };
 
 // Определяем путь к папке расширения автоматически
@@ -2419,7 +2419,7 @@ function applyImageStyleVariant(master, cfg, existingPreset) {
         text = cfg.promptEdits.image_style[mode];
     }
     if (text !== undefined) {
-        prompt.content = `{{setvar::imgstyle::${text}}}`;
+        prompt.content = text;
     }
 }
 
@@ -2675,6 +2675,18 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "scenario", // Synced from dev snapshot
         "personaDescription", // Synced from dev snapshot
         "65064e43-ef37-4d76-b6b8-6750033c4153", // Synced from dev snapshot
+,
+        "nsfw", // Synced from dev snapshot
+        "dialogueExamples", // Synced from dev snapshot
+        "jailbreak", // Synced from dev snapshot
+        "chatHistory", // Synced from dev snapshot
+        "worldInfoAfter", // Synced from dev snapshot
+        "worldInfoBefore", // Synced from dev snapshot
+        "enhanceDefinitions", // Synced from dev snapshot
+        "charDescription", // Synced from dev snapshot
+        "charPersonality", // Synced from dev snapshot
+        "scenario", // Synced from dev snapshot
+        "personaDescription", // Synced from dev snapshot
 ];
 
     const customPrompts = [];
@@ -3208,6 +3220,7 @@ const VARIANT_TYPE_MAP = {
     pace: { constants: "PACE_VARIANTS", keys: ["slowburn", "quickpace"] },
     extras: { constants: "EXTRAS_LANG_VARIANTS", keys: ["custom", "ru", "uk"] },
     focus: { constants: "FOCUS_VARIANTS", keys: ["off", "dialogues", "details"] },
+    addon: { constants: "ADDON_VARIANTS", keys: ["off", "comic", "novel", "pixel_novel", "just_images"] },
     deconstruction: { constants: "DECONSTRUCTION_VARIANTS", keys: ["large", "mini"] },
     image_style: { constants: "IMAGE_STYLE_VARIANTS", keys: Object.keys(IMAGE_STYLE_VARIANTS) },
 };
@@ -3256,6 +3269,13 @@ function getVariantContent(variantType, variantKey) {
         case "PROSE_VARIANTS": constants = PROSE_VARIANTS; break;
         case "SPEECH_VARIANTS": constants = SPEECH_VARIANTS; break;
 
+        case "ROLEPLAY_VARIANTS": constants = ROLEPLAY_VARIANTS; break;
+        case "THOUGHTS_VARIANTS": constants = THOUGHTS_VARIANTS; break;
+        case "SWEARING_VARIANTS": constants = SWEARING_VARIANTS; break;
+        case "PACE_VARIANTS": constants = PACE_VARIANTS; break;
+        case "EXTRAS_LANG_VARIANTS": constants = EXTRAS_LANG_VARIANTS; break;
+        case "FOCUS_VARIANTS": constants = FOCUS_VARIANTS; break;
+        case "ADDON_VARIANTS": constants = ADDON_VARIANTS; break;
 
         case "DECONSTRUCTION_VARIANTS": constants = DECONSTRUCTION_VARIANTS; break;
         case "IMAGE_STYLE_VARIANTS": constants = IMAGE_STYLE_VARIANTS; break;
@@ -3313,6 +3333,7 @@ function openPromptEditor(variantType) {
         speech: "Speech Style Variants",
         theme: "HTML Theme Variants",
         image: "Image Mode Variants",
+        addon: "Addon Mode Variants",
     };
     jQuery("#yp-editor-title").text("Edit " + (titles[variantType] || "Prompt Variant"));
 
