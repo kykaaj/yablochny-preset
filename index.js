@@ -1,5 +1,6 @@
 /*
  * Yablochny Preset Extension for SillyTavern
+ * v1.10.22 - Last Updated: 2026-04-08 03:45 (UTC)
  * Copyright (c) 2026 Kykaaj
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
