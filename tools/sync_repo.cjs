@@ -11,7 +11,7 @@ const INDEX_JS_PATH = path.join(REPO_ROOT, 'index.js');
 const PROMPT_EDITS_PATH = path.join(__dirname, 'prompt-edits.json');
 const ST_DATA_ROOT = 'c:/sillytavern/SillyTavern/data/default-user';
 const ST_LOCAL_PRESET = path.join(ST_DATA_ROOT, 'OpenAI Settings/🍎 Yablochny Preset.json');
-const ST_LOCAL_SETTINGS = 'c:/sillytavern/SillyTavern/public/settings.json';
+const ST_LOCAL_SETTINGS = 'c:/sillytavern/SillyTavern/data/default-user/settings.json';
 
 // Parse arguments
 let snapshotPath = null;
