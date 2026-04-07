@@ -212,7 +212,7 @@ const UI_TEXT = {
         profileLoaded: "Profile loaded",
         modelPresetLabel: "Model Preset:",
         addonLabel: "Addon Mode",
-        addonOff: "Off",
+        addonCustom: "Custom",
         addonComic: "Comic",
         addonNovel: "Novel",
         addonPixel: "Pixel Novel",
@@ -396,7 +396,7 @@ const UI_TEXT = {
         profileLoaded: "Профиль загружен",
         modelPresetLabel: "Пресет модели:",
         addonLabel: "Аддон",
-        addonOff: "Выкл",
+        addonCustom: "Свой",
         addonComic: "Комикс",
         addonNovel: "Новелла",
         addonPixel: "Пиксельная новелла",
@@ -582,7 +582,7 @@ const UI_TEXT = {
         profileLoaded: "Профіль завантажено",
         modelPresetLabel: "Пресет моделі:",
         addonLabel: "Аддон",
-        addonOff: "Вимк",
+        addonCustom: "Свій",
         addonComic: "Комікс",
         addonNovel: "Новела",
         addonPixel: "Піксельна новела",
@@ -751,7 +751,7 @@ Form scenes, plotlines, and subplots with care. The story breathes through detai
 };
 
 const ADDON_VARIANTS = {
-    off: ``,
+    custom: ``,
     comic: `[COMIC BLOCK]
 In EVERY message add one vertical comic page showing current moment of scene. Place it in middle of message at most relevant narrative beat. 
 NEVER use https://image.pollinations.ai or any other image generator, use ONLY [IMG:GEN] (IMAGE GENERATION RULES).
@@ -2869,12 +2869,19 @@ async function applyAddonVariant(master, cfg, existingPreset) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
-    const mode = cfg.addonMode || "off";
+    const mode = cfg.addonMode || "custom";
     
-    // Default: disable the prompt if it's "off" or undefined
-    if (!mode || mode === "off") {
-        prompt.enabled = false;
-        prompt.content = ""; // Clear content to be safe
+    // CUSTOM MODE: Preserve existing state from ST (don't overwrite)
+    if (mode === "custom" || mode === "off") {
+        const existing = existingPreset?.prompts?.find(p => p.identifier === id);
+        if (existing) {
+            prompt.enabled = existing.enabled;
+            prompt.content = existing.content;
+        } else {
+            // Default for new installs or if prompt is missing: OFF
+            prompt.enabled = false;
+            prompt.content = "";
+        }
         return;
     }
 
@@ -3553,7 +3560,7 @@ function applyLocaleToUi() {
 
     // Addon labels
     if (dict.addonLabel) jQuery("#yp-addon-label").text(dict.addonLabel);
-    if (dict.addonOff) jQuery("#yp-addon-off").text(dict.addonOff);
+    if (dict.addonCustom) jQuery("#yp-addon-custom").text(dict.addonCustom);
     if (dict.addonComic) jQuery("#yp-addon-comic").text(dict.addonComic);
     if (dict.addonNovel) jQuery("#yp-addon-novel").text(dict.addonNovel);
     if (dict.addonPixel) jQuery("#yp-addon-pixel").text(dict.addonPixel);
