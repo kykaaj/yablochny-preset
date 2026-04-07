@@ -220,6 +220,10 @@ const UI_TEXT = {
         disableModsLabel: "Disable Mods (Bypass Settings)",
         devLabel: "Dev logs",
         modeLabel: "Mode:",
+        hdrAdditional: "Additional Settings",
+        siteLabel: "Site",
+        guideLabel: "Guide",
+        creditsLabel: "Credits",
 
         // Credits
         creditsTitle: "Credits & Authors",
@@ -404,6 +408,10 @@ const UI_TEXT = {
         disableModsLabel: "Отключить моды (игнорировать настройки)",
         devLabel: "Логи (F12)",
         modeLabel: "Режим:",
+        hdrAdditional: "Дополнительно",
+        siteLabel: "Сайт",
+        guideLabel: "Гайд",
+        creditsLabel: "Титры",
 
         // Credits
         creditsTitle: "Авторы и благодарности",
@@ -590,6 +598,10 @@ const UI_TEXT = {
         disableModsLabel: "Вимкнути моди (bypass settings)",
         devLabel: "Логи (F12)",
         modeLabel: "Режим:",
+        hdrAdditional: "Додатково",
+        siteLabel: "Сайт",
+        guideLabel: "Гайд",
+        creditsLabel: "Титри",
 
         // Credits
         creditsTitle: "Автори та подяки",
@@ -1902,7 +1914,8 @@ function applyLanguageVariant(master, cfg, uiLang, existingPreset) {
     // Force enable the prompt so updates apply immediately
     prompt.enabled = true;
 
-    const mode = cfg.languageMode || "auto";
+    const rawMode = cfg.languageMode || "auto";
+    const mode = getSafeVariant(rawMode, LANGUAGE_VARIANTS, "auto");
     if (mode === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
@@ -1951,7 +1964,8 @@ function applyLengthVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.lengthMode || "400-600";
+    const rawMode = cfg.lengthMode || "400-600";
+    const mode = getSafeVariant(rawMode, LENGTH_VARIANTS, "400-600");
     let text = LENGTH_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.length && cfg.promptEdits.length[mode]) {
         text = cfg.promptEdits.length[mode];
@@ -1977,7 +1991,8 @@ function applyPOVVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.POVMode || "3rd";
+    const rawMode = cfg.POVMode || "3rd";
+    const mode = getSafeVariant(rawMode, POV_VARIANTS, "3rd");
     let text = POV_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.pov && cfg.promptEdits.pov[mode]) {
         text = cfg.promptEdits.pov[mode];
@@ -2003,7 +2018,8 @@ function applyTENSEVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.TENSEMode || "Present";
+    const rawMode = cfg.TENSEMode || "Present";
+    const mode = getSafeVariant(rawMode, TENSE_VARIANTS, "Present");
     let text = TENSE_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.tense && cfg.promptEdits.tense[mode]) {
         text = cfg.promptEdits.tense[mode];
@@ -2022,7 +2038,8 @@ function applySpeechVariant(master, cfg, existingPreset) {
     // Force enable the prompt so updates apply immediately
     prompt.enabled = true;
 
-    const mode = cfg.speechStyle || "none";
+    const rawMode = cfg.speechStyle || "none";
+    const mode = getSafeVariant(rawMode, SPEECH_VARIANTS, "none");
 
     // 1. CUSTOM MODE: Direct preservation
     if (mode === "custom") {
@@ -2062,13 +2079,22 @@ function applySpeechVariant(master, cfg, existingPreset) {
     }
 }
 
+function getSafeVariant(selected, dictionary, defaultValue) {
+    if (selected === "custom") return "custom";
+    if (dictionary && Object.prototype.hasOwnProperty.call(dictionary, selected)) {
+        return selected;
+    }
+    return defaultValue;
+}
+
 function applyAddonVariant(master, cfg, existingPreset) {
     const id = "d9762c5c-d5a4-49b0-9d00-814ae57e9711"; // Addon prompt ID
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
     // Default to 'comic' per user request if missing
-    const mode = cfg.addonMode || "comic";
+    const rawMode = cfg.addonMode || "comic";
+    const mode = getSafeVariant(rawMode, ADDON_VARIANTS, "comic");
     
 
     if (mode === "custom") {
@@ -2104,7 +2130,8 @@ function applyProseVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.proseStyle || "ao3";
+    const rawMode = cfg.proseStyle || "ao3";
+    const mode = getSafeVariant(rawMode, PROSE_VARIANTS, "ao3");
     let text = PROSE_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.prose && cfg.promptEdits.prose[mode]) {
         text = cfg.promptEdits.prose[mode];
@@ -2205,7 +2232,8 @@ function applyRoleplayVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.roleplayMode || "dont_speak";
+    const rawMode = cfg.roleplayMode || "dont_speak";
+    const mode = getSafeVariant(rawMode, ROLEPLAY_VARIANTS, "dont_speak");
     let text = ROLEPLAY_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.roleplay && cfg.promptEdits.roleplay[mode]) {
         text = cfg.promptEdits.roleplay[mode];
@@ -2230,7 +2258,8 @@ function applyThoughtsVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.thoughtsMode || "thoughts";
+    const rawMode = cfg.thoughtsMode || "thoughts";
+    const mode = getSafeVariant(rawMode, THOUGHTS_VARIANTS, "thoughts");
     let text = THOUGHTS_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.thoughts && cfg.promptEdits.thoughts[mode]) {
         text = cfg.promptEdits.thoughts[mode];
@@ -2296,7 +2325,8 @@ function applySwearingVariant(master, cfg, existingPreset) {
         return;
     }
     
-    const mode = cfg.swearingMode || "custom";
+    const rawMode = cfg.swearingMode || "custom";
+    const mode = getSafeVariant(rawMode, SWEARING_VARIANTS, "custom");
     let text = SWEARING_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.swearing && cfg.promptEdits.swearing[mode]) {
         text = cfg.promptEdits.swearing[mode];
@@ -2321,7 +2351,8 @@ function applyPaceVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.paceMode || "slowburn";
+    const rawMode = cfg.paceMode || "slowburn";
+    const mode = getSafeVariant(rawMode, PACE_VARIANTS, "slowburn");
     let text = PACE_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.pace && cfg.promptEdits.pace[mode]) {
         text = cfg.promptEdits.pace[mode];
@@ -2387,7 +2418,8 @@ function applyExtrasLangVariant(master, cfg, existingPreset) {
         return;
     }
 
-    const mode = cfg.extrasLangMode || "custom";
+    const rawMode = cfg.extrasLangMode || "custom";
+    const mode = getSafeVariant(rawMode, EXTRAS_LANG_VARIANTS, "custom");
     let text = EXTRAS_LANG_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.extras && cfg.promptEdits.extras[mode]) {
         text = cfg.promptEdits.extras[mode];
@@ -2415,7 +2447,8 @@ function applyFocusVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.focusMode || "off";
+    const rawMode = cfg.focusMode || "off";
+    const mode = getSafeVariant(rawMode, FOCUS_VARIANTS, "off");
     let text = FOCUS_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.focus && cfg.promptEdits.focus[mode]) {
         text = cfg.promptEdits.focus[mode];
@@ -2440,7 +2473,8 @@ function applyDeconstructionVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.deconstructionMode || "large";
+    const rawMode = cfg.deconstructionMode || "large";
+    const mode = getSafeVariant(rawMode, DECONSTRUCTION_VARIANTS, "large");
     let text = DECONSTRUCTION_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.deconstruction && cfg.promptEdits.deconstruction[mode]) {
         text = cfg.promptEdits.deconstruction[mode];
@@ -2465,7 +2499,8 @@ function applyImageStyleVariant(master, cfg, existingPreset) {
         }
         return;
     }
-    const mode = cfg.imageStyleMode || "anime_inspired_realism";
+    const rawMode = cfg.imageStyleMode || "anime_inspired_realism";
+    const mode = getSafeVariant(rawMode, IMAGE_STYLE_VARIANTS, "anime_inspired_realism");
     let text = IMAGE_STYLE_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.image_style && cfg.promptEdits.image_style[mode]) {
         text = cfg.promptEdits.image_style[mode];
