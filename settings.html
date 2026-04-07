@@ -135,9 +135,18 @@
           <input type="checkbox" id="yp-dev-mode">
           <label for="yp-dev-mode" id="yp-dev-label">Dev logs</label>
         </div>
-        <div id="yp-dev-export-container" style="display:none;">
-            <button id="yp-dev-export-btn" class="menu_button secondary" style="padding: 2px 6px; font-size: 0.9em; display: flex; align-items: center; gap: 4px;" title="Export Snapshot (Prompt Data + Extension Config) for syncing">
-              <i class="fa-solid fa-box-archive"></i> Snapshot
+        <div id="yp-dev-export-container" style="display:none; gap: 4px; flex-wrap: wrap;">
+            <button id="yp-dev-snapshot-btn" class="menu_button secondary" style="padding: 2px 6px; font-size: 0.85em; display: flex; align-items: center; gap: 3px;" title="Export full snapshot (preset + config) for syncing">
+              <i class="fa-solid fa-box-archive"></i> Snap
+            </button>
+            <button id="yp-dev-view-btn" class="menu_button secondary" style="padding: 2px 6px; font-size: 0.85em; display: flex; align-items: center; gap: 3px;" title="View all tracked prompt edits in a popup">
+              <i class="fa-solid fa-eye"></i> View
+            </button>
+            <button id="yp-dev-export-btn" class="menu_button secondary" style="padding: 2px 6px; font-size: 0.85em; display: flex; align-items: center; gap: 3px;" title="Export only prompt edits as JSON">
+              <i class="fa-solid fa-file-export"></i> Export
+            </button>
+            <button id="yp-dev-reset-btn" class="menu_button secondary" style="padding: 2px 6px; font-size: 0.85em; display: flex; align-items: center; gap: 3px; color: #e57373;" title="Clear ALL prompt edits, revert to defaults">
+              <i class="fa-solid fa-trash-can"></i> Reset
             </button>
         </div>
         <div style="margin-left: auto;" id="yp-last-sync-container">
@@ -522,6 +531,28 @@
       </button>
       <button id="yp-editor-cancel" class="menu_button secondary">
         <i class="fa-solid fa-xmark"></i> <span id="yp-editor-cancel-label">Cancel</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Changes Viewer Modal -->
+<div id="yp-changes-viewer-modal"
+  style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center;">
+  <div
+    style="background: var(--SmartThemeBodyColor); border: 1px solid var(--SmartThemeBorderColor); border-radius: 8px; padding: 20px; max-width: 900px; width: 90%; max-height: 85vh; display: flex; flex-direction: column;">
+    <h3 style="margin-top: 0; margin-bottom: 10px;">Local Prompt Edits Viewer</h3>
+    <div style="margin-bottom: 15px; font-size: 0.9em; opacity: 0.8;">
+      These are the manual changes you've made to the presets directly in the ST Prompt Manager.
+    </div>
+    
+    <div id="yp-changes-viewer-content" style="flex: 1; overflow-y: auto; overflow-x: hidden; border: 1px solid var(--SmartThemeBorderColor); border-radius: 4px; padding: 10px; background: rgba(0,0,0,0.2);">
+        <!-- Injected via JS -->
+    </div>
+
+    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px;">
+      <button id="yp-changes-viewer-close" class="menu_button primary">
+        <i class="fa-solid fa-check"></i> Close
       </button>
     </div>
   </div>

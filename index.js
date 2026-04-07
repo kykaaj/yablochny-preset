@@ -2638,67 +2638,6 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "7d81224c-eaf8-45ef-9af0-b3f52369c792", // Deprecated: quickpace
         "d00a8bd2-d7ec-4a1e-919b-4089d2489e82", // Deprecated: ua extras
         "fbab97af-a0e4-4111-ae8b-65a64420671c", // ◦ anew pill
-,
-        "nsfw", // Synced from user preset
-        "dialogueExamples", // Synced from user preset
-        "jailbreak", // Synced from user preset
-        "chatHistory", // Synced from user preset
-        "worldInfoAfter", // Synced from user preset
-        "worldInfoBefore", // Synced from user preset
-        "enhanceDefinitions", // Synced from user preset
-        "charDescription", // Synced from user preset
-        "charPersonality", // Synced from user preset
-        "scenario", // Synced from user preset
-        "personaDescription", // Synced from user preset
-,
-        "nsfw", // Synced from user preset
-        "dialogueExamples", // Synced from user preset
-        "jailbreak", // Synced from user preset
-        "chatHistory", // Synced from user preset
-        "worldInfoAfter", // Synced from user preset
-        "worldInfoBefore", // Synced from user preset
-        "enhanceDefinitions", // Synced from user preset
-        "charDescription", // Synced from user preset
-        "charPersonality", // Synced from user preset
-        "scenario", // Synced from user preset
-        "personaDescription", // Synced from user preset
-,
-        "nsfw", // Synced from dev snapshot
-        "dialogueExamples", // Synced from dev snapshot
-        "jailbreak", // Synced from dev snapshot
-        "chatHistory", // Synced from dev snapshot
-        "worldInfoAfter", // Synced from dev snapshot
-        "worldInfoBefore", // Synced from dev snapshot
-        "enhanceDefinitions", // Synced from dev snapshot
-        "charDescription", // Synced from dev snapshot
-        "charPersonality", // Synced from dev snapshot
-        "scenario", // Synced from dev snapshot
-        "personaDescription", // Synced from dev snapshot
-        "65064e43-ef37-4d76-b6b8-6750033c4153", // Synced from dev snapshot
-,
-        "nsfw", // Synced from dev snapshot
-        "dialogueExamples", // Synced from dev snapshot
-        "jailbreak", // Synced from dev snapshot
-        "chatHistory", // Synced from dev snapshot
-        "worldInfoAfter", // Synced from dev snapshot
-        "worldInfoBefore", // Synced from dev snapshot
-        "enhanceDefinitions", // Synced from dev snapshot
-        "charDescription", // Synced from dev snapshot
-        "charPersonality", // Synced from dev snapshot
-        "scenario", // Synced from dev snapshot
-        "personaDescription", // Synced from dev snapshot
-,
-        "nsfw", // Synced from dev snapshot
-        "dialogueExamples", // Synced from dev snapshot
-        "jailbreak", // Synced from dev snapshot
-        "chatHistory", // Synced from dev snapshot
-        "worldInfoAfter", // Synced from dev snapshot
-        "worldInfoBefore", // Synced from dev snapshot
-        "enhanceDefinitions", // Synced from dev snapshot
-        "charDescription", // Synced from dev snapshot
-        "charPersonality", // Synced from dev snapshot
-        "scenario", // Synced from dev snapshot
-        "personaDescription", // Synced from dev snapshot
 ];
 
     const customPrompts = [];
@@ -2775,6 +2714,15 @@ function buildMergedPreset(existingPreset, master, cfg) {
             // FORCE content from master for all official prompts!
             // This ensures that updates reach the user even if they edited the prompt locally.
             merged.content = p.content;
+
+            // DEV MODE: Apply non-variant prompt edits from captureDevChanges
+            if (cfg.promptEdits && cfg.promptEdits._prompts && cfg.promptEdits._prompts[p.identifier]) {
+                const devEdit = cfg.promptEdits._prompts[p.identifier];
+                merged.content = devEdit.content;
+                if (devEdit.role !== undefined) merged.role = devEdit.role;
+                if (devEdit.injection_depth !== undefined) merged.injection_depth = devEdit.injection_depth;
+                if (devEdit.injection_position !== undefined) merged.injection_position = devEdit.injection_position;
+            }
 
             if (OBSOLETE_IDS.includes(p.identifier)) {
                 // Obsolete prompts must be kept empty and disabled
@@ -2943,7 +2891,7 @@ async function applyAddonVariant(master, cfg, existingPreset) {
     }
 }
 
-async function syncPreset(showToasts = false) {
+async function syncPreset(showToasts = false, disableCapture = false) {
     try {
         const cfg = getConfig();
         const uiLang = getUiLang();
@@ -2972,6 +2920,11 @@ async function syncPreset(showToasts = false) {
         const name = cfg.presetName || DEFAULT_PRESET_NAME;
         const index = findPresetIndexByName(name);
         const existingPreset = index !== null ? JSON.parse(JSON.stringify(openai_settings[index])) : null;
+
+        // DEV MODE: Capture user edits before master overwrites them
+        if (!disableCapture) {
+            captureDevChanges(existingPreset, basePreset, cfg);
+        }
 
         const master = buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset);
         const { preset, syncMeta } = buildMergedPreset(existingPreset, master, cfg);
@@ -3237,11 +3190,128 @@ const VARIANT_TYPE_MAP = {
     image_style: { constants: "IMAGE_STYLE_VARIANTS", keys: Object.keys(IMAGE_STYLE_VARIANTS) },
 };
 
+// Maps prompt identifier → variant type + config key for active variant detection
+const PROMPT_ID_TO_VARIANT = {
+    "e8c602e2-c7e7-4cc8-babf-7da12771c56a": { type: "roleplay", configKey: "roleplayMode" },
+    "1efdd851-e336-44a3-8e08-3cbff9077ed5": { type: "thoughts", configKey: "thoughtsMode" },
+    "85609813-6c7f-4df2-bee8-0ace5b10df91": { type: "swearing", configKey: "swearingMode" },
+    "db9a9d36-a623-4ffb-8a96-13872c1c8999": { type: "pace", configKey: "paceMode" },
+    "9c2536d8-2e0f-478d-8bef-3e4e75bcee83": { type: "extras", configKey: "extrasLangMode" },
+    "9b319c74-54a6-4f39-a5d0-1ecf9a7766dc": { type: "focus", configKey: "focusMode" },
+    "d9762c5c-d5a4-49b0-9d00-814ae57e9711": { type: "addon", configKey: "addonMode" },
+    "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6": { type: "deconstruction", configKey: "deconstructionMode" },
+    "65064e43-ef37-4d76-b6b8-6750033c4153": { type: "image_style", configKey: "imageStyleMode" },
+    "28ec4454-b3c2-4c06-8fd0-52cb123b778f": { type: "language", configKey: "languageMode" },
+    "9adda56b-6f32-416a-b947-9aa9f41564eb": { type: "length", configKey: "lengthMode" },
+    "5907aad3-0519-45e9-b6f7-40d9e434ef28": { type: "pov", configKey: "POVMode" },
+    "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": { type: "tense", configKey: "TENSEMode" },
+    "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c": { type: "speech", configKey: "speechStyle" },
+    "92f96f89-c01d-4a91-bea3-c8abb75b995a": { type: "prose", configKey: "proseStyle" },
+};
+
+/**
+ * DEV MODE: Auto-capture prompt changes before sync overwrites them.
+ * Compares current prompt state in ST against what the extension considers "default".
+ * Saves differences to cfg.promptEdits so they persist across syncs.
+ */
+function captureDevChanges(existingPreset, basePreset, cfg) {
+    if (!cfg.devMode || !existingPreset || !Array.isArray(existingPreset.prompts)) return;
+
+    if (!cfg.promptEdits) cfg.promptEdits = {};
+    if (!cfg.promptEdits._prompts) cfg.promptEdits._prompts = {};
+    if (!cfg.promptEdits._meta) cfg.promptEdits._meta = {};
+
+    const existingPrompts = existingPreset.prompts;
+    const basePrompts = Array.isArray(basePreset.prompts) ? basePreset.prompts : [];
+    let capturedCount = 0;
+
+    // Things prompt is handled separately
+    const SKIP_IDS = new Set([
+        "6b235beb-7de9-4f84-9b09-6f20210eae6d", // Things
+        "e12784ea-de67-48a7-99ef-3b0c1c45907c", // Image generation
+    ]);
+
+    for (const ep of existingPrompts) {
+        if (!ep.identifier || SKIP_IDS.has(ep.identifier)) continue;
+
+        const variantInfo = PROMPT_ID_TO_VARIANT[ep.identifier];
+
+        if (variantInfo) {
+            // === TYPE: Variant-based prompt ===
+            const activeVariant = cfg[variantInfo.configKey];
+            if (!activeVariant || activeVariant === "custom" || activeVariant === "none") continue;
+
+            const defaultContent = getVariantContent(variantInfo.type, activeVariant);
+            if (!defaultContent && defaultContent !== "") continue;
+
+            const normExisting = (ep.content || "").trim().replace(/\r\n/g, "\n");
+            const normDefault = defaultContent.trim().replace(/\r\n/g, "\n");
+
+            if (normExisting !== normDefault) {
+                if (!cfg.promptEdits[variantInfo.type]) cfg.promptEdits[variantInfo.type] = {};
+                cfg.promptEdits[variantInfo.type][activeVariant] = ep.content;
+                capturedCount++;
+                console.log(`[Yablochny DEV] Captured content change: ${variantInfo.type}/${activeVariant}`);
+            }
+
+            // Check metadata changes (role, depth, position)
+            const bp = basePrompts.find(p => p.identifier === ep.identifier);
+            if (bp) {
+                const metaChanged = (
+                    ep.role !== bp.role ||
+                    ep.injection_depth !== bp.injection_depth ||
+                    ep.injection_position !== bp.injection_position
+                );
+                if (metaChanged) {
+                    cfg.promptEdits._meta[variantInfo.type] = {
+                        role: ep.role,
+                        injection_depth: ep.injection_depth,
+                        injection_position: ep.injection_position,
+                    };
+                    capturedCount++;
+                    console.log(`[Yablochny DEV] Captured meta change: ${variantInfo.type}`);
+                }
+            }
+
+        } else {
+            // === TYPE: Non-variant prompt (simple toggle) ===
+            const bp = basePrompts.find(p => p.identifier === ep.identifier);
+            if (!bp) continue;
+
+            const normExisting = (ep.content || "").trim().replace(/\r\n/g, "\n");
+            const normBase = (bp.content || "").trim().replace(/\r\n/g, "\n");
+
+            const contentChanged = normExisting !== normBase;
+            const metaChanged = (
+                ep.role !== bp.role ||
+                ep.injection_depth !== bp.injection_depth ||
+                ep.injection_position !== bp.injection_position
+            );
+
+            if (contentChanged || metaChanged) {
+                cfg.promptEdits._prompts[ep.identifier] = {
+                    name: ep.name || bp.name || "",
+                    content: ep.content,
+                    role: ep.role,
+                    injection_depth: ep.injection_depth,
+                    injection_position: ep.injection_position,
+                };
+                capturedCount++;
+                console.log(`[Yablochny DEV] Captured non-variant change: ${ep.name || ep.identifier}`);
+            }
+        }
+    }
+
+    if (capturedCount > 0) {
+        console.log(`[Yablochny DEV] Total captured changes: ${capturedCount}`);
+        saveSettingsDebounced();
+    }
+}
+
 async function loadPromptEdits() {
     const cfg = getConfig();
     return cfg.promptEdits || {};
 }
-
 
 async function savePromptEdit(variantType, variantKey, content) {
     const cfg = getConfig();
@@ -3273,6 +3343,21 @@ function getVariantContent(variantType, variantKey) {
     const constantsName = map.constants;
     let constants;
 
+    // Map dropdown keys for Language to match actual object keys
+    let keyToUse = variantKey;
+    if (variantType === "language") {
+        if (keyToUse === "ru") keyToUse = "Russian";
+        else if (keyToUse === "uk") keyToUse = "Ukrainian";
+        else if (keyToUse === "en") keyToUse = "English";
+        else if (keyToUse === "auto") {
+            // Replicate 'auto' logic dynamically here if needed
+            const uiLang = typeof getUiLang === "function" ? getUiLang() : "en";
+            if (uiLang === "ru") keyToUse = "Russian";
+            else if (uiLang === "uk") keyToUse = "Ukrainian";
+            else keyToUse = "English";
+        }
+    }
+
     switch (constantsName) {
         case "LANGUAGE_VARIANTS": constants = LANGUAGE_VARIANTS; break;
         case "LENGTH_VARIANTS": constants = LENGTH_VARIANTS; break;
@@ -3294,7 +3379,7 @@ function getVariantContent(variantType, variantKey) {
         default: return "";
     }
 
-    return constants[variantKey] || "";
+    return constants[keyToUse] || "";
 }
 
 function getThingContent(groupKey, thingId) {
@@ -3899,11 +3984,13 @@ function initControls() {
         cfg.devMode = jQuery(this).is(":checked");
         saveSettingsDebounced();
 
-        // Show/hide edit buttons based on dev mode
+        // Show/hide edit buttons and dev tools based on dev mode
         if (cfg.devMode) {
             jQuery(".yp-edit-btn").show();
+            jQuery("#yp-dev-export-container").show();
         } else {
             jQuery(".yp-edit-btn").hide();
+            jQuery("#yp-dev-export-container").hide();
         }
 
         // Re-render Things UI to show/hide edit buttons
@@ -3913,7 +4000,185 @@ function initControls() {
     // Initialize edit button visibility
     if (cfg.devMode) {
         jQuery(".yp-edit-btn").show();
+        jQuery("#yp-dev-export-container").show();
     }
+
+    function escapeHtml(unsafe) {
+        return (unsafe || "").toString()
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
+    function buildChangesViewerHTML(edits) {
+        if (!edits || Object.keys(edits).length === 0 || 
+            (Object.keys(edits).length === 2 && edits._meta && edits._prompts && Object.keys(edits._prompts).length === 0)) {
+            return `<div style="text-align:center; padding: 20px; opacity: 0.6; font-size: 1.2em;">No local edits found.<br>Everything matches the extension defaults.</div>`;
+        }
+
+        let html = '';
+
+        // 1. Variant Prompts
+        for (const variantType in edits) {
+            if (variantType === "_prompts" || variantType === "_meta" || variantType === "things") continue;
+            
+            const variantEdits = edits[variantType];
+            if (Object.keys(variantEdits).length > 0) {
+                html += `<div style="margin-bottom: 10px;">`;
+                html += `<div style="font-weight:bold; color: var(--SmartThemeQuoteColor); margin-bottom: 5px;">[Variant] ${variantType.toUpperCase()}</div>`;
+                for (const key in variantEdits) {
+                    html += `<div style="margin-left: 10px; margin-bottom: 8px;">`;
+                    html += `<div style="display: flex; justify-content: space-between; align-items: center;">`;
+                    html += `<div style="font-size: 0.9em; opacity: 0.8;">Variant Key: <strong>${key}</strong></div>`;
+                    html += `<button class="menu_button secondary yp-revert-edit-btn" data-type="${variantType}" data-key="${key}" style="padding: 2px 6px; font-size: 0.85em; color: #e57373;"><i class="fa-solid fa-trash-can"></i> Revert</button>`;
+                    html += `</div>`;
+                    html += `<pre style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 8px; border-radius: 4px; white-space: pre-wrap; font-size: 0.9em; margin-top: 4px;">${escapeHtml(variantEdits[key])}</pre>`;
+                    html += `</div>`;
+                }
+                html += `</div>`;
+            }
+        }
+
+        // 2. Simple / Non-Variant Prompts
+        if (edits._prompts && Object.keys(edits._prompts).length > 0) {
+            html += `<div style="margin-bottom: 10px; margin-top: 20px;">`;
+            html += `<div style="font-weight:bold; color: var(--SmartThemeQuoteColor); margin-bottom: 5px;">[Simple Prompts]</div>`;
+            for (const id in edits._prompts) {
+                const info = edits._prompts[id];
+                html += `<div style="margin-left: 10px; margin-bottom: 8px;">`;
+                html += `<div style="display: flex; justify-content: space-between; align-items: center;">`;
+                html += `<div style="font-size: 0.9em; opacity: 0.8;">Name/ID: <strong>${escapeHtml(info.name || id)}</strong></div>`;
+                html += `<button class="menu_button secondary yp-revert-edit-btn" data-type="_prompts" data-key="${id}" style="padding: 2px 6px; font-size: 0.85em; color: #e57373;"><i class="fa-solid fa-trash-can"></i> Revert</button>`;
+                html += `</div>`;
+                html += `<pre style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 8px; border-radius: 4px; white-space: pre-wrap; font-size: 0.9em; margin-top: 4px;">${escapeHtml(info.content)}</pre>`;
+                html += `</div>`;
+            }
+            html += `</div>`;
+        }
+
+        // 3. Things
+        if (edits.things && Object.keys(edits.things).length > 0) {
+            html += `<div style="margin-bottom: 10px; margin-top: 20px;">`;
+            html += `<div style="font-weight:bold; color: var(--SmartThemeQuoteColor); margin-bottom: 5px;">[Things / Macros]</div>`;
+            for (const group in edits.things) {
+                html += `<div style="margin-left: 10px; margin-bottom: 8px; font-size: 0.95em; color: var(--SmartThemeQuoteColor);">Group: ${group}</div>`;
+                for (const id in edits.things[group]) {
+                    html += `<div style="margin-left: 20px; margin-bottom: 6px;">`;
+                    html += `<div style="display: flex; justify-content: space-between; align-items: center;">`;
+                    html += `<div style="font-size: 0.85em; opacity: 0.8;">ID: <strong>${id}</strong></div>`;
+                    html += `<button class="menu_button secondary yp-revert-edit-btn" data-type="things" data-group="${group}" data-key="${id}" style="padding: 2px 6px; font-size: 0.85em; color: #e57373;"><i class="fa-solid fa-trash-can"></i> Revert</button>`;
+                    html += `</div>`;
+                    html += `<pre style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 8px; border-radius: 4px; white-space: pre-wrap; font-size: 0.9em; margin-top: 4px;">${escapeHtml(edits.things[group][id])}</pre>`;
+                    html += `</div>`;
+                }
+            }
+            html += `</div>`;
+        }
+
+        return html;
+    }
+
+    // DEV: View changes button
+    jQuery("#yp-dev-view-btn").on("click", async function () {
+        await syncPreset(false);
+        const cfg = getConfig();
+        const edits = cfg.promptEdits || {};
+        const html = buildChangesViewerHTML(edits);
+        jQuery("#yp-changes-viewer-content").html(html);
+        jQuery("#yp-changes-viewer-modal").css("display", "flex");
+    });
+
+    jQuery("#yp-changes-viewer-close").on("click", function () {
+        jQuery("#yp-changes-viewer-modal").hide();
+    });
+
+    // DEV: Revert a single edit button inside Viewer
+    jQuery("#yp-changes-viewer-content").on("click", ".yp-revert-edit-btn", async function () {
+        const btn = jQuery(this);
+        const type = btn.attr("data-type");
+        const key = btn.attr("data-key");
+        const group = btn.attr("data-group");
+
+        if (!confirm("Revert this specific edit back to the extension's default?")) return;
+
+        // Force a capture first to save any other unsaved background edits locally
+        await syncPreset(false, false);
+
+        const cfg = getConfig();
+        if (!cfg.promptEdits) return;
+
+        // Delete the requested edit
+        if (type === "_prompts") {
+            if (cfg.promptEdits._prompts) delete cfg.promptEdits._prompts[key];
+        } else if (type === "things") {
+            if (cfg.promptEdits.things && cfg.promptEdits.things[group]) {
+                delete cfg.promptEdits.things[group][key];
+            }
+        } else {
+            if (cfg.promptEdits[type]) delete cfg.promptEdits[type][key];
+        }
+
+        saveSettingsDebounced();
+        
+        // Refresh the viewer HTML immediately
+        jQuery("#yp-dev-view-btn").click();
+
+        // Push change to SillyTavern UI (with capture disabled so it doesn't immediately resurrect the edit)
+        await syncPreset(false, true);
+        if (window.toastr) window.toastr.success("Edit reverted to default!");
+    });
+
+    // DEV: Export changes button
+    jQuery("#yp-dev-export-btn").on("click", async function () {
+        await syncPreset(false);
+        const cfg = getConfig();
+        const edits = cfg.promptEdits || {};
+        const blob = new Blob([JSON.stringify(edits, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "yablochny-dev-changes.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        if (window.toastr) window.toastr.success("Dev changes exported!");
+    });
+
+    // DEV: Reset to defaults button
+    jQuery("#yp-dev-reset-btn").on("click", async function () {
+        if (!confirm("Reset ALL prompt edits to defaults? This will clear every custom edit you made.")) return;
+        const cfg = getConfig();
+        cfg.promptEdits = {};
+        saveSettingsDebounced();
+        await syncPreset(false, true);
+        if (window.toastr) window.toastr.success("All prompt edits cleared. Prompts reset to defaults.");
+    });
+
+    // DEV: Snapshot export button
+    jQuery("#yp-dev-snapshot-btn").on("click", async function () {
+        const cfg = getConfig();
+        const name = cfg.presetName || "Yablochny Preset";
+        const index = findPresetIndexByName(name);
+        if (index === null) {
+            if (window.toastr) window.toastr.error("Preset not found!");
+            return;
+        }
+        const preset = JSON.parse(JSON.stringify(openai_settings[index]));
+        const payload = {
+            st_preset: preset,
+            extension_config: cfg,
+            timestamp: new Date().toISOString(),
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "yablochny-snapshot-" + new Date().toISOString().slice(0,10) + ".json";
+        a.click();
+        URL.revokeObjectURL(url);
+        if (window.toastr) window.toastr.success("Snapshot exported!");
+    });
 
     // Prompt Editor functionality
     let currentEditingType = null;
