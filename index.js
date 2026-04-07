@@ -172,11 +172,11 @@ const UI_TEXT = {
         speechLabel: "Speech style",
 
         roleplayLabel: "Roleplay Mode",
-        thoughtsLabel: "Thoughts",
-        swearingLabel: "Swearing",
+        thoughtsLabel: "┌︎ ◈︎ thoughts",
+        swearingLabel: "┌︎ ◈︎ swearing",
         paceLabel: "Pace",
-        extrasLangLabel: "Extras Language",
-        focusLabel: "Focus",
+        extrasLangLabel: "└︎ ◈︎ extras lang",
+        focusLabel: "┌︎ ◈︎ focus",
         deconstructionLabel: "COT deconstruction",
         lastSyncNever: "never",
         imageStyleLabel: "Image style",
@@ -356,11 +356,11 @@ const UI_TEXT = {
         speechLabel: "Манера речи",
 
         roleplayLabel: "Режим ролеплея",
-        thoughtsLabel: "Мысли",
-        swearingLabel: "Мат",
+        thoughtsLabel: "┌︎ ◈︎ thoughts",
+        swearingLabel: "┌︎ ◈︎ swearing",
         paceLabel: "Темп",
-        extrasLangLabel: "Язык дополнений",
-        focusLabel: "Фокус",
+        extrasLangLabel: "└︎ ◈︎ extras lang",
+        focusLabel: "┌︎ ◈︎ focus",
         deconstructionLabel: "COT деконструкция",
         lastSyncNever: "еще ни разу",
         imageStyleLabel: "Стиль изображений",
@@ -542,11 +542,11 @@ const UI_TEXT = {
         speechLabel: "Манера мовлення",
 
         roleplayLabel: "Режим рольової",
-        thoughtsLabel: "Думки",
-        swearingLabel: "Лайка",
+        thoughtsLabel: "┌︎ ◈︎ thoughts",
+        swearingLabel: "┌︎ ◈︎ swearing",
         paceLabel: "Темп",
-        extrasLangLabel: "Мова доповнень",
-        focusLabel: "Фокус",
+        extrasLangLabel: "└︎ ◈︎ extras lang",
+        focusLabel: "┌︎ ◈︎ focus",
         deconstructionLabel: "COT деконструкція",
         lastSyncNever: "ще жодного разу",
         imageStyleLabel: "Стиль зображень",
@@ -1092,6 +1092,7 @@ Blend organically — innate, not showcased.
 Targets: character voice or comedic tone, not narration.}}
 {{setvar::speech_style::
 - SPEECH STYLE: author method in character voice, blends with main style?}}`,
+    custom: ``,
 };
 
 const PROSE_VARIANTS = {
@@ -1655,7 +1656,7 @@ function getConfig() {
             POVMode: "3rd",
             TENSEMode: "Present",
             proseStyle: "ao3",
-            speechStyle: "none",
+            speechStyle: "custom",
             roleplayMode: "dont_speak",
             thoughtsMode: "thoughts",
             swearingMode: "custom",
@@ -1677,7 +1678,7 @@ function getConfig() {
             devMode: false,
             modelPreset: "claude",
             disableMods: false,
-            addonMode: "off",
+            addonMode: "comic",
         };
     }
 
@@ -1690,7 +1691,7 @@ function getConfig() {
     cfg.POVMode ??= "3rd";
     cfg.TENSEMode ??= "Present";
     cfg.proseStyle ??= "ao3";
-    cfg.speechStyle ??= "none";
+    cfg.speechStyle ??= "custom";
     cfg.roleplayMode ??= "dont_speak";
     cfg.thoughtsMode ??= "thoughts";
     cfg.swearingMode ??= "custom";
@@ -1698,7 +1699,7 @@ function getConfig() {
     cfg.extrasLangMode ??= "custom";
     cfg.focusMode ??= "off";
     cfg.deconstructionMode ??= "large";
-    cfg.addonMode ??= "off";
+    cfg.addonMode ??= "comic";
 
     cfg.promptSyncMeta ??= {};
     cfg.regexActive ??= true;
@@ -2026,6 +2027,15 @@ function applySpeechVariant(master, cfg, existingPreset) {
     if (cfg.speechStyle === "none") {
         return;
     }
+
+    if (cfg.speechStyle === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+
     const mode = cfg.speechStyle;
     let text = SPEECH_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.speech && cfg.promptEdits.speech[mode]) {
