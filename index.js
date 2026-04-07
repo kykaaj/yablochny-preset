@@ -1,6 +1,6 @@
 /*
  * Yablochny Preset Extension for SillyTavern
- * v1.10.23 - Last Updated: 2026-04-08 03:50 (UTC)
+ * v1.10.26 - Last Updated: 2026-04-08 10:00 (UTC)
  * Copyright (c) 2026 Kykaaj
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
@@ -1112,7 +1112,7 @@ Blend organically — innate, not showcased.
 Targets: character voice or comedic tone, not narration.}}
 {{setvar::speech_style::
 - SPEECH STYLE: author method in character voice, blends with main style?}}`,
-    custom: ``,
+    none: ``,
 };
 
 const PROSE_VARIANTS = {
@@ -2089,10 +2089,26 @@ function applySpeechVariant(master, cfg, existingPreset) {
 
 function getSafeVariant(selected, dictionary, defaultValue) {
     if (selected === "custom") return "custom";
+    if (selected === "none") return "none";
     if (dictionary && Object.prototype.hasOwnProperty.call(dictionary, selected)) {
         return selected;
     }
     return defaultValue;
+}
+
+function setSafeVal(id, val, fallback) {
+    const el = jQuery(id);
+    if (el.length === 0) return;
+    
+    // Check if the value exists as an option in the select
+    const exists = el.find(`option[value="${val}"]`).length > 0;
+    
+    if (exists) {
+        el.val(val);
+    } else {
+        console.warn(`[Yablochny] Invalid value "${val}" for ${id}, falling back to "${fallback}"`);
+        el.val(fallback);
+    }
 }
 
 function applyAddonVariant(master, cfg, existingPreset) {
@@ -3964,20 +3980,20 @@ function initControls() {
     // Render Things UI based on definitions
     renderThingsUI(cfg);
 
-    jQuery("#yp-language").val(cfg.languageMode || "auto");
-    jQuery("#yp-length").val(cfg.lengthMode || "400-600");
-    jQuery("#yp-pov").val(cfg.POVMode || "3rd");
-    jQuery("#yp-tense").val(cfg.TENSEMode || "Present");
-    jQuery("#yp-prose").val(cfg.proseStyle || "ao3");
-    jQuery("#yp-speech").val(cfg.speechStyle || "none");
-    jQuery("#yp-roleplay").val(cfg.roleplayMode || "dont_speak");
-    jQuery("#yp-thoughts").val(cfg.thoughtsMode || "thoughts");
-    jQuery("#yp-swearing").val(cfg.swearingMode || "custom");
-    jQuery("#yp-pace").val(cfg.paceMode || "slowburn");
-    jQuery("#yp-extras-lang").val(cfg.extrasLangMode || "custom");
-    jQuery("#yp-deconstruction").val(cfg.deconstructionMode || "large");
-    jQuery("#yp-image-style").val(cfg.imageStyleMode || "anime_inspired_realism");
-    jQuery("#yp-addon").val(cfg.addonMode || "comic");
+    setSafeVal("#yp-language", cfg.languageMode || "auto", "auto");
+    setSafeVal("#yp-length", cfg.lengthMode || "400-600", "400-600");
+    setSafeVal("#yp-pov", cfg.POVMode || "3rd", "3rd");
+    setSafeVal("#yp-tense", cfg.TENSEMode || "Present", "Present");
+    setSafeVal("#yp-prose", cfg.proseStyle || "ao3", "ao3");
+    setSafeVal("#yp-speech", cfg.speechStyle || "none", "none");
+    setSafeVal("#yp-roleplay", cfg.roleplayMode || "dont_speak", "dont_speak");
+    setSafeVal("#yp-thoughts", cfg.thoughtsMode || "thoughts", "thoughts");
+    setSafeVal("#yp-swearing", cfg.swearingMode || "custom", "custom");
+    setSafeVal("#yp-pace", cfg.paceMode || "slowburn", "slowburn");
+    setSafeVal("#yp-extras-lang", cfg.extrasLangMode || "custom", "custom");
+    setSafeVal("#yp-deconstruction", cfg.deconstructionMode || "large", "large");
+    setSafeVal("#yp-image-style", cfg.imageStyleMode || "anime_inspired_realism", "anime_inspired_realism");
+    setSafeVal("#yp-addon", cfg.addonMode || "comic", "comic");
 
     window.YablochnyThingsSelection = cfg.thingsSelected || {};
     jQuery("#yp-auto-sync").prop("checked", !!cfg.autoSyncOnStart);
