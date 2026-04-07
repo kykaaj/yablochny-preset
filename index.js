@@ -2938,39 +2938,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
     return { preset: result, syncMeta: {} };
 }
 
-async function applyAddonVariant(master, cfg, existingPreset) {
-    const id = "d9762c5c-d5a4-49b0-9d00-814ae57e9711";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
 
-    const mode = cfg.addonMode || "custom";
-    
-    // CUSTOM MODE: Preserve existing state from ST (don't overwrite)
-    if (mode === "custom" || mode === "off") {
-        const existing = existingPreset?.prompts?.find(p => p.identifier === id);
-        if (existing) {
-            prompt.enabled = existing.enabled;
-            prompt.content = existing.content;
-        } else {
-            // Default for new installs or if prompt is missing: OFF
-            prompt.enabled = false;
-            prompt.content = "";
-        }
-        return;
-    }
-
-    // Otherwise enable it and apply variant
-    prompt.enabled = true;
-    let text = ADDON_VARIANTS[mode];
-    
-    if (cfg.promptEdits && cfg.promptEdits.addon && cfg.promptEdits.addon[mode]) {
-        text = cfg.promptEdits.addon[mode];
-    }
-
-    if (text !== undefined) {
-        prompt.content = text;
-    }
-}
 
 async function syncPreset(showToasts = false, disableCapture = false) {
     try {
