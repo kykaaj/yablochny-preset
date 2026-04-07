@@ -4477,10 +4477,12 @@ function setupLongPressSettingsNavigation() {
             handleSettingLongPress(target);
         }, LONG_PRESS_DURATION);
     }).on("pointerup.yp-delegated pointerleave.yp-delegated pointercancel.yp-delegated touchend.yp-delegated touchcancel.yp-delegated", targetSelectors, function(e) {
+        const hadTimer = !!longPressTimer;
         const wasLongPress = isLongPressActive;
         clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding");
         
-        if (!wasLongPress && e.pointerType === "mouse") {
+        // Prevent spurious openings! Only open dropdown if it was a genuine pointer up on a valid click.
+        if (hadTimer && !wasLongPress && e.pointerType === "mouse" && e.type === "pointerup") {
             const tag = (e.target.tagName || "").toUpperCase();
             if (tag === "SELECT" && typeof e.target.showPicker === "function") {
                 try { e.target.focus(); e.target.showPicker(); } catch(err) {}
