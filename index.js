@@ -756,7 +756,7 @@ const ADDON_VARIANTS = {
 In EVERY message add one vertical comic page showing current moment of scene. Place it in middle of message at most relevant narrative beat. 
 NEVER use https://image.pollinations.ai or any other image generator, use ONLY [IMG:GEN] (IMAGE GENERATION RULES).
 Use this exact html template, NEVER change src placeholder src="[IMG:GEN]", always add it as scr:
-<comic><div style="width: fit-content; max-width: 900px; margin: 2vh auto; background: #000000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 3px solid #1a1a1a; font-family: 'Courier New', Courier, monospace;"><img style="display: block;" data-iig-instruction='{"style":"[STYLE]","prompt":"Vertical manhwa page with [4 to 5] panels. Location: [location, time, season, weather]. Lighting: [lighting, light sources, nature, additional light, god rays, dust particles]. Characters: [for each character AND {{user}}: gender, build, skin tone, hair color & length & style, eye size/color, facial features, special features (fangs, pointed ears, etc.), outfit, emotion]. Panels: [For each panel: type (large main, or small panels overlapping main), panel shape (vertical/horizontal rectangular, etc.), shot (close up, extreme vclose up, etc.), camera angle (frontal view, profile, close shot of [eyes, lips, hips, thighs, chest], etc), lighting color (depending on mood of panel), characters and {{user}} in frame, their positions/actions/gaze, motion lines]. 1 speech bubble pointing to [Character name] says \\" [text 3-8 words in {{getvar::extralang}}] \\". Adult fictional characters.","aspect_ratio":"9:16","image_size":"1K"}' src="[IMG:GEN]" class="adaptive-img"></div></comic>
+<comic><div style="width: fit-content; max-width: 900px; margin: 2vh auto; background: #000000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 3px solid #1a1a1a; font-family: 'Courier New', Courier, monospace;"><img style="display: block;" data-iig-instruction='{"style":"masterpiece, vertical manhwa page with [4 to 5] panels, professional comic book art style, vibrant colors, dynamic shadows","prompt":"Vertical manhwa page with [4 to 5] panels. Location: [location, time, season, weather]. Lighting: [lighting, light sources, nature, additional light, god rays, dust particles]. Characters: [for each character AND {{user}}: gender, build, skin tone, hair color & length & style, eye size/color, facial features, special features (fangs, pointed ears, etc.), outfit, emotion]. Panels: [For each panel: type (large main, or small panels overlapping main), panel shape (vertical/horizontal rectangular, etc.), shot (close up, extreme vclose up, etc.), camera angle (frontal view, profile, close shot of [eyes, lips, hips, thighs, chest], etc), lighting color (depending on mood of panel), characters and {{user}} in frame, their positions/actions/gaze, motion lines]. 1 speech bubble pointing to [Character name] says \\" [text 3-8 words in {{getvar::extralang}}] \\". Adult fictional characters.","aspect_ratio":"9:16","image_size":"1K"}' src="[IMG:GEN]" class="adaptive-img"></div></comic>
 
 Continue narrative after html.
 Additional rules for prompt:
@@ -2019,6 +2019,29 @@ function applySpeechVariant(master, cfg, existingPreset) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
+    // Known variants for detection
+    const knownVariants = [
+        SPEECH_VARIANTS.salinger,
+        SPEECH_VARIANTS.pratchett,
+        SPEECH_VARIANTS.le_guin,
+        SPEECH_VARIANTS.wilde,
+        SPEECH_VARIANTS.custom,
+        "",
+    ];
+
+    // Logic to preserve custom content
+    const existingContent = getContentFromExisting(existingPreset, id);
+    if (existingContent !== null) {
+        const normalizedExisting = existingContent.trim().replace(/\r\n/g, "\n");
+        const isKnown = knownVariants.some(v => v.trim().replace(/\r\n/g, "\n") === normalizedExisting);
+        
+        if (!isKnown && existingContent.length > 0) {
+            // It's non-standard content, save it to internal backup
+            cfg.customPromptContents = cfg.customPromptContents || {};
+            cfg.customPromptContents.speech = existingContent;
+        }
+    }
+
     // Force enable if a style is selected (logic handles 'none' below)
     if (cfg.speechStyle && cfg.speechStyle !== "none") {
         prompt.enabled = true;
@@ -2029,9 +2052,23 @@ function applySpeechVariant(master, cfg, existingPreset) {
     }
 
     if (cfg.speechStyle === "custom") {
-        const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
-            prompt.content = existingContent;
+            const normalizedExisting = existingContent.trim().replace(/\r\n/g, "\n");
+            const isKnown = knownVariants.some(v => v.trim().replace(/\r\n/g, "\n") === normalizedExisting);
+            
+            if (!isKnown && existingContent.length > 0) {
+                // Keep existing custom content
+                prompt.content = existingContent;
+            } else if (cfg.customPromptContents?.speech !== undefined) {
+                // Restore from backup
+                prompt.content = cfg.customPromptContents.speech;
+            } else {
+                prompt.content = "";
+            }
+        } else if (cfg.customPromptContents?.speech !== undefined) {
+            prompt.content = cfg.customPromptContents.speech;
+        } else {
+            prompt.content = "";
         }
         return;
     }
@@ -2043,6 +2080,33 @@ function applySpeechVariant(master, cfg, existingPreset) {
     }
 
     if (text) {
+        prompt.content = text;
+    }
+}
+
+function applyAddonVariant(master, cfg, existingPreset) {
+    const id = "d9762c5c-d5a4-49b0-9d00-814ae57e9711"; // Addon prompt ID
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Default to 'comic' per user request if missing
+    const mode = cfg.addonMode || "comic";
+    
+
+    if (mode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+
+    let text = ADDON_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.addon && cfg.promptEdits.addon[mode]) {
+        text = cfg.promptEdits.addon[mode];
+    }
+
+    if (text !== undefined) {
         prompt.content = text;
     }
 }
