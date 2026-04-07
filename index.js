@@ -224,6 +224,11 @@ const UI_TEXT = {
         siteLabel: "Site",
         guideLabel: "Guide",
         creditsLabel: "Credits",
+        imageStyleLabel: "Image style",
+        hdrAdditional: "Additional Settings",
+        siteLabel: "Site",
+        guideLabel: "Guide",
+        creditsLabel: "Credits",
 
         // Credits
         creditsTitle: "Credits & Authors",
@@ -412,6 +417,7 @@ const UI_TEXT = {
         siteLabel: "Сайт",
         guideLabel: "Гайд",
         creditsLabel: "Титры",
+        imageStyleLabel: "Стиль изображений",
 
         // Credits
         creditsTitle: "Авторы и благодарности",
@@ -602,6 +608,7 @@ const UI_TEXT = {
         siteLabel: "Сайт",
         guideLabel: "Гайд",
         creditsLabel: "Титри",
+        imageStyleLabel: "Стиль зображень",
 
         // Credits
         creditsTitle: "Автори та подяки",
@@ -3542,6 +3549,7 @@ function applyLocaleToUi() {
     jQuery("#yp-site-label").text(dict.siteLabel);
     jQuery("#yp-guide-label").text(dict.guideLabel);
     jQuery("#yp-credits-label").text(dict.creditsLabel);
+    jQuery("#yp-image-style-label").text(dict.imageStyleLabel);
     jQuery("#yp-sync-label").text(dict.sync);
     jQuery("#yp-auto-label").text(dict.auto);
     jQuery("#yp-lang-label").text(dict.langLabel);
@@ -3968,7 +3976,7 @@ function initControls() {
     jQuery("#yp-extras-lang").val(cfg.extrasLangMode || "custom");
     jQuery("#yp-deconstruction").val(cfg.deconstructionMode || "large");
     jQuery("#yp-image-style").val(cfg.imageStyleMode || "anime_inspired_realism");
-    jQuery("#yp-addon").val(cfg.addonMode || "off");
+    jQuery("#yp-addon").val(cfg.addonMode || "comic");
 
     window.YablochnyThingsSelection = cfg.thingsSelected || {};
     jQuery("#yp-auto-sync").prop("checked", !!cfg.autoSyncOnStart);
