@@ -4439,7 +4439,7 @@ function handlePromptManagerClick(container, isGold) {
 let longPressTimer = null; let isLongPressActive = false; let longPressStartPos = { x: 0, y: 0 };
 
 function setupLongPressSettingsNavigation() {
-    const LONG_PRESS_DURATION = 650; const MOVE_THRESHOLD = 20;
+    const LONG_PRESS_DURATION = 400; const MOVE_THRESHOLD = 20;
     const targetSelectors = ".yablochny-field, .yablochny-field-half, .yablochny-field-full, .yp-regex-pack";
     jQuery(document).off(".yp-nav", targetSelectors); 
     const container = jQuery("#yablochny-preset-container");
@@ -4458,8 +4458,14 @@ function setupLongPressSettingsNavigation() {
             isLongPressActive = true; target.removeClass("yp-is-holding");
             handleSettingLongPress(target);
         }, LONG_PRESS_DURATION);
-    }).on("pointerup.yp-delegated pointerleave.yp-delegated pointercancel.yp-delegated touchend.yp-delegated touchcancel.yp-delegated contextmenu.yp-delegated", targetSelectors, function(e) {
+    }).on("pointerup.yp-delegated pointerleave.yp-delegated pointercancel.yp-delegated touchend.yp-delegated touchcancel.yp-delegated", targetSelectors, function(e) {
         clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding");
+    }).on("contextmenu.yp-delegated", targetSelectors, function(e) {
+        e.preventDefault();
+        clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding");
+        isLongPressActive = true;
+        handleSettingLongPress(jQuery(this).closest(targetSelectors));
+        return false;
     }).on("pointermove.yp-delegated", targetSelectors, function(e) {
         if (longPressTimer) {
             const dist = Math.sqrt(Math.pow((e.pageX||e.clientX) - longPressStartPos.x, 2) + Math.pow((e.pageY||e.clientY) - longPressStartPos.y, 2));
