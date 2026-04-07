@@ -1,6 +1,6 @@
 /*
  * Yablochny Preset Extension for SillyTavern
- * v1.10.26 - Last Updated: 2026-04-08 10:00 (UTC)
+ * v1.10.30 - Last Updated: 2026-04-08 11:20 (UTC)
  * Copyright (c) 2026 Kykaaj
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
@@ -181,7 +181,7 @@ const UI_TEXT = {
         deconstructionLabel: "COT deconstruction",
         lastSyncNever: "never",
         imageStyleLabel: "Image style",
-        optStyleCustom: "Custom / Manual",
+        optStyleCustom: "Custom",
         lastSyncLabel: "Last sync:",
         thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Additional elements (◦︎ ✎ things)",
         thingsNote: "Sync after checking/unchecking!",
@@ -219,7 +219,7 @@ const UI_TEXT = {
         addonPixel: "Pixel Novel",
         addonImages: "Just Images",
         disableModsLabel: "Disable Mods (Bypass Settings)",
-        devLabel: "Dev logs",
+        devLabel: "Dev Mode",
         modeLabel: "Mode:",
         hdrAdditional: "Additional Settings",
         siteLabel: "Site",
@@ -271,7 +271,7 @@ const UI_TEXT = {
         sectionAdditional: "Additional",
 
         // Options - Language
-        optLangCustom: "Custom / Manual",
+        optLangCustom: "Custom",
         optLangAuto: "Auto (match ST language)",
         optLangRu: "Russian",
         optLangEn: "English",
@@ -281,14 +281,14 @@ const UI_TEXT = {
         optOffCustom: "Off / Custom",
 
         // Options - Length
-        optLenCustom: "Custom / Manual",
+        optLenCustom: "Custom",
         optLen200: "200–400 words",
         optLen400: "400–600 words (default)",
         optLen600: "600–800 words",
         optLenAdaptive: "Adaptive",
 
         // Options - Prose
-        optProseCustom: "Custom / Manual",
+        optProseCustom: "Custom",
         optProseAo3: "AO3 Fanfic (default)",
         optProseAnne: "Anne Rice (Gothic/Sensual)",
         optProseDonna: "Donna Tartt (Dark Academia)",
@@ -319,7 +319,7 @@ const UI_TEXT = {
         optTenseFuture: "Future",
 
         // Options - Thoughts
-        optThoughtsOff: "Off / Empty",
+        optThoughtsOff: "Off",
         optThoughtsStandard: "Thoughts (default)",
         optThoughtsMore: "More thoughts",
 
@@ -347,11 +347,17 @@ const UI_TEXT = {
         thing_cyoamacro: "CYOA - R-Macro",
         thing_cyoanormal: "CYOA - Normal",
         thing_cyoatiny: "CYOA - Tiny",
+        thing_fancyfull: "Fancy UI",
+        thing_fancybase: "Fancy UI — core only",
+        thing_fancythoughts: "Fancy UI — thoughts only",
         thing_fancychat: "Fancy Chat UI",
         thing_fancyquest: "Fancy Quest UI",
         thing_fancynovel: "Fancy Novel UI",
         thing_commentary: "AI Commentary",
         thing_critic: "AI Critic",
+        thing_commentsv1: "Comments V1",
+        thing_commentsv2: "Comments V2",
+        thing_commentsv3: "Comments V3",
     },
     ru: {
         title: "Настройки",
@@ -374,7 +380,7 @@ const UI_TEXT = {
         deconstructionLabel: "COT деконструкция",
         lastSyncNever: "еще ни разу",
         imageStyleLabel: "Стиль изображений",
-        optStyleCustom: "Свой / Вручную",
+        optStyleCustom: "Свой",
         lastSyncLabel: "Синхронизация:",
         thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Дополнительные элементы (◦︎ ✎ things)",
         thingsNote: "Не забудьте синхронизировать после выбора!",
@@ -412,7 +418,7 @@ const UI_TEXT = {
         addonPixel: "Пиксельная новелла",
         addonImages: "Только изображения",
         disableModsLabel: "Отключить моды (игнорировать настройки)",
-        devLabel: "Логи (F12)",
+        devLabel: "Дев Мод",
         modeLabel: "Режим:",
         hdrAdditional: "Дополнительно",
         siteLabel: "Сайт",
@@ -462,7 +468,7 @@ const UI_TEXT = {
         sectionAdditional: "Дополнительно",
 
         // Options - Language
-        optLangCustom: "Свой / Вручную",
+        optLangCustom: "Свой",
         optLangAuto: "Авто (под язык ST)",
         optLangRu: "Русский",
         optLangEn: "Английский",
@@ -472,14 +478,14 @@ const UI_TEXT = {
         optOffCustom: "Выкл / Свой",
 
         // Options - Length
-        optLenCustom: "Свой / Вручную",
+        optLenCustom: "Свой",
         optLen200: "200–400 слов",
         optLen400: "400–600 слов (стандарт)",
         optLen600: "600–800 слов",
         optLenAdaptive: "Адаптивная",
 
         // Options - Prose
-        optProseCustom: "Свой / Вручную",
+        optProseCustom: "Свой",
         optProseAo3: "Фанфик AO3 (стандарт)",
         optProseAnne: "Энн Райс (Готика/Чувственность)",
         optProseDonna: "Донна Тартт (Dark Academia)",
@@ -510,7 +516,7 @@ const UI_TEXT = {
         optTenseFuture: "Будущее время",
 
         // Options - Thoughts
-        optThoughtsOff: "Без мыслей",
+        optThoughtsOff: "Выкл",
         optThoughtsStandard: "С мыслями",
         optThoughtsMore: "Много мыслей",
 
@@ -538,11 +544,17 @@ const UI_TEXT = {
         thing_cyoamacro: "CYOA - R-Macro",
         thing_cyoanormal: "CYOA - Обычный",
         thing_cyoatiny: "CYOA - Крохотный",
+        thing_fancyfull: "Fancy UI",
+        thing_fancybase: "Fancy UI — только основа",
+        thing_fancythoughts: "Fancy UI — только мысли",
         thing_fancychat: "Fancy Chat UI",
         thing_fancyquest: "Fancy Quest UI",
         thing_fancynovel: "Fancy Novel UI",
         thing_commentary: "AI Комментарии",
         thing_critic: "AI Критик",
+        thing_commentsv1: "Комменты V1",
+        thing_commentsv2: "Комменты V2",
+        thing_commentsv3: "Комменты V3",
     },
     uk: {
         title: "Налаштування",
@@ -565,7 +577,7 @@ const UI_TEXT = {
         deconstructionLabel: "COT деконструкція",
         lastSyncNever: "ще жодного разу",
         imageStyleLabel: "Стиль зображень",
-        optStyleCustom: "Свій / Вручну",
+        optStyleCustom: "Свій",
         lastSyncLabel: "Синхронізація:",
         thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Додаткові елементи (◦︎ ✎ things)",
         thingsNote: "Не забудьте синхронізувати після вибору!",
@@ -603,7 +615,7 @@ const UI_TEXT = {
         addonPixel: "Піксельна новела",
         addonImages: "Тільки зображення",
         disableModsLabel: "Вимкнути моди (bypass settings)",
-        devLabel: "Логи (F12)",
+        devLabel: "Дев Мод",
         modeLabel: "Режим:",
         hdrAdditional: "Додатково",
         siteLabel: "Сайт",
@@ -653,24 +665,24 @@ const UI_TEXT = {
         sectionAdditional: "Додатково",
 
         // Options - Language
-        optLangCustom: "Своя / Вручну",
+        optLangCustom: "Свій",
         optLangAuto: "Авто (під мову ST)",
         optLangRu: "Російська",
         optLangEn: "Англійська",
         optLangUk: "Українська",
 
         // Options - Extras/Swearing
-        optOffCustom: "Вимк / Своя",
+        optOffCustom: "Вимк / Свій",
 
         // Options - Length
-        optLenCustom: "Своя / Вручну",
+        optLenCustom: "Свій",
         optLen200: "200–400 слів",
         optLen400: "400–600 слів (стандарт)",
         optLen600: "600–800 слів",
         optLenAdaptive: "Адаптивна",
 
         // Options - Prose
-        optProseCustom: "Своя / Вручну",
+        optProseCustom: "Свій",
         optProseAo3: "Фанфік AO3 (стандарт)",
         optProseAnne: "Енн Райс (Готика/Чуттєвість)",
         optProseDonna: "Донна Тартт (Dark Academia)",
@@ -680,7 +692,7 @@ const UI_TEXT = {
         optProseBackman: "Фредрік Бакман (Трагікомедія/Тепло)",
 
         // Options - Speech
-        optSpeechOff: "Вимк / Своя",
+        optSpeechOff: "Вимк / Свій",
         optSpeechSalinger: "Дж. Селінджер",
         optSpeechPratchett: "Террі Пратчетт",
         optSpeechLeGuin: "Урсула Ле Гуїн",
@@ -701,7 +713,7 @@ const UI_TEXT = {
         optTenseFuture: "Майбутній час",
 
         // Options - Thoughts
-        optThoughtsOff: "Без думок",
+        optThoughtsOff: "Вимк",
         optThoughtsStandard: "З думками",
         optThoughtsMore: "Багато думок",
 
@@ -710,7 +722,7 @@ const UI_TEXT = {
         optPaceQuick: "Швидкий темп",
 
         // Options - Focus
-        optFocusOff: "Вимк / Своя",
+        optFocusOff: "Вимк / Свій",
         optFocusDialog: "Діалоги",
         optFocusDetails: "Деталізація",
 
@@ -729,11 +741,17 @@ const UI_TEXT = {
         thing_cyoamacro: "CYOA - R-Macro",
         thing_cyoanormal: "CYOA - Звичайний",
         thing_cyoatiny: "CYOA - Крихітний",
+        thing_fancyfull: "Fancy UI",
+        thing_fancybase: "Fancy UI — тільки основа",
+        thing_fancythoughts: "Fancy UI — тільки думки",
         thing_fancychat: "Fancy Chat UI",
         thing_fancyquest: "Fancy Quest UI",
         thing_fancynovel: "Fancy Novel UI",
         thing_commentary: "AI Коментарі",
         thing_critic: "AI Критик",
+        thing_commentsv1: "Коменти V1",
+        thing_commentsv2: "Коменти V2",
+        thing_commentsv3: "Коменти V3",
     },
 };
 
@@ -3712,6 +3730,7 @@ function applyLocaleToUi() {
 
     jQuery("#yp-opt-deco-large").text(dict.optDecoLarge);
     jQuery("#yp-opt-deco-mini").text(dict.optDecoMini);
+    jQuery("#yp-opt-style-custom").text(dict.optStyleCustom);
 }
 
 function updateMetaUi() {
