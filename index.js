@@ -2662,6 +2662,19 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "charPersonality", // Synced from user preset
         "scenario", // Synced from user preset
         "personaDescription", // Synced from user preset
+,
+        "nsfw", // Synced from dev snapshot
+        "dialogueExamples", // Synced from dev snapshot
+        "jailbreak", // Synced from dev snapshot
+        "chatHistory", // Synced from dev snapshot
+        "worldInfoAfter", // Synced from dev snapshot
+        "worldInfoBefore", // Synced from dev snapshot
+        "enhanceDefinitions", // Synced from dev snapshot
+        "charDescription", // Synced from dev snapshot
+        "charPersonality", // Synced from dev snapshot
+        "scenario", // Synced from dev snapshot
+        "personaDescription", // Synced from dev snapshot
+        "65064e43-ef37-4d76-b6b8-6750033c4153", // Synced from dev snapshot
 ];
 
     const customPrompts = [];
