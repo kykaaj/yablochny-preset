@@ -4440,14 +4440,16 @@ let longPressTimer = null; let isLongPressActive = false; let longPressStartPos 
 
 function setupLongPressSettingsNavigation() {
     const LONG_PRESS_DURATION = 650; const MOVE_THRESHOLD = 20;
-    const targetSelectors = [".yablochny-field", ".yablochny-field-half", ".yablochny-field-full", ".yp-regex-pack", "select", "input"].join(", ");
+    const targetSelectors = ".yablochny-field, .yablochny-field-half, .yablochny-field-full, .yp-regex-pack";
     jQuery(document).off(".yp-nav", targetSelectors); 
     const container = jQuery("#yablochny-preset-container");
     if (container.length === 0) return;
 
     container.off(".yp-delegated").on("pointerdown.yp-delegated", targetSelectors, function(e) {
         if (e.pointerType === "mouse" && e.button !== 0) return;
-        const target = jQuery(this).closest(".yablochny-field, .yablochny-field-half, .yablochny-field-full, .yp-regex-pack");
+        if (e.originalEvent && e.originalEvent.isTrusted === false) return;
+
+        const target = jQuery(this).closest(targetSelectors);
         if (target.length === 0) return;
         isLongPressActive = false; longPressStartPos = { x: e.pageX || e.clientX, y: e.pageY || e.clientY };
         target.addClass("yp-is-holding");
@@ -4456,7 +4458,7 @@ function setupLongPressSettingsNavigation() {
             isLongPressActive = true; target.removeClass("yp-is-holding");
             handleSettingLongPress(target);
         }, LONG_PRESS_DURATION);
-    }).on("pointerup.yp-delegated pointerleave.yp-delegated", targetSelectors, function() {
+    }).on("pointerup.yp-delegated pointerleave.yp-delegated pointercancel.yp-delegated touchend.yp-delegated touchcancel.yp-delegated contextmenu.yp-delegated", targetSelectors, function(e) {
         clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding");
     }).on("pointermove.yp-delegated", targetSelectors, function(e) {
         if (longPressTimer) {
@@ -4464,10 +4466,29 @@ function setupLongPressSettingsNavigation() {
             if (dist > MOVE_THRESHOLD) { clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding"); }
         }
     }).on("click.yp-delegated", targetSelectors, function(e) {
+        clearTimeout(longPressTimer); longPressTimer = null; jQuery(this).removeClass("yp-is-holding");
         if (isLongPressActive) { e.preventDefault(); e.stopPropagation(); setTimeout(() => { isLongPressActive = false; }, 100); return false; }
+    }).on("change.yp-delegated", "select, input", function() {
+        clearTimeout(longPressTimer); longPressTimer = null; jQuery(targetSelectors).removeClass("yp-is-holding");
+    });
+
+    jQuery(window).off("blur.yp-delegated").on("blur.yp-delegated", function() {
+        clearTimeout(longPressTimer); longPressTimer = null; jQuery(".yp-is-holding").removeClass("yp-is-holding");
     });
 
     function handleSettingLongPress(target) {
+        // CRITICAL FIX: Force native select dropdowns to close immediately upon jumping.
+        // Natively, disabling a select forcefully destroys its open overlay.
+        const selectEl = target.find("select").first();
+        if (selectEl.length > 0) {
+            selectEl.trigger("blur");
+            selectEl[0].blur();
+            if (!selectEl.prop("disabled")) {
+                selectEl.prop("disabled", true);
+                setTimeout(() => selectEl.prop("disabled", false), 100);
+            }
+        }
+
         const isRegex = target.hasClass("yp-regex-pack");
         const control = target.find("input, select").first();
         const controlId = isRegex ? target.attr("data-pack-id") : (control.attr("id") ? `#${control.attr("id")}` : null);
@@ -4489,10 +4510,6 @@ function navigateToPromptManagerItem(identifier, isGold = false) {
         if (item.length > 0) { 
             item[0].scrollIntoView({ behavior: "smooth", block: "center" }); 
             setTimeout(() => showStandaloneGlow(item, isGold), 200);
-            item.off(".yp-nav-back").on("click.yp-nav-back", function(e) { 
-                if (jQuery(e.target).closest('button, input, select, .prompt_manager_prompt_toggle').length > 0) return; 
-                handlePromptManagerClick(item, isGold); 
-            }); 
         }
     }, 450);
 }
