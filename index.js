@@ -2019,9 +2019,12 @@ function applySpeechVariant(master, cfg, existingPreset) {
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
 
+    // Force enable the prompt so updates apply immediately
+    prompt.enabled = true;
+
     const mode = cfg.speechStyle || "none";
 
-    // CUSTOM MODE: Standard preservation logic
+    // 1. CUSTOM MODE: Direct preservation
     if (mode === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
@@ -2030,14 +2033,25 @@ function applySpeechVariant(master, cfg, existingPreset) {
         return;
     }
 
-    // NONE MODE: Turn off the prompt
+    // 2. NONE MODE (Off / Custom in UI): 
+    // If the user has custom text, keep it. If it's a known variant or empty, turn the prompt off.
     if (mode === "none") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null && existingContent.trim() !== "") {
+            const known = Object.values(SPEECH_VARIANTS).some(v => v.trim() === existingContent.trim());
+            if (!known) {
+                // User has custom content, preserve it and return
+                prompt.content = existingContent;
+                return;
+            }
+        }
+        // No custom content -> normal 'Off' behavior
         prompt.enabled = false;
+        prompt.content = "";
         return;
     }
 
-    // PRESET MODES: Force enable and apply text
-    prompt.enabled = true;
+    // 3. PRESET MODES
     let text = SPEECH_VARIANTS[mode];
     if (cfg.promptEdits && cfg.promptEdits.speech && cfg.promptEdits.speech[mode]) {
         text = cfg.promptEdits.speech[mode];
