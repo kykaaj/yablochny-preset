@@ -262,6 +262,7 @@ const UI_TEXT = {
         editorContent: "Content:",
         editorSave: "Save",
         editorCancel: "Cancel",
+        editorReset: "Reset to Default",
 
         // Headers
         sectionLang: "Language & Localization",
@@ -459,6 +460,7 @@ const UI_TEXT = {
         editorContent: "Контент:",
         editorSave: "Сохранить",
         editorCancel: "Отмена",
+        editorReset: "Сбросить на стандарт",
 
         // Headers
         sectionLang: "Язык и локализация",
@@ -636,6 +638,7 @@ const UI_TEXT = {
         editorContent: "Контент:",
         editorSave: "Зберегти",
         editorCancel: "Скасувати",
+        editorReset: "Скинути на стандарт",
 
         // Tooltips
         ttSync: "Синхронізувати налаштування розширення з пресетом.",
@@ -794,10 +797,11 @@ const ADDON_VARIANTS = {
 In EVERY message add one vertical comic page showing current moment of scene. Place it in middle of message at most relevant narrative beat. 
 NEVER use https://image.pollinations.ai or any other image generator, use ONLY [IMG:GEN] (IMAGE GENERATION RULES).
 Use this exact html template, NEVER change src placeholder src="[IMG:GEN]", always add it as scr:
-<comic><div style="width: fit-content; max-width: 900px; margin: 2vh auto; background: #000000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 3px solid #1a1a1a; font-family: 'Courier New', Courier, monospace;"><img style="display: block;" data-iig-instruction='{"style":"masterpiece, vertical manhwa page with [4 to 5] panels, professional comic book art style, vibrant colors, dynamic shadows","prompt":"Vertical manhwa page with [4 to 5] panels. Location: [location, time, season, weather]. Lighting: [lighting, light sources, nature, additional light, god rays, dust particles]. Characters: [for each character AND {{user}}: gender, build, skin tone, hair color & length & style, eye size/color, facial features, special features (fangs, pointed ears, etc.), outfit, emotion]. Panels: [For each panel: type (large main, or small panels overlapping main), panel shape (vertical/horizontal rectangular, etc.), shot (close up, extreme vclose up, etc.), camera angle (frontal view, profile, close shot of [eyes, lips, hips, thighs, chest], etc), lighting color (depending on mood of panel), characters and {{user}} in frame, their positions/actions/gaze, motion lines]. 1 speech bubble pointing to [Character name] says \\" [text 3-8 words in {{getvar::extralang}}] \\". Adult fictional characters.","aspect_ratio":"9:16","image_size":"1K"}' src="[IMG:GEN]" class="adaptive-img"></div></comic>
+<comic><div style="width: fit-content; max-width: 900px; margin: 2vh auto; background: #000000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 3px solid #1a1a1a; font-family: 'Courier New', Courier, monospace;"><img style="display: block;" data-iig-instruction='{"style":"[STYLE]","prompt":"Vertical manhwa page with [4 to 5] panels. Location: [location, time, season, weather]. Lighting: [lighting, light sources, nature, additional light, god rays, dust particles]. Characters: [for each character AND {{user}}: gender, build, skin tone, hair color & length & style, eye size/color, facial features, special features (fangs, pointed ears, etc.), outfit, emotion]. Panels: [For each panel: type (large main, or small panels overlapping main), panel shape (vertical/horizontal rectangular, etc.), shot (close up, extreme vclose up, etc.), camera angle (frontal view, profile, close shot of [eyes, lips, hips, thighs, chest], etc), lighting color (depending on mood of panel), characters and {{user}} in frame, their positions/actions/gaze, motion lines]. 1 speech bubble pointing to [Character name] says \\" [text 3-8 words in {{getvar::extralang}}] \\". Adult fictional characters.","aspect_ratio":"9:16","image_size":"1K"}' src="[IMG:GEN]" class="adaptive-img"></div></comic>
 
 Continue narrative after html.
 Additional rules for prompt:
+- Always use [STYLE] placeholder. Don't replace it with style descriptions!
 - 2 or more shots should be close-up or extreme close up. For large panels always use 1 medium and 1 close up.
 - FETISHIZE CAMERA ANGLE: always focus camera on extreme close up of chest, lips, hips, thighs or neckline of characters and {{user}} in 2 or more panels. Alternate this focus each message.`,
     novel: `[NOVEL BLOCK]
@@ -1753,6 +1757,8 @@ function getConfig() {
     cfg.devMode ??= false;
     cfg.modelPreset ??= "claude";
     cfg.disableMods ??= false;
+
+    cfg._lastActive ??= {};
 
     promptSyncMetaCache = cfg.promptSyncMeta;
     return cfg;
@@ -3160,6 +3166,24 @@ async function syncPreset(showToasts = false, disableCapture = false) {
         promptSyncMetaCache = syncMeta;
         cfg.lastSync = new Date().toISOString();
 
+        cfg._lastActive = {
+            languageMode: cfg.languageMode,
+            lengthMode: cfg.lengthMode,
+            POVMode: cfg.POVMode,
+            TENSEMode: cfg.TENSEMode,
+            proseStyle: cfg.proseStyle,
+            speechStyle: cfg.speechStyle,
+            roleplayMode: cfg.roleplayMode,
+            thoughtsMode: cfg.thoughtsMode,
+            swearingMode: cfg.swearingMode,
+            paceMode: cfg.paceMode,
+            extrasLangMode: cfg.extrasLangMode,
+            focusMode: cfg.focusMode,
+            deconstructionMode: cfg.deconstructionMode,
+            imageStyleMode: cfg.imageStyleMode,
+            addonMode: cfg.addonMode,
+        };
+
         saveSettingsDebounced();
 
         updateMetaUi();
@@ -3341,7 +3365,9 @@ function captureDevChanges(existingPreset, basePreset, cfg) {
 
         if (variantInfo) {
             // === TYPE: Variant-based prompt ===
-            const activeVariant = cfg[variantInfo.configKey];
+            const activeVariant = (cfg._lastActive && cfg._lastActive[variantInfo.configKey]) 
+                ? cfg._lastActive[variantInfo.configKey] 
+                : cfg[variantInfo.configKey];
             if (!activeVariant || activeVariant === "custom" || activeVariant === "none") continue;
 
             const defaultContent = getVariantContent(variantInfo.type, activeVariant);
@@ -3634,6 +3660,7 @@ function applyLocaleToUi() {
     jQuery("#yp-editor-content-label").text(dict.editorContent);
     jQuery("#yp-editor-save-label").text(dict.editorSave);
     jQuery("#yp-editor-cancel-label").text(dict.editorCancel);
+    jQuery("#yp-editor-reset-label").text(dict.editorReset || "Reset to Default");
 
     // Tooltips (Titles)
     jQuery("#yp-sync").attr("title", dict.ttSync);
@@ -4344,6 +4371,37 @@ function initControls() {
         }
     });
 
+    jQuery("#yp-editor-reset").on("click", async function () {
+        if (!confirm("Revert this variant edit to the extension's default?")) return;
+
+        const cfg = getConfig();
+        if (!cfg.promptEdits) return;
+
+        try {
+            if (currentEditingType) {
+                const variantKey = jQuery("#yp-editor-variant-select").val();
+                if (cfg.promptEdits[currentEditingType]) {
+                    delete cfg.promptEdits[currentEditingType][variantKey];
+                    // Reload content to show default
+                    loadPromptVariantContent(currentEditingType, variantKey);
+                }
+            } else if (currentEditingGroup && currentEditingId) {
+                if (cfg.promptEdits.things && cfg.promptEdits.things[currentEditingGroup]) {
+                    delete cfg.promptEdits.things[currentEditingGroup][currentEditingId];
+                    // Reload
+                    loadThingContent(currentEditingGroup, currentEditingId);
+                }
+            }
+            saveSettingsDebounced();
+            await syncPreset(false, true);
+
+            if (window.toastr) window.toastr.success("Edit reverted to default!");
+        } catch (err) {
+            console.error("[Yablochny] Failed to revert edit", err);
+            if (window.toastr) window.toastr.error("Failed to revert: " + err.message);
+        }
+    });
+
     jQuery("#yp-editor-variant-select").on("change", function () {
         const variantKey = jQuery(this).val();
         if (currentEditingType) {
@@ -4846,7 +4904,10 @@ function handlePromptManagerClick(container, isGold) {
             setTimeout(() => {
                 const firstControl = controls.first(); const parentDrawer = firstControl.closest(".yp-drawer");
                 if (parentDrawer.length > 0) { const parentContent = parentDrawer.find(".yp-drawer-content"); if (parentContent.length > 0 && !parentContent.is(":visible")) parentDrawer.find(".yp-drawer-toggle").click(); }
-                setTimeout(() => { firstControl[0].scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(() => showStandaloneGlow(firstControl, isGold), 200); }, 450);
+                setTimeout(() => { 
+                    firstControl[0].scrollIntoView({ behavior: "smooth", block: "center" }); 
+                    setTimeout(() => { controls.each(function() { showStandaloneGlow(jQuery(this), isGold); }); }, 200); 
+                }, 450);
             }, 100);
         }
     }
