@@ -1149,7 +1149,7 @@
             "system_prompt": false,
             "enabled": true,
             "marker": false,
-            "name": "┌︎ ◦︎ pov",
+            "name": "┌︎ ◈︎ pov",
             "role": "system",
             "content": "{{setvar::pov::- 3rd person}}",
             "injection_position": 0,
