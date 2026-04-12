@@ -3198,13 +3198,12 @@ function syncReasoningSettings(cfg) {
     jQuery('#reasoning_prefix').val('\n<think>\n').trigger('input');
     jQuery('#reasoning_suffix').val('\n</think>\n').trigger('input');
     
-    // Conditionally erase/add <think> in 'start_reply_with'
     if (isGptConf) {
         if (jQuery('#start_reply_with').val()?.trim() === '<think>') {
             jQuery('#start_reply_with').val('').trigger('input');
         }
     } else {
-        jQuery('#start_reply_with').val('<think>\n').trigger('input');
+        jQuery('#start_reply_with').val('<think>').trigger('input');
     }
 }
 
