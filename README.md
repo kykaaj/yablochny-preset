@@ -57,9 +57,6 @@
 
 <p align="center">
   <img src="img/6.jpg" width="400">
-</p>
-
-<p align="center">
   <img src="img/7.jpg" width="400">
 </p>
 
