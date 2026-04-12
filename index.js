@@ -1358,7 +1358,7 @@ const MODEL_PRESETS = {
             temperature: 0.8,
             frequency_penalty: 0.17,
             presence_penalty: 0.26,
-            top_p: 0.9,
+            top_p: 0,
         },
         toggles: {
             "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
@@ -1407,7 +1407,7 @@ const MODEL_PRESETS = {
             temperature: 0.8,
             frequency_penalty: 0.17,
             presence_penalty: 0.26,
-            top_p: 0.9,
+            top_p: 0,
         },
         toggles: {
             "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
@@ -2047,7 +2047,7 @@ function applyLanguageVariant(master, cfg, uiLang, existingPreset) {
     prompt.enabled = true;
 
     const rawMode = cfg.languageMode || "auto";
-    const mode = getSafeVariant(rawMode, LANGUAGE_VARIANTS, "auto");
+    const mode = ["ru", "uk", "en", "custom", "auto"].includes(rawMode) ? rawMode : "auto";
     if (mode === "custom") {
         const existingContent = getContentFromExisting(existingPreset, id);
         if (existingContent !== null) {
