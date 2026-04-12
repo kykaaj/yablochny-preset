@@ -13,8 +13,8 @@
 4. **Обязательно перезагрузите страницу (F5)**.
 
 <p align="center">
-  <img src="img/1.png" width="500">
-  <img src="img/2.png" width="500">
+  <img src="img/1.png" width="48%">
+  <img src="img/2.png" width="48%">
 </p>
 
 ### 2. Обновление пресета
@@ -23,8 +23,8 @@
    - *Это автоматически обновит пресет (все важные промпты, плюс добавит новые если вы обновляете)*
 
 <p align="center">
-  <img src="img/4.png" width="400">
-  <img src="img/3.png" width="500">
+  <img src="img/4.png" width="48%">
+  <img src="img/3.png" width="48%">
 </p>
 
 ### 3. Настройка вкладки форматирования размышлений
@@ -55,9 +55,10 @@
 
 *По опыту: меньше шизы, вероятность багов с тем что модель за юзера пишет и тд снижаются, плюс модель лучше слушается.*
 
-| | |
-|:---:|:---:|
-| <img src="img/6.jpg" width="350"> | <img src="img/7.jpg" width="350"> |
+<p align="center">
+  <img src="img/6.jpg" width="48%">
+  <img src="img/7.jpg" width="48%">
+</p>
 
 ---
 
