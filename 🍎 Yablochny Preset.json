@@ -1203,7 +1203,7 @@
         {
             "identifier": "25aa10b4-a603-4d15-881e-6b95a5fc159c",
             "system_prompt": false,
-            "enabled": false,
+            "enabled": true,
             "marker": false,
             "name": "┌︎ ◈︎ narrator lens",
             "role": "system",
@@ -1382,7 +1382,7 @@
                 },
                 {
                     "identifier": "25aa10b4-a603-4d15-881e-6b95a5fc159c",
-                    "enabled": false
+                    "enabled": true
                 },
                 {
                     "identifier": "92f96f89-c01d-4a91-bea3-c8abb75b995a",

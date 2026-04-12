@@ -343,7 +343,7 @@ const UI_TEXT = {
 
         // Options - Narrator Lens
         narratorLensLabel: "Narrator Lens",
-        optLensOff: "Off (default)",
+        optLensOff: "Off",
         optLensNegative: "Negative",
         optLensPositive: "Positive",
         ttNarratorLens: "Renette's narrative focus and emotional bias.",
@@ -556,7 +556,7 @@ const UI_TEXT = {
 
         // Options - Narrator Lens
         narratorLensLabel: "Линза нарратора",
-        optLensOff: "Выкл (стандарт)",
+        optLensOff: "Выкл",
         optLensNegative: "Негативная",
         optLensPositive: "Позитивная",
         ttNarratorLens: "Нарративный фокус и эмоциональная окраска Ренетт.",
@@ -769,7 +769,7 @@ const UI_TEXT = {
 
         // Options - Narrator Lens
         narratorLensLabel: "Лінза наратора",
-        optLensOff: "Вимк (стандарт)",
+        optLensOff: "Вимк",
         optLensNegative: "Негативна",
         optLensPositive: "Позитивна",
         ttNarratorLens: "Наративний фокус та емоційне забарвлення Ренетт.",
