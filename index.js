@@ -1364,10 +1364,10 @@ const MODEL_PRESETS = {
             top_p: 0.9,
         },
         toggles: {
-            "d0851faf-af18-40c6-8bf4-35e2338061e5": true, // no COT prefill
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
         },
         disableToggles: [
-            "4ad8a657-f24c-40c9-bffc-976a6ab39003", // ◦︎ COT
+            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
             "6c0ab122-aa65-4c14-ae20-199c2010df2f", // ◈︎ ↗ universal prefill
         ],
     },
@@ -3197,6 +3197,11 @@ function syncReasoningSettings(cfg) {
     if (isGptConf) {
         jQuery('#reasoning_prefix').val('').trigger('input');
         jQuery('#reasoning_suffix').val('').trigger('input');
+        
+        // Also ensure start_reply_with is empty since GPT/Claude 4.6 have no prefills
+        if (jQuery('#start_reply_with').val()?.trim() === '<think>') {
+            jQuery('#start_reply_with').val('').trigger('input');
+        }
     } else {
         jQuery('#reasoning_prefix').val('<think>').trigger('input');
         jQuery('#reasoning_suffix').val('</think>').trigger('input');
