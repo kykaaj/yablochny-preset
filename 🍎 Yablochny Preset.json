@@ -1205,23 +1205,9 @@
             "system_prompt": false,
             "enabled": false,
             "marker": false,
-            "name": "┌︎ ◦︎ narrator lens: negative",
+            "name": "┌︎ ◈︎ narrator lens",
             "role": "system",
-            "content": "{{setvar::lens::\n[RENETTE'S LENS: NEGATIVE]\nRenette notices what's wrong before what's right. Doesn't trust good moments - waits for the catch. Tenderness described reluctantly. Beauty - moved past fast. What's off - lingered on, given weight and texture.}}{{setvar::lens_check::\n- LENS: Does the landing have weight - or does it overextend into purple?}}",
-            "injection_position": 0,
-            "injection_depth": 4,
-            "injection_order": 100,
-            "injection_trigger": [],
-            "forbid_overrides": false
-        },
-        {
-            "identifier": "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef",
-            "system_prompt": false,
-            "enabled": false,
-            "marker": false,
-            "name": "┌︎ ◦︎ narrator lens: positive",
-            "role": "system",
-            "content": "{{setvar::lens::\n[RENETTE'S LENS: POSITIVE]\nRenette notices small ordinary things - attentive, not sentimental. Warmth shows in what gets noticed, not how it's worded.\n\nEven in dark moments, the eye catches something that contradicts the tone - uninvited, unexplained. Ugly things exist but don't get the last word. End on a detail, not a declaration.}}{{setvar::lens_check::\n- LENS: What does Renette land on? What does she skip?}}",
+            "content": "",
             "injection_position": 0,
             "injection_depth": 4,
             "injection_order": 100,
@@ -1397,10 +1383,6 @@
                 {
                     "identifier": "25aa10b4-a603-4d15-881e-6b95a5fc159c",
                     "enabled": false
-                },
-                {
-                    "identifier": "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef",
-                    "enabled": true
                 },
                 {
                     "identifier": "92f96f89-c01d-4a91-bea3-c8abb75b995a",

@@ -104,7 +104,6 @@ const VARIANT_PROMPT_IDS = new Set([
     "bc1d852e-f20c-4fce-bacf-10380a4c333f",
     // Narrator lens
     "25aa10b4-a603-4d15-881e-6b95a5fc159c",
-    "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef",
 ]);
 
 const PROMPT_TO_CONTROL_MAP = {
@@ -134,7 +133,6 @@ const PROMPT_TO_CONTROL_MAP = {
     "e12784ea-de67-48a7-99ef-3b0c1c45907c": "#yp-hdr-additional",
     "bc1d852e-f20c-4fce-bacf-10380a4c333f": "#yp-rating",
     "25aa10b4-a603-4d15-881e-6b95a5fc159c": "#yp-narrator-lens",
-    "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef": "#yp-narrator-lens"
 };
 
 const REGEX_PROMPT_MAP = {
@@ -1120,8 +1118,8 @@ const FOCUS_VARIANTS = {
 };
 
 const DECONSTRUCTION_VARIANTS = {
-    large: `{{setvar::largedeco::\n1. CHARACTER'S PRESENT & DOMINANT TRAITS. THEIR CLOTHES.\n2. RELATIONSHIP STATUS. How do Char treat User? Determine the realistically internal attachment of Character toward User (0-100%). Cold/neutral/close, any shift and why.\n3. LOCATION (time, weather) & ATMOSPHERE.\n4. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside \`<NSFW_instructions>\`. If no - continue as usual.}}`,
-    mini: `{{setvar::minideco::\n1. CHARACTER'S PRESENT, CLOTHES, RELATIONSHIP STATUS.\n2. LOCATION.\n3. NSFW CHECK. Is NSFW active in the scene? If yes - change to a more erotic prose and follow all rules inside \`<NSFW_instructions>\`. If no - continue as usual.}}`
+    large: `{{setvar::largedeco::\n1. CHARACTER'S PRESENT & DOMINANT TRAITS. THEIR CLOTHES.\n2. RELATIONSHIP STATUS. How does Char treat User? Internal attachment (0-100%). Cold/neutral/close, any shift and why.\n3. LOCATION (time, weather) & ATMOSPHERE.\n4. SEXUAL CONTENT? Is the scene sexual or heading there? If yes - apply \`<content_rules>\` and match the current rating.}}`,
+    mini: `{{setvar::minideco::\n1. CHARACTER'S PRESENT, CLOTHES, RELATIONSHIP STATUS.\n2. LOCATION.\n3. SEXUAL CONTENT? Is the scene sexual or heading there? If yes - apply \`<content_rules>\` and match the current rating.}}`
 };
 
 const LENGTH_VARIANTS = {
@@ -2681,23 +2679,28 @@ function applyRatingVariant(master, cfg, existingPreset) {
 }
 
 function applyNarratorLensVariant(master, cfg, existingPreset) {
-    const idNeg = "25aa10b4-a603-4d15-881e-6b95a5fc159c"; // narrator lens: negative
-    const idPos = "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef"; // narrator lens: positive
-    const promptNeg = master.prompts.find(p => p.identifier === idNeg);
-    const promptPos = master.prompts.find(p => p.identifier === idPos);
+    const id = "25aa10b4-a603-4d15-881e-6b95a5fc159c"; // narrator lens
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
 
-    const mode = cfg.narratorLensMode || "off";
-    
-    if (mode === "negative") {
-        if (promptNeg) { promptNeg.enabled = true; }
-        if (promptPos) { promptPos.enabled = false; }
-    } else if (mode === "positive") {
-        if (promptNeg) { promptNeg.enabled = false; }
-        if (promptPos) { promptPos.enabled = true; }
-    } else {
-        // Off
-        if (promptNeg) { promptNeg.enabled = false; }
-        if (promptPos) { promptPos.enabled = false; }
+    // Force enable the container prompt
+    prompt.enabled = true;
+
+    if (cfg.narratorLensMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+    const rawMode = cfg.narratorLensMode || "off";
+    const mode = getSafeVariant(rawMode, NARRATOR_LENS_VARIANTS, "off");
+    let text = NARRATOR_LENS_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.narrator_lens && cfg.promptEdits.narrator_lens[mode]) {
+        text = cfg.promptEdits.narrator_lens[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = text;
     }
 }
 
@@ -2761,6 +2764,7 @@ function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null)
         "3f839183-2388-4999-9c1c-bd0b7d48e1d5", // Deprecated: Old GPT sex scenes
         "42805823-bba7-44d6-a850-4a34473b816a", // Deprecated: Infoblock
         "68543f56-ad35-4fc2-9f47-b8f5ff86fd01", // Deprecated: Anti-robot
+        "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef", // Deprecated: Narrator lens positive (moved to variant)
     ];
     
     if (master.prompts) {
@@ -2975,8 +2979,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "65064e43-ef37-4d76-b6b8-6750033c4153", // Image style
         "e12784ea-de67-48a7-99ef-3b0c1c45907c", // Image generation
         "bc1d852e-f20c-4fce-bacf-10380a4c333f", // Rating
-        "25aa10b4-a603-4d15-881e-6b95a5fc159c", // Narrator lens: negative
-        "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef", // Narrator lens: positive
+        "25aa10b4-a603-4d15-881e-6b95a5fc159c", // Narrator lens
     ];
 
     const OBSOLETE_IDS = [
