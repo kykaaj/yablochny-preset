@@ -446,7 +446,7 @@ const UI_TEXT = {
         hdrAdditional: "Дополнительно",
         siteLabel: "Сайт",
         guideLabel: "Гайд",
-        creditsLabel: "Титры",
+        creditsLabel: "Авторы",
         imageStyleLabel: "Стиль изображений",
 
         // Credits
@@ -660,7 +660,7 @@ const UI_TEXT = {
         hdrAdditional: "Додатково",
         siteLabel: "Сайт",
         guideLabel: "Гайд",
-        creditsLabel: "Титри",
+        creditsLabel: "Автори",
         imageStyleLabel: "Стиль зображень",
 
         // Credits
