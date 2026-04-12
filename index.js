@@ -3195,8 +3195,8 @@ function syncReasoningSettings(cfg) {
     jQuery('#reasoning_add_to_prompts').prop('checked', false).trigger('change');
     jQuery('#reasoning_max_additions').val('1').trigger('input');
     
-    jQuery('#reasoning_prefix').val('\n<think>\n').trigger('input');
-    jQuery('#reasoning_suffix').val('\n</think>\n').trigger('input');
+    jQuery('#reasoning_prefix').val('<think>\n').trigger('input');
+    jQuery('#reasoning_suffix').val('\n</think>').trigger('input');
     
     if (isGptConf) {
         if (jQuery('#start_reply_with').val()?.trim() === '<think>') {
