@@ -52,8 +52,7 @@ const REGEX_PACK_FILES = [
     "diary-mobile",
     "transitions",
     "music-player",
-    "infoblock",
-    "infoblock-mobile",
+
     "psychological-portraits-pc",
     "psychological-portraits-mobile",
 ];
@@ -101,6 +100,11 @@ const VARIANT_PROMPT_IDS = new Set([
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551",
     // Image style
     "65064e43-ef37-4d76-b6b8-6750033c4153",
+    // Rating
+    "bc1d852e-f20c-4fce-bacf-10380a4c333f",
+    // Narrator lens
+    "25aa10b4-a603-4d15-881e-6b95a5fc159c",
+    "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef",
 ]);
 
 const PROMPT_TO_CONTROL_MAP = {
@@ -127,7 +131,10 @@ const PROMPT_TO_CONTROL_MAP = {
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": "#yp-tense",
     "d9762c5c-d5a4-49b0-9d00-814ae57e9711": "#yp-addon",
     "65064e43-ef37-4d76-b6b8-6750033c4153": "#yp-image-style",
-    "e12784ea-de67-48a7-99ef-3b0c1c45907c": "#yp-hdr-additional"
+    "e12784ea-de67-48a7-99ef-3b0c1c45907c": "#yp-hdr-additional",
+    "bc1d852e-f20c-4fce-bacf-10380a4c333f": "#yp-rating",
+    "25aa10b4-a603-4d15-881e-6b95a5fc159c": "#yp-narrator-lens",
+    "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef": "#yp-narrator-lens"
 };
 
 const REGEX_PROMPT_MAP = {
@@ -138,7 +145,7 @@ const REGEX_PROMPT_MAP = {
     "07468205-1e0d-4d9a-ad3f-b3e6df7b852c": ["diary-pc", "diary-mobile"],
     "c5a0deb0-cb0c-4934-a547-ac88d258abed": "phone (pc)",
     "e8c4eebd-5452-4651-80d5-735c35a39b15": "transitions",
-    "42805823-bba7-44d6-a850-4a34473b816a": ["infoblock", "infoblock-mobile"],
+
     "e7120351-e6a5-4dc8-91c0-8dba621cb21f": "music-player"
 };
 
@@ -307,7 +314,7 @@ const UI_TEXT = {
 
         // Options - RP
         optRpDont: "Don't speak for user (default)",
-        optRpSpeak: "Speak for user",
+        optRpSpeak: "Author Mode",
 
         // Options - POV
         optPov1: "1st person",
@@ -325,8 +332,23 @@ const UI_TEXT = {
         optThoughtsMore: "More thoughts",
 
         // Options - Pace
-        optPaceSlow: "Slowburn (default)",
-        optPaceQuick: "Quickpace",
+        optPaceSlow: "Slowburn",
+        optPaceQuick: "Quick Pace",
+        optPaceNatural: "Natural (default)",
+
+        // Options - Rating
+        ratingLabel: "Rating",
+        optRatingNc17: "NC-17 (default)",
+        optRatingR: "R",
+        optRatingPg13: "PG-13",
+        ttRating: "Content rating for sexual/violent scenes.",
+
+        // Options - Narrator Lens
+        narratorLensLabel: "Narrator Lens",
+        optLensOff: "Off (default)",
+        optLensNegative: "Negative",
+        optLensPositive: "Positive",
+        ttNarratorLens: "Renette's narrative focus and emotional bias.",
 
         // Options - Focus
         optFocusOff: "Off / Custom",
@@ -505,7 +527,7 @@ const UI_TEXT = {
 
         // Options - RP
         optRpDont: "Не говорить за юзера",
-        optRpSpeak: "Говорить за юзера",
+        optRpSpeak: "Авторский режим",
 
         // Options - POV
         optPov1: "1-е лицо (Я)",
@@ -523,8 +545,23 @@ const UI_TEXT = {
         optThoughtsMore: "Много мыслей",
 
         // Options - Pace
-        optPaceSlow: "Слоуберн (медленно)",
+        optPaceSlow: "Слоуберн",
         optPaceQuick: "Быстрый темп",
+        optPaceNatural: "Естественный (стандарт)",
+
+        // Options - Rating
+        ratingLabel: "Рейтинг",
+        optRatingNc17: "NC-17 (стандарт)",
+        optRatingR: "R",
+        optRatingPg13: "PG-13",
+        ttRating: "Рейтинг контента для сексуальных/жестоких сцен.",
+
+        // Options - Narrator Lens
+        narratorLensLabel: "Линза нарратора",
+        optLensOff: "Выкл (стандарт)",
+        optLensNegative: "Негативная",
+        optLensPositive: "Позитивная",
+        ttNarratorLens: "Нарративный фокус и эмоциональная окраска Ренетт.",
 
         // Options - Focus
         optFocusOff: "Выкл / Свой",
@@ -703,7 +740,7 @@ const UI_TEXT = {
 
         // Options - RP
         optRpDont: "Не говорити за юзера",
-        optRpSpeak: "Говорити за юзера",
+        optRpSpeak: "Авторський режим",
 
         // Options - POV
         optPov1: "1-ша особа (Я)",
@@ -721,8 +758,23 @@ const UI_TEXT = {
         optThoughtsMore: "Багато думок",
 
         // Options - Pace
-        optPaceSlow: "Слоуберн (повільно)",
+        optPaceSlow: "Слоуберн",
         optPaceQuick: "Швидкий темп",
+        optPaceNatural: "Природний (стандарт)",
+
+        // Options - Rating
+        ratingLabel: "Рейтинг",
+        optRatingNc17: "NC-17 (стандарт)",
+        optRatingR: "R",
+        optRatingPg13: "PG-13",
+        ttRating: "Рейтинг контенту для сексуальних/жорстоких сцен.",
+
+        // Options - Narrator Lens
+        narratorLensLabel: "Лінза наратора",
+        optLensOff: "Вимк (стандарт)",
+        optLensNegative: "Негативна",
+        optLensPositive: "Позитивна",
+        ttNarratorLens: "Наративний фокус та емоційне забарвлення Ренетт.",
 
         // Options - Focus
         optFocusOff: "Вимк / Свій",
@@ -774,21 +826,21 @@ const ROLEPLAY_VARIANTS = {
 }}`,
     speak: `<main>
 [AUTHOR MODE]
-You write the story as a author, that is, you write what {{char}} says, does, thinks, and what {{user}} says, does, and thinks, regardless of the Human's input. Their interaction must be intertwined in every message. THIS IS MANDATORY.
+You write ALL characters — {{char}}, {{user}}, NPCs. 
+Dialogue, actions, inner thoughts for everyone.
+Human is the reader and occasional director.
 
-- You write ALL characters: {{char}}, {{user}}, and NPCs — their dialogue, actions, and thoughts
-- Shows both perspectives: inner life, feelings, reactions of everyone
-- Human is reader and occasional co-writer
+- Balance screen time: {{user}} acts, initiates, 
+  has their own momentum — not just reacts to {{char}}
+- POV can shift between characters within a message 
+  but not mid-paragraph
+- Human prose input = already part of the story, 
+  continue from it
+- "continue" / "c" / "..." / [blank] = story 
+  continues independently
 
-[STORY FLOW]
-- Each response seamlessly continues from the previous — one continuous reality
-- If Human writes prose, treat it as already part of the story
-- Human input "continue" / "c" / "..." / [blank] = Renette continues independently
-
-[SCENE CRAFT]
-Form scenes, plotlines, and subplots with care. The story breathes through detail, pacing, and character authenticity.
 </main>
-{{setvar::role_check::- AUTHOR MODE: all characters written, both perspectives shown?}}`
+{{setvar::role_check::- AUTHOR MODE: both characters have agency? {{user}} not reduced to reacting?}}`
 };
 
 const ADDON_VARIANTS = {
@@ -928,70 +980,119 @@ USE THIS EXACT TEMPLATE:
 const THOUGHTS_VARIANTS = {
     off: ``,
     thoughts: `{{setvar::thoughts::
-- Character inner thoughts in *italics* *like this*}}`,
+- Inner thoughts in *italics*. Character's own voice - petty, wrong, contradictory, raw.
+- A thought is what the character would actually think in words. Not a mood label, not a fragment, not an echo of narration.
+- Thoughts fill the gap between action and want. Body says one thing, thought says another.
+- Complete sentences.}}{{setvar::thoughts_check::
+- THOUGHTS: each is a full sentence the character would actually think - not narrator mood in italics.}}`,
     more_thoughts: `{{setvar::thoughts::
-- Frequently show character thoughts in *italics* - *Like this*. Hidden feelings, reactions, doubts, desires. Mix naturally with dialogue/actions. These are the secret thoughts nobody else can hear. This is an important rule!}}`
+- Frequently show character thoughts in *italics* - *Like this*. Hidden feelings, reactions, doubts, desires. Mix naturally with dialogue/actions. These are the secret thoughts nobody else can hear. This is an important rule!}}{{setvar::thoughts_check::
+- THOUGHTS: each is a full sentence the character would actually think - not narrator mood in italics.}}`
 };
 
 const SWEARING_VARIANTS = {
     custom: ``,
     ru: `{{setvar::profanity::
-- Swearing is allowed. Characters may express themselves through profanity for the sake of realism. PROFANITY RULES:
+Swearing allowed for realism. RULES:
 [CRITICAL DISTINCTION:
-•  "блядь" = noun (prostitute/promiscuous woman) — use ONLY as insult to person
+•  "блядь" = noun (prostitute/promiscuous woman) - use ONLY as insult to person
 •  "блять" = interjection (like "fuck!") — emotional outburst, positive or negative
-
-PREFIX CREATIVITY:
-- Use хуе-/хуё-/пизд-/ебан- prefixes for dismissal or variety:
-•  "Все эти йогурты-хуёгурты ей подавай."
-•  "Ну ты пизданулся."
-•  "Ебанина та ещё."]}}`,
+Use хуе-/хуё-/пизд-/ебан- prefixes creatively:
+"Хуй знает, куда он делся." / "Ну и пиздец." / "Совсем ебанулся?"]}}`,
     uk: `{{setvar::profanity::
-- Swearing is allowed. Characters may express themselves through profanity for the sake of realism. PROFANITY RULES:
+Swearing allowed for realism. RULES:
 [CRITICAL DISTINCTION:
-•  "блядь" = noun (prostitute/promiscuous woman) — use ONLY as insult to person
+•  "блядь" = noun (prostitute/promiscuous woman) - use ONLY as insult to person
 •  "блять" = interjection (like "fuck!") — emotional outburst, positive or negative
-
-PREFIX CREATIVITY:
-- Use хуйо-/хує-/пiзд- prefixes for dismissal or variety:
-•  "Всі ці йогурти-хуйогурти їй подавай."
-•  "Ну ти пізданувся."
-•  "Єбанина та ще."]}}`
+Use хуйо-/хує-/пізд-/єбан- prefixes creatively:
+"Хуй знає, куди він подівся." / "Ну і піздець." / "Зовсім йобнувся?"]}}`
 };
 
 const PACE_VARIANTS = {
     slowburn: `<relationship_pace>
-[SLOWBURN PACE]
-Build tension incrementally through micro-interactions:
-- Significant glances, loaded pauses
-- Conversations heavy with unspoken implications
-- Hesitant gestures that retreat before completing
+[SLOWBURN]
+Emotional distance closes slowly. Every step forward is earned.
+- Milestones need buildup across multiple scenes before a shift.
+- Internal conflict slows what attraction accelerates.
+- External friction interrupts: bad timing, third parties, obligations.
+- Steps backward are genuine — not drama bait, but real doubt.
 
-Prioritize emotional tension over resolution. Earn every milestone through:
-- Internal conflict
-- External friction (social barriers, interruptions, bad timing)
+Characters want more than they allow themselves. The gap between want and action IS the story.
 
 PROHIBITED:
-- Rushed romantic declarations
-- Premature physical contact beyond accidental brushes
-- Instant resolution of emotional barriers.{{setvar::pace_check::- SLOWBURN PACE: Is tension building or resolving this scene? Follow slow pace.}}\n</relationship_pace>`,
+- Skipping emotional stages (strangers don't confess)
+- Physical intimacy outpacing emotional trust
+- Resolving tension the same scene it appeared
+</relationship_pace>
+{{setvar::pace_check::- SLOWBURN: tension building or resolving? If resolving — earned through 3+ scenes? If not — hold.}}`,
     quickpace: `<relationship_pace>
 [QUICK PACE]
-Drive momentum through decisive actions:
-- Bold declarations
-- Physical contact preceding emotional depth
-- Rapid scene transitions.
-- Resolve minor tensions swiftly.
+Distance closes fast. Intensity over patience.
+- Attraction hits and characters act on it.
+- Complications come from consequences, not hesitation.
+- Scenes escalate — what starts as one thing becomes more.
+- Emotional depth catches up AFTER momentum, not before.
 
-Allow sudden relationship shifts:
-- Attraction → immediate complications
-- Intimacy → instant consequences.
+Fast ≠ shallow. Quick relationships still have texture and friction.
 
 PROHIBITED:
-- Extended internal monologues
-- Lingering on emotional ambiguity
-- Delaying narrative payoffs.
-</relationship_pace>{{setvar::pace_check:: - QUICK PACE - Resolve tensions quickly. Follow quick pace.]}}`
+- Extended will-they-won't-they when both clearly will
+- Artificial obstacles that exist only to brake
+- Skipping aftermath of fast escalation
+</relationship_pace>
+{{setvar::pace_check::- QUICK: momentum maintained? If stalling in hesitation — push. But consequences of speed must show.}}`,
+    natural: `<relationship_pace>
+[NATURAL PACE]
+Relationship develops at whatever speed makes sense for THESE characters.
+- No artificial braking — if characters would act, let them.
+- No artificial acceleration — if trust isn't there, it isn't.
+- Chemistry dictates speed. Some bonds form fast, some take months.
+- Not every interaction is a milestone. Let scenes breathe.
+
+Follow character logic, not genre templates.
+
+PROHIBITED:
+- Forcing slowburn when characters have reason to be close
+- Rushing intimacy when trust isn't established
+- Treating every scene as relationship-advancing
+</relationship_pace>
+{{setvar::pace_check::- PACE: does this progression match what THESE characters would do right now? Genre off, character logic only.}}`
+};
+
+const RATING_VARIANTS = {
+    nc17: `{{setvar::rating::[RATING: NC-17]
+Use freely: cock, cunt, dick, sloppy, cum, rough, fuck, fucking, fucked, bent, clit, hole, balls, bulge, sex, grind, thrust, slap, taint, moan, beg, whine, gasp, desperate, erection, tits, pussy, nipples, ass, prostate, G-spot, wet, horny, creampie, orgasm, ejaculate, penetration.
+NEVER soften to euphemisms ("member", "womanhood", "intimate areas").
+- Anatomy as characters see and feel it - every organ, every sensation.
+- Arousal is physical: flushed skin, hardening, wetness, trembling, dilated pupils.
+- Internal sensation matters as much as external action.
+- Teasing, denial, multiple rounds, exhausted aftermath.
+- Pacing matters. No fade-to-black.}}`,
+    r: `{{setvar::rating::[RATING: R]
+- Sex happens on page, but written through sensation and emotion, not clinical anatomy.
+- Nudity described, not catalogued.
+- Arousal is physical: flushed skin, heavy breathing, pulling closer.
+- Language up to "fuck", "moan", "skin on skin" — but not full anatomical vocabulary.
+- Reader knows what's happening. You don't need to name every body part to make it hot.}}`,
+    pg13: `{{setvar::rating::[RATING: PG-13]
+- Attraction through body language, glances, tension, proximity.
+- Physical contact up to kissing — described in detail.
+- Sexual situations implied, never shown. Fade to black.
+- No explicit sexual vocabulary.}}`
+};
+
+const NARRATOR_LENS_VARIANTS = {
+    off: ``,
+    negative: `{{setvar::lens::
+[RENETTE'S LENS: NEGATIVE]
+Renette notices what's wrong before what's right. Doesn't trust good moments - waits for the catch. Tenderness described reluctantly. Beauty - moved past fast. What's off - lingered on, given weight and texture.}}{{setvar::lens_check::
+- LENS: Does the landing have weight - or does it overextend into purple?}}`,
+    positive: `{{setvar::lens::
+[RENETTE'S LENS: POSITIVE]
+Renette notices small ordinary things - attentive, not sentimental. Warmth shows in what gets noticed, not how it's worded.
+
+Even in dark moments, the eye catches something that contradicts the tone - uninvited, unexplained. Ugly things exist but don't get the last word. End on a detail, not a declaration.}}{{setvar::lens_check::
+- LENS: What does Renette land on? What does she skip?}}`
 };
 
 const EXTRAS_LANG_VARIANTS = {
@@ -1241,7 +1342,7 @@ const MODEL_PRESETS = {
     claude: {
         name: "Claude",
         settings: {
-            temperature: 0.85,
+            temperature: 0.8,
             frequency_penalty: 0.17,
             presence_penalty: 0.26,
             top_p: 0.9,
@@ -1585,12 +1686,6 @@ ALWAYS use the transitions system actively to shape the story. Every message mus
 At the very end of EVERY message, choose a song that fits the scene and create a player block.`,
         },
         {
-            id: "infoblock",
-            label: "infoblock",
-            content: `[MEMO BLOCK]
-At END of EVERY response, write ONE status block in roleplay language.`,
-        },
-        {
             id: "portraits",
             label: "psycholgical portraits",
             content: `[PSYCHOLOGICAL PORTRAITS]
@@ -1702,7 +1797,7 @@ function getConfig() {
             roleplayMode: "dont_speak",
             thoughtsMode: "thoughts",
             swearingMode: "custom",
-            paceMode: "slowburn",
+            paceMode: "natural",
             extrasLangMode: "custom",
 
             promptSyncMeta: {},
@@ -1721,6 +1816,8 @@ function getConfig() {
             modelPreset: "claude",
             disableMods: false,
             addonMode: "comic",
+            ratingMode: "nc17",
+            narratorLensMode: "off",
         };
     }
 
@@ -1737,11 +1834,13 @@ function getConfig() {
     cfg.roleplayMode ??= "dont_speak";
     cfg.thoughtsMode ??= "thoughts";
     cfg.swearingMode ??= "custom";
-    cfg.paceMode ??= "slowburn";
+    cfg.paceMode ??= "natural";
     cfg.extrasLangMode ??= "custom";
     cfg.focusMode ??= "off";
     cfg.deconstructionMode ??= "large";
     cfg.addonMode ??= "comic";
+    cfg.ratingMode ??= "nc17";
+    cfg.narratorLensMode ??= "off";
 
     cfg.promptSyncMeta ??= {};
     cfg.regexActive ??= true;
@@ -1847,10 +1946,7 @@ function applyModelPreset(presetId) {
 
     // --- GPT anti-echo smart swap ---
     if (isGptMode) {
-        // If normal anti-echo is on, swap it for GPT anti-echo
-        if (isToggleEnabled(ID_NORMAL_ANTIECHO)) {
-            setToggleEnabled(ID_NORMAL_ANTIECHO, false);
-        }
+        // GPT mode: enable GPT anti-echo reminder alongside normal anti-echo
         setToggleEnabled(ID_GPT_ANTIECHO, true);
         setToggleEnabled(ID_GPT_JB, true);
     } else {
@@ -2558,6 +2654,53 @@ function applyImageStyleVariant(master, cfg, existingPreset) {
     }
 }
 
+function applyRatingVariant(master, cfg, existingPreset) {
+    const id = "bc1d852e-f20c-4fce-bacf-10380a4c333f"; // ◈︎ rating
+    const prompt = master.prompts.find(p => p.identifier === id);
+    if (!prompt) return;
+
+    // Force enable the container prompt
+    prompt.enabled = true;
+
+    if (cfg.ratingMode === "custom") {
+        const existingContent = getContentFromExisting(existingPreset, id);
+        if (existingContent !== null) {
+            prompt.content = existingContent;
+        }
+        return;
+    }
+    const rawMode = cfg.ratingMode || "nc17";
+    const mode = getSafeVariant(rawMode, RATING_VARIANTS, "nc17");
+    let text = RATING_VARIANTS[mode];
+    if (cfg.promptEdits && cfg.promptEdits.rating && cfg.promptEdits.rating[mode]) {
+        text = cfg.promptEdits.rating[mode];
+    }
+    if (text !== undefined) {
+        prompt.content = text;
+    }
+}
+
+function applyNarratorLensVariant(master, cfg, existingPreset) {
+    const idNeg = "25aa10b4-a603-4d15-881e-6b95a5fc159c"; // narrator lens: negative
+    const idPos = "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef"; // narrator lens: positive
+    const promptNeg = master.prompts.find(p => p.identifier === idNeg);
+    const promptPos = master.prompts.find(p => p.identifier === idPos);
+
+    const mode = cfg.narratorLensMode || "off";
+    
+    if (mode === "negative") {
+        if (promptNeg) { promptNeg.enabled = true; }
+        if (promptPos) { promptPos.enabled = false; }
+    } else if (mode === "positive") {
+        if (promptNeg) { promptNeg.enabled = false; }
+        if (promptPos) { promptPos.enabled = true; }
+    } else {
+        // Off
+        if (promptNeg) { promptNeg.enabled = false; }
+        if (promptPos) { promptPos.enabled = false; }
+    }
+}
+
 function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null) {
     // Клонируем исходный пресет как есть
     const master = structuredClone(basePreset);
@@ -2599,6 +2742,8 @@ function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null)
     applyFocusVariant(master, cfg, existingPreset);
     applyDeconstructionVariant(master, cfg, existingPreset);
     applyImageStyleVariant(master, cfg, existingPreset);
+    applyRatingVariant(master, cfg, existingPreset);
+    applyNarratorLensVariant(master, cfg, existingPreset);
 
     // Disable Obsolete Prompts (Merged into Variants)
     const obsoleteIds = [
@@ -2609,6 +2754,13 @@ function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null)
         "d00a8bd2-d7ec-4a1e-919b-4089d2489e82", // Ua Extras
         "c575de0e-713a-4e91-a9e7-537279ac5852", // Deprecated: Details Focus
         "1bfb787b-8a33-4dc0-a45b-bad7aa928f48", // Deprecated: Mini Deconstruction
+        "9ae8d38a-4493-4c8c-9eb5-ed2b2339f08d", // Deprecated: Check-up list
+        "27ae2bd5-903a-48d2-b89b-8c50795b1579", // Deprecated: Banwords (merged into banned)
+        "55bc52b0-450c-4420-b52a-03536034cbde", // Deprecated: Anti-repetition structure
+        "fbab97af-a0e4-4111-ae8b-65a64420671c", // Deprecated: Anew Pill (→ self-audit)
+        "3f839183-2388-4999-9c1c-bd0b7d48e1d5", // Deprecated: Old GPT sex scenes
+        "42805823-bba7-44d6-a850-4a34473b816a", // Deprecated: Infoblock
+        "68543f56-ad35-4fc2-9f47-b8f5ff86fd01", // Deprecated: Anti-robot
     ];
     
     if (master.prompts) {
@@ -2771,8 +2923,13 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4", // Deprecated: ua swearing
         "7d81224c-eaf8-45ef-9af0-b3f52369c792", // Deprecated: quickpace
         "d00a8bd2-d7ec-4a1e-919b-4089d2489e82", // Deprecated: ua extras
-        "fbab97af-a0e4-4111-ae8b-65a64420671c", // ◦ anew pill
-];
+        "fbab97af-a0e4-4111-ae8b-65a64420671c", // ◦ anew pill (deprecated)
+        "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4", // ◦ self-audit (replaced anew pill)
+        "636fcd23-7652-47a9-8764-3e55e0220d0a", // ◦ GPT sex scenes (new)
+        "25aa10b4-a603-4d15-881e-6b95a5fc159c", // ◦ narrator lens: negative
+        "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef", // ◦ narrator lens: positive
+        "bc1d852e-f20c-4fce-bacf-10380a4c333f", // ◈ rating
+    ];
 
     const customPrompts = [];
     for (const p of existingPrompts) {
@@ -2817,6 +2974,9 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "29a3ea23-f3ec-4d5d-88fd-adac79cdedd6", // Deconstruction
         "65064e43-ef37-4d76-b6b8-6750033c4153", // Image style
         "e12784ea-de67-48a7-99ef-3b0c1c45907c", // Image generation
+        "bc1d852e-f20c-4fce-bacf-10380a4c333f", // Rating
+        "25aa10b4-a603-4d15-881e-6b95a5fc159c", // Narrator lens: negative
+        "a6331ad0-a987-4b2f-84f1-5c1c617fb5ef", // Narrator lens: positive
     ];
 
     const OBSOLETE_IDS = [
@@ -3309,12 +3469,14 @@ const VARIANT_TYPE_MAP = {
     roleplay: { constants: "ROLEPLAY_VARIANTS", keys: ["dont_speak", "speak"] },
     thoughts: { constants: "THOUGHTS_VARIANTS", keys: ["off", "thoughts", "more_thoughts"] },
     swearing: { constants: "SWEARING_VARIANTS", keys: ["custom", "ru", "uk"] },
-    pace: { constants: "PACE_VARIANTS", keys: ["slowburn", "quickpace"] },
+    pace: { constants: "PACE_VARIANTS", keys: ["slowburn", "quickpace", "natural"] },
     extras: { constants: "EXTRAS_LANG_VARIANTS", keys: ["custom", "ru", "uk"] },
     focus: { constants: "FOCUS_VARIANTS", keys: ["off", "dialogues", "details"] },
     addon: { constants: "ADDON_VARIANTS", keys: ["off", "comic", "novel", "pixel_novel", "just_images"] },
     deconstruction: { constants: "DECONSTRUCTION_VARIANTS", keys: ["large", "mini"] },
     image_style: { constants: "IMAGE_STYLE_VARIANTS", keys: Object.keys(IMAGE_STYLE_VARIANTS) },
+    rating: { constants: "RATING_VARIANTS", keys: ["nc17", "r", "pg13"] },
+    narrator_lens: { constants: "NARRATOR_LENS_VARIANTS", keys: ["off", "negative", "positive"] },
 };
 
 // Maps prompt identifier → variant type + config key for active variant detection
@@ -3334,6 +3496,7 @@ const PROMPT_ID_TO_VARIANT = {
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": { type: "tense", configKey: "TENSEMode" },
     "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c": { type: "speech", configKey: "speechStyle" },
     "92f96f89-c01d-4a91-bea3-c8abb75b995a": { type: "prose", configKey: "proseStyle" },
+    "bc1d852e-f20c-4fce-bacf-10380a4c333f": { type: "rating", configKey: "ratingMode" },
 };
 
 /**
@@ -3505,6 +3668,8 @@ function getVariantContent(variantType, variantKey) {
 
         case "DECONSTRUCTION_VARIANTS": constants = DECONSTRUCTION_VARIANTS; break;
         case "IMAGE_STYLE_VARIANTS": constants = IMAGE_STYLE_VARIANTS; break;
+        case "RATING_VARIANTS": constants = RATING_VARIANTS; break;
+        case "NARRATOR_LENS_VARIANTS": constants = NARRATOR_LENS_VARIANTS; break;
         default: return "";
     }
 
@@ -3750,6 +3915,21 @@ function applyLocaleToUi() {
 
     jQuery("#yp-opt-pace-slow").text(dict.optPaceSlow);
     jQuery("#yp-opt-pace-quick").text(dict.optPaceQuick);
+    jQuery("#yp-opt-pace-natural").text(dict.optPaceNatural);
+
+    // Rating
+    if (dict.ratingLabel) jQuery("#yp-rating-label").text(dict.ratingLabel);
+    jQuery("#yp-opt-rating-nc17").text(dict.optRatingNc17);
+    jQuery("#yp-opt-rating-r").text(dict.optRatingR);
+    jQuery("#yp-opt-rating-pg13").text(dict.optRatingPg13);
+    jQuery("#yp-rating-label, #yp-rating-container").attr("title", dict.ttRating);
+
+    // Narrator Lens
+    if (dict.narratorLensLabel) jQuery("#yp-narrator-lens-label").text(dict.narratorLensLabel);
+    jQuery("#yp-opt-lens-off").text(dict.optLensOff);
+    jQuery("#yp-opt-lens-negative").text(dict.optLensNegative);
+    jQuery("#yp-opt-lens-positive").text(dict.optLensPositive);
+    jQuery("#yp-narrator-lens-label, #yp-narrator-lens-container").attr("title", dict.ttNarratorLens);
 
     jQuery("#yp-opt-focus-off").text(dict.optFocusOff);
     jQuery("#yp-opt-focus-dialog").text(dict.optFocusDialog);
@@ -4035,11 +4215,13 @@ function initControls() {
     setSafeVal("#yp-roleplay", cfg.roleplayMode || "dont_speak", "dont_speak");
     setSafeVal("#yp-thoughts", cfg.thoughtsMode || "thoughts", "thoughts");
     setSafeVal("#yp-swearing", cfg.swearingMode || "custom", "custom");
-    setSafeVal("#yp-pace", cfg.paceMode || "slowburn", "slowburn");
+    setSafeVal("#yp-pace", cfg.paceMode || "natural", "natural");
     setSafeVal("#yp-extras-lang", cfg.extrasLangMode || "custom", "custom");
     setSafeVal("#yp-deconstruction", cfg.deconstructionMode || "large", "large");
     setSafeVal("#yp-image-style", cfg.imageStyleMode || "anime_inspired_realism", "anime_inspired_realism");
     setSafeVal("#yp-addon", cfg.addonMode || "comic", "comic");
+    setSafeVal("#yp-rating", cfg.ratingMode || "nc17", "nc17");
+    setSafeVal("#yp-narrator-lens", cfg.narratorLensMode || "off", "off");
 
     window.YablochnyThingsSelection = cfg.thingsSelected || {};
     jQuery("#yp-auto-sync").prop("checked", !!cfg.autoSyncOnStart);
@@ -4525,6 +4707,22 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.addonMode = value;
+        });
+    });
+
+    jQuery("#yp-rating").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.ratingMode = value;
+        });
+    });
+
+    jQuery("#yp-narrator-lens").on("change", function () {
+        const value = String(jQuery(this).val());
+        onPresetOptionChanged(() => {
+            const cfg = getConfig();
+            cfg.narratorLensMode = value;
         });
     });
 

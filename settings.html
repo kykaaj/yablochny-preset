@@ -334,6 +334,21 @@
             </button>
           </div>
         </div>
+
+        <div class="yablochny-field-half">
+          <div class="yablochny-label" id="yp-rating-label">Rating</div>
+          <div style="display: flex; gap: 4px; align-items: center;" id="yp-rating-container">
+            <select id="yp-rating" class="yablochny-select" style="flex: 1;">
+              <option value="nc17" id="yp-opt-rating-nc17">NC-17 (default)</option>
+              <option value="r" id="yp-opt-rating-r">R</option>
+              <option value="pg13" id="yp-opt-rating-pg13">PG-13</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="rating"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Focus & Logic -->
@@ -346,10 +361,26 @@
           <div class="yablochny-label" id="yp-pace-label">Pace</div>
           <div style="display: flex; gap: 4px; align-items: center;" id="yp-pace-container">
             <select id="yp-pace" class="yablochny-select" style="flex: 1;">
-              <option value="slowburn" id="yp-opt-pace-slow">Slowburn (default)</option>
-              <option value="quickpace" id="yp-opt-pace-quick">Quickpace</option>
+              <option value="slowburn" id="yp-opt-pace-slow">Slowburn</option>
+              <option value="quickpace" id="yp-opt-pace-quick">Quick Pace</option>
+              <option value="natural" id="yp-opt-pace-natural">Natural (default)</option>
             </select>
             <button class="yp-edit-btn menu_button secondary" data-variant-type="pace"
+              style="display: none; padding: 4px 8px;">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="yablochny-field-half">
+          <div class="yablochny-label" id="yp-narrator-lens-label">Narrator Lens</div>
+          <div style="display: flex; gap: 4px; align-items: center;" id="yp-narrator-lens-container">
+            <select id="yp-narrator-lens" class="yablochny-select" style="flex: 1;">
+              <option value="off" id="yp-opt-lens-off">Off (default)</option>
+              <option value="negative" id="yp-opt-lens-negative">Negative</option>
+              <option value="positive" id="yp-opt-lens-positive">Positive</option>
+            </select>
+            <button class="yp-edit-btn menu_button secondary" data-variant-type="narrator_lens"
               style="display: none; padding: 4px 8px;">
               <i class="fa-solid fa-pen"></i>
             </button>
