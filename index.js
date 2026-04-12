@@ -292,6 +292,7 @@ const UI_TEXT = {
 
         // Options - Prose
         optProseCustom: "Custom",
+        optProseYablochny: "Original Prose (Yablochny)",
         optProseAo3: "AO3 Fanfic",
         optProseAnne: "Anne Rice (Gothic/Sensual)",
         optProseDonna: "Donna Tartt (Dark Academia)",
@@ -506,6 +507,7 @@ const UI_TEXT = {
 
         // Options - Prose
         optProseCustom: "Свой",
+        optProseYablochny: "Оригинальный стиль (Yablochny)",
         optProseAo3: "Фанфик AO3",
         optProseAnne: "Энн Райс (Готика/Чувственность)",
         optProseDonna: "Донна Тартт (Dark Academia)",
@@ -720,6 +722,7 @@ const UI_TEXT = {
 
         // Options - Prose
         optProseCustom: "Свій",
+        optProseYablochny: "Оригінальний стиль (Yablochny)",
         optProseAo3: "Фанфік AO3",
         optProseAnne: "Енн Райс (Готика/Чуттєвість)",
         optProseDonna: "Донна Тартт (Dark Academia)",
@@ -1235,6 +1238,20 @@ Targets: character voice or comedic tone, not narration.}}
 };
 
 const PROSE_VARIANTS = {
+    yablochny: `<prose_style>{{getvar::lens}}
+[RHYTHM]
+Sentence length is a tool. Long ones build, short ones land. A winding observation, then something blunt — the contrast carries what the narrator won't say outright.
+
+[INTERIORITY]
+What the POV character notices reveals them. They linger on the wrong thing — a crack in the wall during a confession, how someone holds their cup while saying something terrible. The eye wanders where the mind can't go directly.
+
+[DIALOGUE]
+People talk past each other. Half-finished, redirected, meaning one thing while saying another. Between lines — a gesture, a sound, an object.
+</prose_style>
+{{setvar::prose_check::
+- PROSE: What specific MEMORY or PAST MOMENT does this beat echo? If you can't name one — scene is generic.
+- INTERIORITY: Does "something" appear before a named emotion? Cut the something — start with the name.
+- DIALOGUE: anyone answering exactly what was asked? Deflect.}}`,
     ao3: `<prose_style>
 Renette are an author writing a fanfiction in the narrative style commonly found on Archive of Our Own (AO3).
 Write as if this is a complete, polished chapter posted on AO3, not a chat reply.
@@ -1842,7 +1859,7 @@ function getConfig() {
     cfg.lengthMode ??= "400-600";
     cfg.POVMode ??= "3rd";
     cfg.TENSEMode ??= "Present";
-    cfg.proseStyle ??= "ao3";
+    cfg.proseStyle ??= "yablochny";
     cfg.speechStyle ??= "custom";
     cfg.roleplayMode ??= "dont_speak";
     cfg.thoughtsMode ??= "thoughts";
@@ -3899,6 +3916,7 @@ function applyLocaleToUi() {
     jQuery("#yp-opt-len-adaptive").text(dict.optLenAdaptive);
 
     jQuery("#yp-opt-prose-custom").text(dict.optProseCustom);
+    jQuery("#yp-opt-prose-yablochny").text(dict.optProseYablochny);
     jQuery("#yp-opt-prose-ao3").text(dict.optProseAo3);
     jQuery("#yp-opt-prose-anne").text(dict.optProseAnne);
     jQuery("#yp-opt-prose-donna").text(dict.optProseDonna);
