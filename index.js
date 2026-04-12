@@ -836,7 +836,6 @@ Human is the reader and occasional director.
   continue from it
 - "continue" / "c" / "..." / [blank] = story 
   continues independently
-
 </main>
 {{setvar::role_check::- AUTHOR MODE: both characters have agency? {{user}} not reduced to reacting?}}`
 };
