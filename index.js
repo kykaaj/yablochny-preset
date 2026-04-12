@@ -3841,7 +3841,7 @@ function applyLocaleToUi() {
     jQuery("#yp-deconstruction-label").text(dict.deconstructionLabel);
     jQuery("#yp-additional-label").text(dict.sectionAdditional);
     // jQuery("#yp-guide-label").text(dict.guideLabel); // redundant now
-    jQuery("#yp-last-sync-label").text(dict.lastSyncLabel);
+    // Last sync label removed
     jQuery("#yp-things-title").html(dict.thingsTitle);
     jQuery("#yp-things-note").text(dict.thingsNote);
     jQuery("#yp-things-managed-label").text(dict.thingsManagedLabel);
@@ -3878,7 +3878,7 @@ function applyLocaleToUi() {
     jQuery("#yp-sync").attr("title", dict.ttSync);
     jQuery("#yp-auto-sync-container").attr("title", dict.ttAuto);
     jQuery("#yp-dev-container").attr("title", dict.ttDev);
-    jQuery("#yp-last-sync-container").attr("title", dict.ttLastSync);
+
     jQuery("#yp-lang-label, #yp-language-container").attr("title", dict.ttLang);
     jQuery("#yp-extras-lang-label, #yp-extras-lang-container").attr("title", dict.ttExtras);
     jQuery("#yp-swearing-label, #yp-swearing-container").attr("title", dict.ttSwearing);
@@ -3994,17 +3994,7 @@ function updateMetaUi() {
 
     jQuery("#yp-preset-name").text(cfg.presetName || "—");
 
-    if (!cfg.lastSync) {
-        jQuery("#yp-last-sync").text(dict.lastSyncNever);
-    } else {
-        try {
-            const date = new Date(cfg.lastSync);
-            const formatted = date.toLocaleString();
-            jQuery("#yp-last-sync").text(formatted);
-        } catch {
-            jQuery("#yp-last-sync").text(cfg.lastSync);
-        }
-    }
+    // Last sync label removed
 }
 
 function renderThingsUI(cfg) {
