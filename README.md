@@ -12,20 +12,26 @@
 3. Нажмите **Install**.
 4. **Обязательно перезагрузите страницу (F5)**.
 
-<p align="center">
-  <img src="img/1.png" width="48%">
-  <img src="img/2.png" width="48%">
-</p>
+<div align="center">
+
+| | |
+|:---:|:---:|
+| <img src="img/1.png" width="400"> | <img src="img/2.png" width="400"> |
+
+</div>
 
 ### 2. Обновление пресета
 1. Зайдите в меню **AI Response Configuration** (обычная вкладка пресета) -> **Yablochny Preset** (там просто появится пресет новый).
 2. Нажмите кнопку **Sync Preset** (Синхронизировать).
    - *Это автоматически обновит пресет (все важные промпты, плюс добавит новые если вы обновляете)*
 
-<p align="center">
-  <img src="img/4.png" width="48%">
-  <img src="img/3.png" width="48%">
-</p>
+<div align="center">
+
+| | |
+|:---:|:---:|
+| <img src="img/4.png" width="400"> | <img src="img/3.png" width="400"> |
+
+</div>
 
 ### 3. Настройка вкладки форматирования размышлений
 1. Перейдите во вкладку **"A"** (AI Response Formatting).
@@ -55,10 +61,13 @@
 
 *По опыту: меньше шизы, вероятность багов с тем что модель за юзера пишет и тд снижаются, плюс модель лучше слушается.*
 
-<p align="center">
-  <img src="img/6.jpg" width="48%">
-  <img src="img/7.jpg" width="48%">
-</p>
+<div align="center">
+
+| | |
+|:---:|:---:|
+| <img src="img/6.jpg" width="400"> | <img src="img/7.jpg" width="400"> |
+
+</div>
 
 ---
 
