@@ -170,6 +170,7 @@ const UI_TEXT = {
         desc: "Adaptive Yablochny chat preset. The extension creates/updates a normal preset and keeps your toggle state and custom prompts.",
         sync: "Sync preset",
         auto: "Sync on start",
+        syncReasoning: "Sync Reasoning Format",
         langLabel: "Language prompt",
         lengthLabel: "Length",
         POVLabel: "POV",
@@ -385,6 +386,7 @@ const UI_TEXT = {
         desc: "Адаптивный пресет Яблочный. Расширение создает и обновляет пресет, сохраняя ваши тоглы и кастомные промпты.",
         sync: "Синхронизировать пресет",
         auto: "Синхронизация при запуске",
+        syncReasoning: "Синхр. рассуждения",
         langLabel: "Язык промптов",
         lengthLabel: "Длина ответа",
         POVLabel: "Лицо повествования",
@@ -598,6 +600,7 @@ const UI_TEXT = {
         desc: "Адаптивний пресет Яблучний. Розширення створює та оновлює пресет, зберігаючи ваші тогли та кастомні промпти.",
         sync: "Синхронізувати пресет",
         auto: "Синхронізація при запуску",
+        syncReasoning: "Синхр. міркування",
         langLabel: "Мова промптів",
         lengthLabel: "Довжина відповіді",
         POVLabel: "Обличчя оповідання",
@@ -1352,6 +1355,22 @@ const MODEL_PRESETS = {
             "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
         ],
     },
+    "claude-no-cot": {
+        name: "Claude 4.6",
+        settings: {
+            temperature: 0.8,
+            frequency_penalty: 0.17,
+            presence_penalty: 0.26,
+            top_p: 0.9,
+        },
+        toggles: {
+            "d0851faf-af18-40c6-8bf4-35e2338061e5": true, // no COT prefill
+        },
+        disableToggles: [
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003", // ◦︎ COT
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f", // ◈︎ ↗ universal prefill
+        ],
+    },
     "gpt-no-cot": {
         name: "GPT −COT",
         settings: {
@@ -1785,6 +1804,7 @@ function getConfig() {
         extension_settings[EXTENSION_NAME] = {
             presetName: DEFAULT_PRESET_NAME,
             autoSyncOnStart: true,
+            syncReasoning: true,
             languageMode: "auto",
             lengthMode: "400-600",
             POVMode: "3rd",
@@ -1822,6 +1842,7 @@ function getConfig() {
     // Backfill new keys
     cfg.presetName ??= DEFAULT_PRESET_NAME;
     cfg.autoSyncOnStart ??= true;
+    cfg.syncReasoning ??= true;
     cfg.languageMode ??= "auto";
     cfg.lengthMode ??= "400-600";
     cfg.POVMode ??= "3rd";
@@ -1976,6 +1997,7 @@ function applyModelPreset(presetId) {
     }
 
     cfg.modelPreset = presetId;
+    syncReasoningSettings(cfg);
     saveSettingsDebounced();
 
     return true;
@@ -3161,6 +3183,26 @@ function buildMergedPreset(existingPreset, master, cfg) {
 
 
 
+function syncReasoningSettings(cfg) {
+    if (!cfg.syncReasoning) return;
+    if (jQuery('#reasoning_prefix').length === 0) return; 
+
+    const isGptConf = cfg.modelPreset && (cfg.modelPreset.startsWith("gpt") || cfg.modelPreset === "claude-no-cot");
+    
+    jQuery('#reasoning_auto_parse').prop('checked', true).trigger('change');
+    jQuery('#reasoning_show_hidden').prop('checked', true).trigger('change');
+    jQuery('#reasoning_add_to_prompts').prop('checked', false).trigger('change');
+    jQuery('#reasoning_max_additions').val('1').trigger('input');
+    
+    if (isGptConf) {
+        jQuery('#reasoning_prefix').val('').trigger('input');
+        jQuery('#reasoning_suffix').val('').trigger('input');
+    } else {
+        jQuery('#reasoning_prefix').val('<think>').trigger('input');
+        jQuery('#reasoning_suffix').val('</think>').trigger('input');
+    }
+}
+
 async function syncPreset(showToasts = false, disableCapture = false) {
     try {
         const cfg = getConfig();
@@ -3444,6 +3486,7 @@ async function syncPreset(showToasts = false, disableCapture = false) {
                 message += "\n\n" + changes.join("\n");
             }
 
+            syncReasoningSettings(cfg);
             window.toastr.success(message);
         }
     } catch (err) {
@@ -3777,6 +3820,7 @@ function applyLocaleToUi() {
     jQuery("#yp-image-style-label").text(dict.imageStyleLabel);
     jQuery("#yp-sync-label").text(dict.sync);
     jQuery("#yp-auto-label").text(dict.auto);
+    jQuery("#yp-sync-reasoning-label").text(dict.syncReasoning || "Sync Reasoning Format");
     jQuery("#yp-lang-label").text(dict.langLabel);
     jQuery("#yp-length-label").text(dict.lengthLabel);
     jQuery("#yp-pov-label").text(dict.POVLabel);
@@ -4224,6 +4268,7 @@ function initControls() {
 
     window.YablochnyThingsSelection = cfg.thingsSelected || {};
     jQuery("#yp-auto-sync").prop("checked", !!cfg.autoSyncOnStart);
+    jQuery("#yp-sync-reasoning").prop("checked", !!cfg.syncReasoning);
     jQuery("#yp-disable-mods").prop("checked", !!cfg.disableMods);
     jQuery("#yp-dev-mode").prop("checked", !!cfg.devMode);
 
@@ -4271,6 +4316,10 @@ function initControls() {
 
     jQuery("#yp-auto-sync").on("change", function () {
         setExtensionConfig("autoSyncOnStart", this.checked);
+    });
+
+    jQuery("#yp-sync-reasoning").on("change", function () {
+        setExtensionConfig("syncReasoning", this.checked);
     });
 
     jQuery("#yp-disable-mods").on("change", function () {
