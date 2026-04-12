@@ -289,13 +289,13 @@ const UI_TEXT = {
         // Options - Length
         optLenCustom: "Custom",
         optLen200: "200–400 words",
-        optLen400: "400–600 words (default)",
+        optLen400: "400–600 words",
         optLen600: "600–800 words",
         optLenAdaptive: "Adaptive",
 
         // Options - Prose
         optProseCustom: "Custom",
-        optProseAo3: "AO3 Fanfic (default)",
+        optProseAo3: "AO3 Fanfic",
         optProseAnne: "Anne Rice (Gothic/Sensual)",
         optProseDonna: "Donna Tartt (Dark Academia)",
         optProsePratchett: "Terry Pratchett (Satirical/Witty)",
@@ -311,32 +311,32 @@ const UI_TEXT = {
         optSpeechWilde: "Oscar Wilde",
 
         // Options - RP
-        optRpDont: "Don't speak for user (default)",
-        optRpSpeak: "Author Mode",
+        optRpDont: "Don't speak for user",
+        optRpSpeak: "Speak for User",
 
         // Options - POV
         optPov1: "1st person",
         optPov2: "2nd person",
-        optPov3: "3rd person (default)",
+        optPov3: "3rd person",
 
         // Options - Tense
-        optTensePresent: "Present (default)",
+        optTensePresent: "Present",
         optTensePast: "Past",
         optTenseFuture: "Future",
 
         // Options - Thoughts
         optThoughtsOff: "Off",
-        optThoughtsStandard: "Thoughts (default)",
+        optThoughtsStandard: "Thoughts",
         optThoughtsMore: "More thoughts",
 
         // Options - Pace
         optPaceSlow: "Slowburn",
         optPaceQuick: "Quick Pace",
-        optPaceNatural: "Natural (default)",
+        optPaceNatural: "Natural",
 
         // Options - Rating
         ratingLabel: "Rating",
-        optRatingNc17: "NC-17 (default)",
+        optRatingNc17: "NC-17",
         optRatingR: "R",
         optRatingPg13: "PG-13",
         ttRating: "Content rating for sexual/violent scenes.",
@@ -354,7 +354,7 @@ const UI_TEXT = {
         optFocusDetails: "Details",
 
         // Options - Deconstruction
-        optDecoLarge: "Large (Default)",
+        optDecoLarge: "Large",
         optDecoMini: "Mini",
 
         // Things
@@ -502,13 +502,13 @@ const UI_TEXT = {
         // Options - Length
         optLenCustom: "Свой",
         optLen200: "200–400 слов",
-        optLen400: "400–600 слов (стандарт)",
+        optLen400: "400–600 слов",
         optLen600: "600–800 слов",
         optLenAdaptive: "Адаптивная",
 
         // Options - Prose
         optProseCustom: "Свой",
-        optProseAo3: "Фанфик AO3 (стандарт)",
+        optProseAo3: "Фанфик AO3",
         optProseAnne: "Энн Райс (Готика/Чувственность)",
         optProseDonna: "Донна Тартт (Dark Academia)",
         optProsePratchett: "Терри Пратчетт (Сатира/Юмор)",
@@ -525,7 +525,7 @@ const UI_TEXT = {
 
         // Options - RP
         optRpDont: "Не говорить за юзера",
-        optRpSpeak: "Авторский режим",
+        optRpSpeak: "Говори за юзера",
 
         // Options - POV
         optPov1: "1-е лицо (Я)",
@@ -545,11 +545,11 @@ const UI_TEXT = {
         // Options - Pace
         optPaceSlow: "Слоуберн",
         optPaceQuick: "Быстрый темп",
-        optPaceNatural: "Естественный (стандарт)",
+        optPaceNatural: "Естественный",
 
         // Options - Rating
         ratingLabel: "Рейтинг",
-        optRatingNc17: "NC-17 (стандарт)",
+        optRatingNc17: "NC-17",
         optRatingR: "R",
         optRatingPg13: "PG-13",
         ttRating: "Рейтинг контента для сексуальных/жестоких сцен.",
@@ -567,7 +567,7 @@ const UI_TEXT = {
         optFocusDetails: "Детализация",
 
         // Options - Deconstruction
-        optDecoLarge: "Полная (стандарт)",
+        optDecoLarge: "Полная",
         optDecoMini: "Мини-разбор",
 
         // Things
@@ -715,13 +715,13 @@ const UI_TEXT = {
         // Options - Length
         optLenCustom: "Свій",
         optLen200: "200–400 слів",
-        optLen400: "400–600 слів (стандарт)",
+        optLen400: "400–600 слів",
         optLen600: "600–800 слів",
         optLenAdaptive: "Адаптивна",
 
         // Options - Prose
         optProseCustom: "Свій",
-        optProseAo3: "Фанфік AO3 (стандарт)",
+        optProseAo3: "Фанфік AO3",
         optProseAnne: "Енн Райс (Готика/Чуттєвість)",
         optProseDonna: "Донна Тартт (Dark Academia)",
         optProsePratchett: "Террі Пратчетт (Сатира/Гумор)",
@@ -738,7 +738,7 @@ const UI_TEXT = {
 
         // Options - RP
         optRpDont: "Не говорити за юзера",
-        optRpSpeak: "Авторський режим",
+        optRpSpeak: "Говорити за юзера",
 
         // Options - POV
         optPov1: "1-ша особа (Я)",
@@ -758,11 +758,11 @@ const UI_TEXT = {
         // Options - Pace
         optPaceSlow: "Слоуберн",
         optPaceQuick: "Швидкий темп",
-        optPaceNatural: "Природний (стандарт)",
+        optPaceNatural: "Природний",
 
         // Options - Rating
         ratingLabel: "Рейтинг",
-        optRatingNc17: "NC-17 (стандарт)",
+        optRatingNc17: "NC-17",
         optRatingR: "R",
         optRatingPg13: "PG-13",
         ttRating: "Рейтинг контенту для сексуальних/жорстоких сцен.",
@@ -780,7 +780,7 @@ const UI_TEXT = {
         optFocusDetails: "Деталізація",
 
         // Options - Deconstruction
-        optDecoLarge: "Повна (стандарт)",
+        optDecoLarge: "Повна",
         optDecoMini: "Міні-розбір",
 
         // Things
