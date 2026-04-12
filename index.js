@@ -185,10 +185,10 @@ const UI_TEXT = {
         extrasLangLabel: "Extras Language",
         focusLabel: "Focus",
         deconstructionLabel: "COT deconstruction",
-        lastSyncNever: "never",
+
         imageStyleLabel: "Image style",
         optStyleCustom: "Custom",
-        lastSyncLabel: "Last sync:",
+
         thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Additional elements (◦︎ ✎ things)",
         thingsNote: "Sync after checking/unchecking!",
         thingsManagedLabel: "Managed Toggles",
@@ -232,10 +232,6 @@ const UI_TEXT = {
         guideLabel: "Guide",
         creditsLabel: "Credits",
         imageStyleLabel: "Image style",
-        hdrAdditional: "Additional Settings",
-        siteLabel: "Site",
-        guideLabel: "Guide",
-        creditsLabel: "Credits",
 
         // Credits
         creditsTitle: "Credits & Authors",
@@ -248,7 +244,7 @@ const UI_TEXT = {
         ttSync: "Synchronize extension settings with the preset.",
         ttAuto: "Automatically sync when SillyTavern starts.",
         ttDev: "Show synchronization logs in browser console (F12).",
-        ttLastSync: "Time of the last successful synchronization.",
+
         ttLang: "The language for the main AI response.",
         ttExtras: "The language used for additional AI commands/outputs.",
         ttSwearing: "Adjusts the presence and localization of profanity.",
@@ -401,10 +397,10 @@ const UI_TEXT = {
         extrasLangLabel: "Язык дополнений",
         focusLabel: "Фокус",
         deconstructionLabel: "COT деконструкция",
-        lastSyncNever: "еще ни разу",
+
         imageStyleLabel: "Стиль изображений",
         optStyleCustom: "Свой",
-        lastSyncLabel: "Синхронизация:",
+
         thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Дополнительные элементы (◦︎ ✎ things)",
         thingsNote: "Не забудьте синхронизировать после выбора!",
         thingsManagedLabel: "Управлять тоглами отсюда",
@@ -460,7 +456,7 @@ const UI_TEXT = {
         ttSync: "Синхронизировать настройки расширения с пресетом.",
         ttAuto: "Автоматическая синхронизация при запуске SillyTavern.",
         ttDev: "Показывать логи синхронизации в консоли браузера (F12).",
-        ttLastSync: "Время последней успешной синхронизации.",
+
         ttLang: "Язык основного ответа ИИ.",
         ttExtras: "Язык для дополнительных команд и вывода ИИ.",
         ttSwearing: "Регулирует наличие и локализацию мата.",
@@ -615,10 +611,10 @@ const UI_TEXT = {
         extrasLangLabel: "Мова доповнень",
         focusLabel: "Фокус",
         deconstructionLabel: "COT деконструкція",
-        lastSyncNever: "ще жодного разу",
+
         imageStyleLabel: "Стиль зображень",
         optStyleCustom: "Свій",
-        lastSyncLabel: "Синхронізація:",
+
         thingsTitle: "<i class=\"fa-solid fa-puzzle-piece\" style=\"margin-right:8px; opacity:0.8;\"></i>Додаткові елементи (◦︎ ✎ things)",
         thingsNote: "Не забудьте синхронізувати після вибору!",
         thingsManagedLabel: "Керувати тоглами звідси",
@@ -682,7 +678,7 @@ const UI_TEXT = {
         ttSync: "Синхронізувати налаштування розширення з пресетом.",
         ttAuto: "Автоматична синхронізація при запуску SillyTavern.",
         ttDev: "Показувати логи синхронізації в консолі браузера (F12).",
-        ttLastSync: "Час останньої успішної синхронізації.",
+
         ttLang: "Мова основної відповіді ШІ.",
         ttExtras: "Мова для додаткових команд та виводу ШІ.",
         ttSwearing: "Регулює наявність та локалізацію лайки.",
@@ -1456,8 +1452,7 @@ const MODEL_PRESETS = {
     },
 };
 
-// Built-in profiles - REMOVED, replaced with MODEL_PRESETS
-const BUILTIN_PROFILES = {};
+
 
 const THINGS_DEFS = {
     mix: [
@@ -1915,19 +1910,7 @@ function applyModelPreset(presetId) {
     const ID_GPT_JB = "jailbreak";
     const ID_GEMINI_DQUOTES = "00119b3e-a60f-4f1e-b48a-127026645a39";
 
-    // Function to check if a toggle is currently enabled
-    const isToggleEnabled = (identifier) => {
-        if (Array.isArray(currentPreset.prompt_order)) {
-            for (const group of currentPreset.prompt_order) {
-                if (Array.isArray(group.order)) {
-                    for (const item of group.order) {
-                        if (item.identifier === identifier) return item.enabled;
-                    }
-                }
-            }
-        }
-        return false;
-    };
+
 
     // Function to set toggle state in both prompts and prompt_order
     const setToggleEnabled = (identifier, enabled) => {
@@ -2003,21 +1986,7 @@ function applyModelPreset(presetId) {
     return true;
 }
 
-// Old profile functions - REMOVED
-function saveProfile(name) {
-    // Deprecated - profiles removed
-    return;
-}
 
-function loadProfile(profileId) {
-    // Deprecated - profiles removed
-    return false;
-}
-
-function deleteProfile(name) {
-    // Deprecated - profiles removed
-    return false;
-}
 
 async function loadBasePreset() {
     if (window.YablochnyPresetBase) {
@@ -2052,7 +2021,7 @@ function getContentFromExisting(existingPreset, identifier) {
 }
 
 function applyLanguageVariant(master, cfg, uiLang, existingPreset) {
-    // console.log("[Yablochny] Applying Language Variant");
+
     const id = "28ec4454-b3c2-4c06-8fd0-52cb123b778f";
     const prompt = master.prompts.find(p => p.identifier === id);
     if (!prompt) return;
@@ -3840,8 +3809,7 @@ function applyLocaleToUi() {
     jQuery("#yp-focus-label").text(dict.focusLabel);
     jQuery("#yp-deconstruction-label").text(dict.deconstructionLabel);
     jQuery("#yp-additional-label").text(dict.sectionAdditional);
-    // jQuery("#yp-guide-label").text(dict.guideLabel); // redundant now
-    // Last sync label removed
+
     jQuery("#yp-things-title").html(dict.thingsTitle);
     jQuery("#yp-things-note").text(dict.thingsNote);
     jQuery("#yp-things-managed-label").text(dict.thingsManagedLabel);
@@ -3994,7 +3962,6 @@ function updateMetaUi() {
 
     jQuery("#yp-preset-name").text(cfg.presetName || "—");
 
-    // Last sync label removed
 }
 
 function renderThingsUI(cfg) {
