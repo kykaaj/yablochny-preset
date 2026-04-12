@@ -1891,7 +1891,6 @@ function applyModelPreset(presetId) {
     if (!currentPreset) return false;
 
     // Helper IDs
-    const ID_NORMAL_ANTIECHO = "b26eb680-d1cd-4f8a-a54a-67e17a13a6c0";
     const ID_GPT_ANTIECHO = "3fac312b-68d9-4c98-b17e-e3565322e236";
     const ID_GPT_JB = "jailbreak";
     const ID_GEMINI_DQUOTES = "00119b3e-a60f-4f1e-b48a-127026645a39";
@@ -3239,13 +3238,11 @@ async function syncPreset(showToasts = false, disableCapture = false) {
                 // GPT/Gemini specific logic (replicated from applyModelPreset for consistency)
                 const isGptMode = cfg.modelPreset.startsWith("gpt");
                 const isGeminiMode = cfg.modelPreset === "gemini";
-                const ID_NORMAL_ANTIECHO = "b26eb680-d1cd-4f8a-a54a-67e17a13a6c0";
                 const ID_GPT_ANTIECHO = "3fac312b-68d9-4c98-b17e-e3565322e236";
                 const ID_GPT_JB = "jailbreak";
                 const ID_GEMINI_DQUOTES = "00119b3e-a60f-4f1e-b48a-127026645a39";
 
                 if (isGptMode) {
-                    forceToggleState(ID_NORMAL_ANTIECHO, false); // Disable normal if GPT
                     forceToggleState(ID_GPT_ANTIECHO, true);
                     forceToggleState(ID_GPT_JB, true);
                 } else {
