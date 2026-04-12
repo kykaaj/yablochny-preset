@@ -3189,22 +3189,22 @@ function syncReasoningSettings(cfg) {
 
     const isGptConf = cfg.modelPreset && (cfg.modelPreset.startsWith("gpt") || cfg.modelPreset === "claude-no-cot");
     
+    // Always apply these settings to ALL modes
     jQuery('#reasoning_auto_parse').prop('checked', true).trigger('change');
     jQuery('#reasoning_show_hidden').prop('checked', true).trigger('change');
     jQuery('#reasoning_add_to_prompts').prop('checked', false).trigger('change');
     jQuery('#reasoning_max_additions').val('1').trigger('input');
     
+    jQuery('#reasoning_prefix').val('\n<think>\n').trigger('input');
+    jQuery('#reasoning_suffix').val('\n</think>\n').trigger('input');
+    
+    // Conditionally erase/add <think> in 'start_reply_with'
     if (isGptConf) {
-        jQuery('#reasoning_prefix').val('').trigger('input');
-        jQuery('#reasoning_suffix').val('').trigger('input');
-        
-        // Also ensure start_reply_with is empty since GPT/Claude 4.6 have no prefills
         if (jQuery('#start_reply_with').val()?.trim() === '<think>') {
             jQuery('#start_reply_with').val('').trigger('input');
         }
     } else {
-        jQuery('#reasoning_prefix').val('<think>').trigger('input');
-        jQuery('#reasoning_suffix').val('</think>').trigger('input');
+        jQuery('#start_reply_with').val('<think>\n').trigger('input');
     }
 }
 
