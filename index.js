@@ -1355,6 +1355,39 @@ const MODEL_PRESETS = {
             "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
         ],
     },
+    "gpt-no-cot": {
+        name: "GPT −COT",
+        settings: {
+            temperature: 0.85,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            top_p: 0.8,
+        },
+        toggles: {
+            "jailbreak": true, // JB
+            "d0851faf-af18-40c6-8bf4-35e2338061e5": true, // no COT prefill
+        },
+        disableToggles: [
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003", // ◦︎ COT
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f", // ◈︎ ↗ universal prefill
+        ],
+    },
+    "deepseek-cot": {
+        name: "DS +COT",
+        settings: {
+            temperature: 0.70,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            top_p: 0.92,
+        },
+        toggles: {
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // universal prefill
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
+        },
+        disableToggles: [
+            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no cot prefill
+        ],
+    },
     "claude-no-cot": {
         name: "Claude 4.6",
         settings: {
@@ -1371,8 +1404,8 @@ const MODEL_PRESETS = {
             "6c0ab122-aa65-4c14-ae20-199c2010df2f", // ◈︎ ↗ universal prefill
         ],
     },
-    "gpt-no-cot": {
-        name: "GPT −COT",
+    "gpt-cot": {
+        name: "GPT +COT",
         settings: {
             temperature: 0.85,
             frequency_penalty: 0,
@@ -1381,11 +1414,11 @@ const MODEL_PRESETS = {
         },
         toggles: {
             "jailbreak": true, // JB
-            "d0851faf-af18-40c6-8bf4-35e2338061e5": true, // no COT prefill
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // universal prefill
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
         },
         disableToggles: [
-            "4ad8a657-f24c-40c9-bffc-976a6ab39003", // ◦︎ COT
-            "6c0ab122-aa65-4c14-ae20-199c2010df2f", // ◈︎ ↗ universal prefill
+            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
         ],
     },
     "deepseek-no-cot": {
@@ -1419,39 +1452,6 @@ const MODEL_PRESETS = {
         },
         disableToggles: [
             "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
-        ],
-    },
-    "gpt-cot": {
-        name: "GPT +COT",
-        settings: {
-            temperature: 0.85,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-            top_p: 0.8,
-        },
-        toggles: {
-            "jailbreak": true, // JB
-            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // universal prefill
-            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
-        },
-        disableToggles: [
-            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
-        ],
-    },
-    "deepseek-cot": {
-        name: "DS +COT",
-        settings: {
-            temperature: 0.70,
-            frequency_penalty: 0,
-            presence_penalty: 0,
-            top_p: 0.92,
-        },
-        toggles: {
-            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // universal prefill
-            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
-        },
-        disableToggles: [
-            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no cot prefill
         ],
     },
 };
