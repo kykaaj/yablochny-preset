@@ -5119,11 +5119,11 @@ function updateSectionCss() {
             const cSelNameList = cBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name']`).join(",");
             
             // CHILDREN STYLING
-            // To indent, we add padding-left to the name container and make it inline-block if needed
-            css += `${cSelNameList} { padding-left: 24px !important; display: inline-block !important; font-size: 0.9em !important; }\n`;
+            // Shrink the text slightly to emphasize it's a child element
+            css += `${cSelNameList} { font-size: 0.9em !important; }\n`;
             
-            // Make the entire child slightly dimmer and grouped
-            css += `${cSelList} { border-left: 2px solid rgba(255,255,255,0.06) !important; opacity: 0.8 !important; padding-left: 3px !important; }\n`;
+            // Shift the ENTIRE child pill to the right, and reduce width so right controls stay aligned!
+            css += `${cSelList} { margin-left: 32px !important; width: calc(100% - 32px) !important; border-left: 2px solid rgba(255,255,255,0.1) !important; opacity: 0.8 !important; }\n`;
 
             if (!isOpen) {
                 css += `${cSelList} { display: none !important; }\n`;
