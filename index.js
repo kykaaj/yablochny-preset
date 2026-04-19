@@ -5120,7 +5120,7 @@ function applySectionCollapse() {
                 e.stopImmediatePropagation();
 
                 // Save scroll position
-                const scrollParent = jQuery(this).closest("[style*='overflow'], .scrollable, #chat, #openai_setting_chat");",
+                const scrollParent = jQuery(this).closest("[style*='overflow'], .scrollable, #chat, #openai_setting_chat");
                 const scrollEl = scrollParent.length > 0 ? scrollParent : jQuery(window);
                 const scrollTop = scrollEl.scrollTop();
 
