@@ -5085,9 +5085,15 @@ function updateSectionCss() {
         const hSelList = hBaseSels.join(",");
         const hSelNameList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name']`).join(",");
         const hSelInspectList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name'] .prompt-manager-inspect-action`).join(",");
+        const hSelControlsList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_controls']`).join(",");
+        const hSelTokensList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_tokens']`).join(",");
         
-        // Headers: Full opacity so they don't look dim/disabled, pointer cursor
-        css += `${hSelList} { cursor: pointer !important; user-select: none; opacity: 1 !important; filter: none !important; border: 1px solid rgba(255,255,255,0.1) !important; }\n`;
+        // Headers: Full opacity so they don't look dim/disabled, pointer cursor. Single column grid to maximize space.
+        css += `${hSelList} { cursor: pointer !important; user-select: none; opacity: 1 !important; filter: none !important; border: 1px solid rgba(255,255,255,0.1) !important; grid-template-columns: 1fr !important; }\n`;
+        
+        // Hide controls and tokens on headers to prevent accidental clicks
+        css += `${hSelControlsList}, ${hSelTokensList} { display: none !important; }\n`;
+
         // Force the name of the header to be bright and bold
         css += `${hSelNameList} { font-weight: 600 !important; font-size: 1.05em !important; opacity: 1 !important; color: var(--SmartThemeBodyColor) !important; }\n`;
         // Force any inspect action links inside to also be bright
@@ -5130,8 +5136,8 @@ function updateSectionCss() {
             // Shrink the text slightly to emphasize it's a child element
             css += `${cSelNameList} { font-size: 0.9em !important; }\n`;
             
-            // Shift the ENTIRE child pill to the right, and reduce width so right controls stay aligned!
-            css += `${cSelList} { margin-left: 16px !important; width: calc(100% - 16px) !important; border-left: 2px solid rgba(255,255,255,0.1) !important; opacity: 0.8 !important; }\n`;
+            // Shift the ENTIRE child pill to the right, and reduce width so right controls stay aligned! Wait, no opacity.
+            css += `${cSelList} { margin-left: 16px !important; width: calc(100% - 16px) !important; border-left: 2px solid rgba(255,255,255,0.1) !important; }\n`;
 
             if (!isOpen) {
                 css += `${cSelList} { display: none !important; }\n`;
