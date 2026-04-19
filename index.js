@@ -4997,9 +4997,8 @@ async function injectYablochnyUI(htmlContent) {
                 // This avoids missing complex nested updates.
                 // Scanning ~20-30 items is negligible for performance.
                 if (mutations.some(m => m.addedNodes.length > 0)) {
-                    jQuery("#completion_prompt_manager_list").removeData("yp-sections-applied");
                     highlightManagedPrompts();
-                    applySectionCollapse();
+                    if (!_ypSectionObserverPaused) applySectionCollapseDebounced();
                 }
             });
             observer.observe(pmList, { childList: true, subtree: true });
@@ -5008,7 +5007,7 @@ async function injectYablochnyUI(htmlContent) {
     setInterval(insertUI, 1100);
     setTimeout(insertUI, 500);
     // Also apply section collapse periodically for robustness
-    setInterval(() => { jQuery("#completion_prompt_manager_list").removeData("yp-sections-applied"); applySectionCollapse(); }, 2000);
+    setInterval(() => { if (!_ypSectionObserverPaused) applySectionCollapseDebounced(); }, 2500);
 }
 
 /**
@@ -5047,6 +5046,18 @@ function showStandaloneGlow(target, isGold) {
  * Section headers are detected by the ◜︎...◞︎ pattern in their name.
  * All items between two section headers are treated as children and can be collapsed.
  */
+/**
+ * Applies collapsible sections to the Prompt Manager list.
+ * Section headers are detected by the ◜︎...◞︎ pattern in their name.
+ */
+let _ypSectionObserverPaused = false;
+let _ypSectionDebounce = null;
+
+function applySectionCollapseDebounced() {
+    if (_ypSectionDebounce) clearTimeout(_ypSectionDebounce);
+    _ypSectionDebounce = setTimeout(() => applySectionCollapse(), 100);
+}
+
 function applySectionCollapse() {
     const pmList = jQuery("#completion_prompt_manager_list");
     if (pmList.length === 0) return;
@@ -5054,9 +5065,8 @@ function applySectionCollapse() {
     const items = pmList.children("li[data-pm-identifier]");
     if (items.length === 0) return;
 
-    // Don't re-process if already done for this render
-    if (pmList.data("yp-sections-applied")) return;
-    pmList.data("yp-sections-applied", true);
+    // Pause observer to prevent loops
+    _ypSectionObserverPaused = true;
 
     // Find section headers by name pattern
     const sections = [];
@@ -5069,9 +5079,9 @@ function applySectionCollapse() {
         }
     });
 
-    if (sections.length === 0) return;
+    if (sections.length === 0) { _ypSectionObserverPaused = false; return; }
 
-    // Collect children for each section (items between headers)
+    // Collect children for each section
     for (let s = 0; s < sections.length; s++) {
         const startIdx = sections[s].index + 1;
         const endIdx = (s + 1 < sections.length) ? sections[s + 1].index : items.length;
@@ -5080,56 +5090,73 @@ function applySectionCollapse() {
         }
     }
 
-    // Apply collapse/expand to each section
     sections.forEach(section => {
         const el = section.el;
         const id = el.attr("data-pm-identifier");
         const storageKey = "yp_section_" + id;
         const isOpen = localStorage.getItem(storageKey) === "true";
 
+        // Style children — indent + smaller
+        section.children.forEach(child => {
+            if (!child.hasClass("yp-section-child")) {
+                child.addClass("yp-section-child");
+            }
+        });
+
         // Style the header (only once)
         if (!el.hasClass("yp-section-header")) {
             el.addClass("yp-section-header");
-            el.css({ "cursor": "pointer", "border-left": "3px solid rgba(255, 165, 0, 0.5)", "background": "linear-gradient(90deg, rgba(255, 165, 0, 0.08), transparent)" });
 
-            // Add chevron before name
             const nameEl = el.find("[class*='prompt_manager_prompt_name']");
             if (nameEl.find(".yp-section-chevron").length === 0) {
-                const chevron = jQuery('<i class="yp-section-chevron fa-solid fa-chevron-right" style="margin-right:5px;font-size:9px;transition:transform 0.25s ease;display:inline-block;opacity:0.7;"></i>');
+                const chevron = jQuery('<i class="yp-section-chevron fa-solid fa-chevron-right"></i>');
                 nameEl.prepend(chevron);
             }
 
-            // Intercept click on the whole li to toggle section (not open editor)
+            // Intercept ALL clicks on this li to toggle section
             el.off("click.ypsection").on("click.ypsection", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
+
+                // Save scroll position
+                const scrollParent = jQuery(this).closest("[style*='overflow'], .scrollable, #chat, #openai_setting_chat");",
+                const scrollEl = scrollParent.length > 0 ? scrollParent : jQuery(window);
+                const scrollTop = scrollEl.scrollTop();
+
                 const open = localStorage.getItem(storageKey) === "true";
                 const newState = !open;
                 localStorage.setItem(storageKey, String(newState));
 
                 const chevronEl = jQuery(this).find(".yp-section-chevron");
+                _ypSectionObserverPaused = true;
                 if (newState) {
                     chevronEl.css("transform", "rotate(90deg)");
-                    section.children.forEach(child => child.slideDown(150));
+                    section.children.forEach(child => child.slideDown(120));
                 } else {
                     chevronEl.css("transform", "rotate(0deg)");
-                    section.children.forEach(child => child.slideUp(150));
+                    section.children.forEach(child => child.slideUp(120));
                 }
+                setTimeout(() => { _ypSectionObserverPaused = false; }, 200);
+
+                // Restore scroll position
+                requestAnimationFrame(() => scrollEl.scrollTop(scrollTop));
                 return false;
             });
         }
 
-        // Update chevron & visibility for current state
+        // Set visibility (no animation — instant)
         const chevron = el.find(".yp-section-chevron");
         if (isOpen) {
             chevron.css("transform", "rotate(90deg)");
-            section.children.forEach(child => child.show());
+            section.children.forEach(child => { if (!child.is(":visible")) child.show(); });
         } else {
             chevron.css("transform", "rotate(0deg)");
-            section.children.forEach(child => child.hide());
+            section.children.forEach(child => { if (child.is(":visible")) child.hide(); });
         }
     });
+
+    setTimeout(() => { _ypSectionObserverPaused = false; }, 50);
 }
 function injectDynamicStyles() {
     const styleId = "yablochny-dynamic-styles";

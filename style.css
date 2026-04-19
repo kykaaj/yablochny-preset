@@ -730,21 +730,20 @@
 
 /* --- PROMPT MANAGER SECTION HEADERS --- */
 li.yp-section-header {
-  border-left: 3px solid rgba(255, 165, 0, 0.5) !important;
-  background: linear-gradient(90deg, rgba(255, 165, 0, 0.08), transparent) !important;
+  border-left: 3px solid rgba(255, 255, 255, 0.25) !important;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), transparent) !important;
   cursor: pointer !important;
   user-select: none;
   transition: background 0.2s ease;
 }
 
 li.yp-section-header:hover {
-  background: linear-gradient(90deg, rgba(255, 165, 0, 0.15), transparent) !important;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent) !important;
 }
 
 li.yp-section-header [class*='prompt_manager_prompt_name'] {
-  color: #ffa500 !important;
-  text-decoration: none !important;
   font-weight: 600 !important;
+  letter-spacing: 0.3px;
 }
 
 .yp-section-chevron {
@@ -752,6 +751,15 @@ li.yp-section-header [class*='prompt_manager_prompt_name'] {
   font-size: 9px;
   transition: transform 0.25s ease;
   display: inline-block;
-  opacity: 0.7;
+  opacity: 0.5;
 }
+
+/* --- SECTION CHILDREN: indented + smaller --- */
+li.yp-section-child {
+  margin-left: 14px !important;
+  font-size: 0.92em !important;
+  opacity: 0.9;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
 
