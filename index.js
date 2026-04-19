@@ -5239,11 +5239,11 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { color: #5c9e67 !important; opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.45) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.1), transparent) !important; }\n`;
+        css += `${lisDisabled} { color: #5c9e67 !important; opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.25) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; }\n`;
         css += `${cBeforeDisabled} { color: #5c9e67 !important; opacity: 0.5 !important; }\n`;
         
         // Enabled State
-        css += `${lisEnabled} { color: #6bcb77 !important; opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.9) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.25), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(107, 203, 119, 0.15) !important; }\n`;
+        css += `${lisEnabled} { color: #6bcb77 !important; opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.7) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.15), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(107, 203, 119, 0.1) !important; }\n`;
         css += `${cBeforeEnabled} { color: #6bcb77 !important; opacity: 0.9 !important; }\n`;
     }
 
@@ -5265,11 +5265,11 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { color: #a4843b !important; opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.45) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important; }\n`;
+        css += `${lisDisabled} { color: #a4843b !important; opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.25) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.05), transparent) !important; }\n`;
         css += `${cBeforeDisabled} { color: #a4843b !important; opacity: 0.5 !important; }\n`;
         
         // Enabled State
-        css += `${lisEnabled} { color: #f1c40f !important; opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.9) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.25), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(241, 196, 15, 0.15) !important; }\n`;
+        css += `${lisEnabled} { color: #f1c40f !important; opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.7) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.15), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(241, 196, 15, 0.1) !important; }\n`;
         css += `${cBeforeEnabled} { color: #f1c40f !important; opacity: 0.9 !important; }\n`;
     }
 
