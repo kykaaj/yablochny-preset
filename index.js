@@ -5200,10 +5200,20 @@ function applySectionCollapse() {
         for (let j = startIdx; j < endIdx; j++) {
             const item = jQuery(items[j]);
             const id = item.attr("data-pm-identifier");
+            const nameEl = item.find("[class*='prompt_manager_prompt_name']");
+            const name = nameEl.text().trim();
             
             // If we hit a known standalone toggle (or ST default), stop swallowing children!
             // This prevents "jb", "core", "self-audit" from becoming children of the last folder.
-            if (STOPElements.includes(id)) {
+            // ALSO break on the user's custom ASCII block separator lines (like ◈ ╮, ◈ ╯, ✂, ↓, ↑)
+            if (
+                STOPElements.includes(id) || 
+                name.includes("╮") || 
+                name.includes("╯") || 
+                name.includes("↓") || 
+                name.includes("↑") || 
+                name.includes("✂")
+            ) {
                 break;
             }
             
