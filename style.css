@@ -733,5 +733,8 @@
    using attribute selectors. This prevents flicker on re-render.
 */
 
-
-
+@media (max-width: 500px) {
+  .yp-hide-on-mobile {
+    display: none !important;
+  }
+}

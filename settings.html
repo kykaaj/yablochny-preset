@@ -7,10 +7,12 @@
           <span id="yp-title-text">Settings</span>
           <span>🍎</span>
         </div>
-        <span class="yp-inactive-badge" id="yp-inactive-badge">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          <span id="yp-inactive-badge-text">Other preset active</span>
-          <button id="yp-reinstall-btn" class="menu_button primary" style="font-size: 0.85em; margin-left: 10px; padding: 2px 8px;" title="Recreate preset if deleted">Restore</button>
+        <span class="yp-inactive-badge" id="yp-inactive-badge" style="max-width: 100%; overflow: hidden;">
+          <i class="fa-solid fa-triangle-exclamation" style="flex-shrink: 0;"></i>
+          <span id="yp-inactive-badge-text" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Other preset active</span>
+          <button id="yp-reinstall-btn" class="menu_button primary" style="font-size: 0.85em; margin-left: 4px; padding: 2px 6px; flex-shrink: 0; display: flex; align-items: center; gap: 4px;" title="Recreate preset if deleted">
+            <i class="fa-solid fa-rotate-left"></i> <span class="yp-hide-on-mobile">Restore</span>
+          </button>
         </span>
       </div>
       <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
