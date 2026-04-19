@@ -5155,7 +5155,10 @@ function applySectionCollapse() {
         el.data("yp-section-bound", true);
         const storageKey = "yp_section_" + section.id;
 
-        el.on("click.ypsection", function (e) {
+        // Bind click ONLY to the name element, not the whole <li>
+        // This preserves toggle/edit/delete buttons on section headers
+        const nameEl = el.find("[class*='prompt_manager_prompt_name']");
+        nameEl.on("click.ypsection", function (e) {
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
