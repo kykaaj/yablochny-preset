@@ -5073,9 +5073,7 @@ function updateSectionCss() {
     const headerSels = _ypSectionMap.headerIds.map(id => `li[data-pm-identifier="${id}"]`);
     if (headerSels.length > 0) {
         const hSel = headerSels.join(",");
-        css += `${hSel} { border-left: 3px solid rgba(255,255,255,0.25) !important; background: linear-gradient(90deg, rgba(255,255,255,0.06), transparent) !important; cursor: pointer !important; user-select: none; }\n`;
-        css += `${hSel}:hover { background: linear-gradient(90deg, rgba(255,255,255,0.1), transparent) !important; }\n`;
-        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600 !important; letter-spacing: 0.3px; }\n`;
+        css += `${hSel} { cursor: pointer !important; user-select: none; }\n`;
         // Chevron via ::before pseudo-element (no DOM needed!)
         css += `${hSel} [class*='prompt_manager_prompt_name']::before { content: "›"; display: inline-block; margin-right: 6px; font-size: 14px; font-weight: bold; opacity: 0.5; transition: transform 0.25s ease; }\n`;
     }
@@ -5095,7 +5093,7 @@ function updateSectionCss() {
             const childSels = childIds.map(id => `li[data-pm-identifier="${id}"]`);
             const cSel = childSels.join(",");
             // Indent + smaller
-            css += `${cSel} { margin-left: 14px !important; font-size: 0.92em !important; opacity: 0.9; border-left: 1px solid rgba(255,255,255,0.08) !important; }\n`;
+            css += `${cSel} { margin-left: 14px !important; font-size: 0.92em !important; border-left: 1px solid rgba(255,255,255,0.08) !important; }\n`;
             // Hide if section is closed
             if (!isOpen) {
                 css += `${cSel} { display: none !important; }\n`;
