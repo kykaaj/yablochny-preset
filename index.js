@@ -5043,19 +5043,42 @@ function showStandaloneGlow(target, isGold) {
 
 /**
  * Applies collapsible sections to the Prompt Manager list.
- * Section headers are detected by the ◜︎...◞︎ pattern in their name.
- * All items between two section headers are treated as children and can be collapsed.
- */
-/**
- * Applies collapsible sections to the Prompt Manager list.
+ * Uses CSS-based hiding (injected <style>) to prevent flicker on re-renders.
  * Section headers are detected by the ◜︎...◞︎ pattern in their name.
  */
 let _ypSectionObserverPaused = false;
 let _ypSectionDebounce = null;
+let _ypSectionMap = null; // cached: { headerIds: [...], childIdsByHeader: { headerId: [childIds] } }
 
 function applySectionCollapseDebounced() {
     if (_ypSectionDebounce) clearTimeout(_ypSectionDebounce);
-    _ypSectionDebounce = setTimeout(() => applySectionCollapse(), 100);
+    _ypSectionDebounce = setTimeout(() => applySectionCollapse(), 80);
+}
+
+/**
+ * Injects/updates a <style> tag that hides children of collapsed sections.
+ * This is instant and survives DOM re-renders (no flicker).
+ */
+function updateSectionCss() {
+    if (!_ypSectionMap) return;
+    let css = "";
+    for (const headerId of _ypSectionMap.headerIds) {
+        const storageKey = "yp_section_" + headerId;
+        const isOpen = localStorage.getItem(storageKey) === "true";
+        if (!isOpen) {
+            const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
+            for (const cid of childIds) {
+                css += `li[data-pm-identifier="${cid}"] { display: none !important; }\n`;
+            }
+        }
+    }
+    let styleEl = document.getElementById("yp-section-hide-css");
+    if (!styleEl) {
+        styleEl = document.createElement("style");
+        styleEl.id = "yp-section-hide-css";
+        document.head.appendChild(styleEl);
+    }
+    styleEl.textContent = css;
 }
 
 function applySectionCollapse() {
@@ -5065,7 +5088,6 @@ function applySectionCollapse() {
     const items = pmList.children("li[data-pm-identifier]");
     if (items.length === 0) return;
 
-    // Pause observer to prevent loops
     _ypSectionObserverPaused = true;
 
     // Find section headers by name pattern
@@ -5075,13 +5097,13 @@ function applySectionCollapse() {
         const nameEl = el.find("[class*='prompt_manager_prompt_name']");
         const name = nameEl.text().trim();
         if (SECTION_HEADER_PATTERN.test(name)) {
-            sections.push({ index: i, el: el, name: name, children: [] });
+            sections.push({ index: i, el: el, id: el.attr("data-pm-identifier"), children: [] });
         }
     });
 
     if (sections.length === 0) { _ypSectionObserverPaused = false; return; }
 
-    // Collect children for each section
+    // Collect children
     for (let s = 0; s < sections.length; s++) {
         const startIdx = sections[s].index + 1;
         const endIdx = (s + 1 < sections.length) ? sections[s + 1].index : items.length;
@@ -5090,73 +5112,55 @@ function applySectionCollapse() {
         }
     }
 
+    // Build/update section map for CSS-based hiding
+    _ypSectionMap = { headerIds: [], childIdsByHeader: {} };
+    sections.forEach(section => {
+        _ypSectionMap.headerIds.push(section.id);
+        _ypSectionMap.childIdsByHeader[section.id] = section.children.map(c => c.attr("data-pm-identifier"));
+    });
+
+    // Apply CSS hiding (instant, no flicker)
+    updateSectionCss();
+
+    // Style headers and children via classes
     sections.forEach(section => {
         const el = section.el;
-        const id = el.attr("data-pm-identifier");
-        const storageKey = "yp_section_" + id;
+        const storageKey = "yp_section_" + section.id;
         const isOpen = localStorage.getItem(storageKey) === "true";
 
-        // Style children — indent + smaller
         section.children.forEach(child => {
-            if (!child.hasClass("yp-section-child")) {
-                child.addClass("yp-section-child");
-            }
+            if (!child.hasClass("yp-section-child")) child.addClass("yp-section-child");
         });
 
-        // Style the header (only once)
         if (!el.hasClass("yp-section-header")) {
             el.addClass("yp-section-header");
-
             const nameEl = el.find("[class*='prompt_manager_prompt_name']");
             if (nameEl.find(".yp-section-chevron").length === 0) {
-                const chevron = jQuery('<i class="yp-section-chevron fa-solid fa-chevron-right"></i>');
-                nameEl.prepend(chevron);
+                nameEl.prepend(jQuery('<i class="yp-section-chevron fa-solid fa-chevron-right"></i>'));
             }
 
-            // Intercept ALL clicks on this li to toggle section
             el.off("click.ypsection").on("click.ypsection", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
 
-                // Save scroll position
-                const scrollParent = jQuery(this).closest("[style*='overflow'], .scrollable, #chat, #openai_setting_chat");
-                const scrollEl = scrollParent.length > 0 ? scrollParent : jQuery(window);
-                const scrollTop = scrollEl.scrollTop();
-
                 const open = localStorage.getItem(storageKey) === "true";
-                const newState = !open;
-                localStorage.setItem(storageKey, String(newState));
+                localStorage.setItem(storageKey, String(!open));
 
                 const chevronEl = jQuery(this).find(".yp-section-chevron");
-                _ypSectionObserverPaused = true;
-                if (newState) {
-                    chevronEl.css("transform", "rotate(90deg)");
-                    section.children.forEach(child => child.slideDown(120));
-                } else {
-                    chevronEl.css("transform", "rotate(0deg)");
-                    section.children.forEach(child => child.slideUp(120));
-                }
-                setTimeout(() => { _ypSectionObserverPaused = false; }, 200);
+                chevronEl.css("transform", !open ? "rotate(90deg)" : "rotate(0deg)");
 
-                // Restore scroll position
-                requestAnimationFrame(() => scrollEl.scrollTop(scrollTop));
+                // Update CSS to show/hide children instantly
+                updateSectionCss();
                 return false;
             });
         }
 
-        // Set visibility (no animation — instant)
-        const chevron = el.find(".yp-section-chevron");
-        if (isOpen) {
-            chevron.css("transform", "rotate(90deg)");
-            section.children.forEach(child => { if (!child.is(":visible")) child.show(); });
-        } else {
-            chevron.css("transform", "rotate(0deg)");
-            section.children.forEach(child => { if (child.is(":visible")) child.hide(); });
-        }
+        // Update chevron
+        el.find(".yp-section-chevron").css("transform", isOpen ? "rotate(90deg)" : "rotate(0deg)");
     });
 
-    setTimeout(() => { _ypSectionObserverPaused = false; }, 50);
+    setTimeout(() => { _ypSectionObserverPaused = false; }, 30);
 }
 function injectDynamicStyles() {
     const styleId = "yablochny-dynamic-styles";
