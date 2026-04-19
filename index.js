@@ -5191,10 +5191,7 @@ function applySectionCollapse() {
     if (sections.length === 0) { _ypSectionObserverPaused = false; return; }
 
     const STOPElements = [
-        "main", "jailbreak", "charDescription", "charPersonality", "scenario", "personaDescription", 
-        "dialogueExamples", "chatHistory", "worldInfoAfter", "worldInfoBefore", 
-        "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4", // self-audit
-        "0a2c3465-e2a8-4e71-8e09-e39557967df3"  // setvars
+        "main", "jailbreak", "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4", "0a2c3465-e2a8-4e71-8e09-e39557967df3"
     ];
 
     for (let s = 0; s < sections.length; s++) {
@@ -5313,7 +5310,7 @@ function injectDynamicStyles() {
     css += ".yp-overlay-green { box-shadow: 0 0 15px 5px rgba(107, 203, 119, 0.4), inset 0 0 20px 2px rgba(107, 203, 119, 0.1); background-color: rgba(107, 203, 119, 0.05); } ";
     css += ".yp-overlay-gold { box-shadow: 0 0 15px 5px rgba(241, 196, 15, 0.4), inset 0 0 20px 2px rgba(241, 196, 15, 0.1); background-color: rgba(241, 196, 15, 0.05); } ";
     
-    const defaultSTPrompts = ['nsfw', 'dialogueExamples', 'chatHistory', 'worldInfoAfter', 'worldInfoBefore', 'enhanceDefinitions', 'charDescription', 'charPersonality', 'scenario', 'personaDescription'];
+    const defaultSTPrompts = ['nsfw', 'enhanceDefinitions', 'charDescription', 'charPersonality', 'scenario', 'personaDescription'];
     const hiddenSelectors = defaultSTPrompts.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
     css += `${hiddenSelectors} { display: none !important; }\n`;
 
