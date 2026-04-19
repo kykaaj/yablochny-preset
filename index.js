@@ -4997,11 +4997,13 @@ async function injectYablochnyUI(htmlContent) {
                 // This avoids missing complex nested updates.
                 // Scanning ~20-30 items is negligible for performance.
                 if (mutations.some(m => m.addedNodes.length > 0)) {
-                    highlightManagedPrompts();
-                    if (!_ypSectionObserverPaused) applySectionCollapseDebounced();
+                    if (!_ypSectionObserverPaused) {
+                        highlightManagedPrompts();
+                        applySectionCollapseDebounced();
+                    }
                 }
             });
-            observer.observe(pmList, { childList: true, subtree: true });
+            observer.observe(pmList, { childList: true });
         }
     };
     setInterval(insertUI, 1100);
@@ -5160,7 +5162,7 @@ function applySectionCollapse() {
         el.find(".yp-section-chevron").css("transform", isOpen ? "rotate(90deg)" : "rotate(0deg)");
     });
 
-    setTimeout(() => { _ypSectionObserverPaused = false; }, 30);
+    setTimeout(() => { _ypSectionObserverPaused = false; }, 150);
 }
 function injectDynamicStyles() {
     const styleId = "yablochny-dynamic-styles";
