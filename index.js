@@ -5069,22 +5069,25 @@ function updateSectionCss() {
     if (!_ypSectionMap) return;
     let css = "";
     
-    // Use an ultra-high specificity prefix so ST doesn't override our UI tweaks
     const prefix = "html body #completion_prompt_manager #completion_prompt_manager_list";
 
     // HEADER STYLING
-    const headerSels = _ypSectionMap.headerIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
-    if (headerSels.length > 0) {
-        const hSel = headerSels.join(",");
+    const hBaseSels = _ypSectionMap.headerIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
+    if (hBaseSels.length > 0) {
+        const hSelList = hBaseSels.join(",");
+        const hSelNameList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name']`).join(",");
+        const hSelInspectList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name'] .prompt-manager-inspect-action`).join(",");
+        
         // Headers: Full opacity so they don't look dim/disabled, pointer cursor
-        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; filter: none !important; border: 1px solid rgba(255,255,255,0.1) !important; }\n`;
+        css += `${hSelList} { cursor: pointer !important; user-select: none; opacity: 1 !important; filter: none !important; border: 1px solid rgba(255,255,255,0.1) !important; }\n`;
         // Force the name of the header to be bright and bold
-        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600 !important; font-size: 1.05em !important; opacity: 1 !important; color: var(--SmartThemeBodyColor) !important; }\n`;
+        css += `${hSelNameList} { font-weight: 600 !important; font-size: 1.05em !important; opacity: 1 !important; color: var(--SmartThemeBodyColor) !important; }\n`;
         // Force any inspect action links inside to also be bright
-        css += `${hSel} [class*='prompt_manager_prompt_name'] .prompt-manager-inspect-action { color: var(--SmartThemeBodyColor) !important; opacity: 1 !important; }\n`;
+        css += `${hSelInspectList} { color: var(--SmartThemeBodyColor) !important; opacity: 1 !important; }\n`;
 
         // FontAwesome chevron injected via CSS to avoid DOM flicker
-        css += `${hSel} [class*='prompt_manager_prompt_name']::before { 
+        const hSelBeforeList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name']::before`).join(",");
+        css += `${hSelBeforeList} { 
             content: "\\f054" !important; /* fa-chevron-right */
             font-family: "Font Awesome 6 Free", "Font Awesome 5 Free" !important;
             font-weight: 900 !important;
@@ -5111,18 +5114,19 @@ function updateSectionCss() {
 
         const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
         if (childIds.length > 0) {
-            const childSels = childIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
-            const cSel = childSels.join(",");
+            const cBaseSels = childIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
+            const cSelList = cBaseSels.join(",");
+            const cSelNameList = cBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name']`).join(",");
             
             // CHILDREN STYLING
             // To indent, we add padding-left to the name container and make it inline-block if needed
-            css += `${cSel} [class*='prompt_manager_prompt_name'] { padding-left: 24px !important; display: inline-block !important; font-size: 0.9em !important; }\n`;
+            css += `${cSelNameList} { padding-left: 24px !important; display: inline-block !important; font-size: 0.9em !important; }\n`;
             
             // Make the entire child slightly dimmer and grouped
-            css += `${cSel} { border-left: 2px solid rgba(255,255,255,0.06) !important; padding-left: 3px !important; opacity: 0.8 !important; }\n`;
+            css += `${cSelList} { border-left: 2px solid rgba(255,255,255,0.06) !important; opacity: 0.8 !important; padding-left: 3px !important; }\n`;
 
             if (!isOpen) {
-                css += `${cSel} { display: none !important; }\n`;
+                css += `${cSelList} { display: none !important; }\n`;
             }
         }
     }
