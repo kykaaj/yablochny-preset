@@ -5549,24 +5549,19 @@ function updateSectionCss() {
             // To ensure we don't accidentally hide user's own prompts, we look for structural marks + name
             // The items to hide from screenshots
             if (
-                name.includes("setvars") ||
-                name.includes("self-audit") ||
-                name === "★ ◦ JB" ||
-                name === "★ ⋄ core" ||
-                name.includes("world (before)") ||
-                name === "📌 ◦ cards" || name === "* ⋄ cards" || name === "cards" ||
-                name.includes("world (after)") ||
-                name.includes("chat examples") ||
-                name.includes("summary") ||
-                name.includes("chat history") ||
-                name.includes("¨ ˎ - •") ||
-                name.includes("゛ˎˊ˗") ||
-                name.includes("◈") ||
-                name.includes("╮") ||
-                name.includes("╯") ||
-                name.includes("@ 1") ||
-                name.includes("@ 0") ||
-                name.includes("✂")
+                name.endsWith("◈︎ core") || name.endsWith("⋄ core") || name.endsWith(" core") ||
+                name.endsWith("◦︎ JB") || name.endsWith(" JB") ||
+                name.endsWith("◈︎ setvars") || name.endsWith("⋄ setvars") || name.endsWith(" setvars") ||
+                name.endsWith("◦︎ self-audit") || name.endsWith(" self-audit") ||
+                name.endsWith("◈︎ cards") || name.endsWith("◦ cards") || name.endsWith("⋄ cards") || name.endsWith(" cards") ||
+                name.endsWith("◦︎ summary") || name.endsWith(" summary") ||
+                name.endsWith("◈︎ chat history") || name.endsWith("⋄ chat history") || name.endsWith(" chat history") ||
+                name.endsWith("◦︎ chat examples") || name.endsWith(" chat examples") ||
+                name.endsWith("┌︎ ◦︎ world (before)") || name.endsWith("◦ world (before)") || name.endsWith(" world (before)") ||
+                name.endsWith("└︎ ◦︎ world (after)") || name.endsWith("◦ world (after)") || name.endsWith(" world (after)") ||
+                name.includes("゛ˎˊ˗ •") || name.includes("゛ ˎ ˊ ˗ •") ||
+                name.endsWith("◈︎ ╮︎") || name.endsWith("◈︎ ╯︎") || 
+                name.includes("@ 1") || name.includes("@ 0")
             ) {
                 // If it's NOT a section header in Yablochny (Headers shouldn't be hidden)
                 if (!SECTION_HEADER_PATTERN.test(name)) {
