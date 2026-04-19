@@ -5069,34 +5069,52 @@ function updateSectionCss() {
     if (!_ypSectionMap) return;
     let css = "";
 
-    // Header styling (attribute-based so it works instantly on re-render)
+    // HEADER STYLING
+    // Using FontAwesome chevron content via ::before on the name element.
     const headerSels = _ypSectionMap.headerIds.map(id => `li[data-pm-identifier="${id}"]`);
     if (headerSels.length > 0) {
         const hSel = headerSels.join(",");
-        // Headers: full opacity, pointer, bigger text, padding for chevron
-        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; position: relative !important; padding-left: 20px !important; }\n`;
-        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600 !important; font-size: 1.05em !important; }\n`;
-        // Chevron in the padding area (::after to avoid conflicts with ST ::before)
-        css += `${hSel}::after { content: "›" !important; position: absolute !important; left: 4px !important; top: 50% !important; transform: translateY(-50%) !important; font-size: 16px !important; font-weight: bold !important; opacity: 0.4 !important; transition: transform 0.25s ease !important; pointer-events: none !important; }\n`;
+        // Headers: Full opacity so they don't look dim/disabled, pointer cursor
+        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; }\n`;
+        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600 !important; font-size: 1.1em !important; opacity: 1 !important; color: var(--SmartThemeBodyColor) !important; }\n`;
+
+        // FontAwesome chevron injected via CSS to avoid DOM flicker
+        css += `${hSel} [class*='prompt_manager_prompt_name']::before { 
+            content: "\\f054"; /* fa-chevron-right */
+            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+            font-weight: 900;
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 14px;
+            opacity: 0.7;
+            transition: transform 0.2s ease;
+            vertical-align: middle;
+        }\n`;
     }
 
-    // Per-header open/closed chevron rotation + child visibility
     for (const headerId of _ypSectionMap.headerIds) {
         const storageKey = "yp_section_" + headerId;
         const isOpen = localStorage.getItem(storageKey) === "true";
         const hSel = `li[data-pm-identifier="${headerId}"]`;
 
+        // Rotate chevron if open
         if (isOpen) {
-            css += `${hSel}::after { transform: translateY(-50%) rotate(90deg) !important; }\n`;
+            css += `${hSel} [class*='prompt_manager_prompt_name']::before { transform: rotate(90deg); }\n`;
         }
 
         const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
         if (childIds.length > 0) {
             const childSels = childIds.map(id => `li[data-pm-identifier="${id}"]`);
             const cSel = childSels.join(",");
-            // Children: indented, smaller, slightly dimmer
-            css += `${cSel} { margin-left: 16px !important; font-size: 0.9em !important; opacity: 0.85 !important; }\n`;
-            // Hide if section is closed
+            
+            // CHILDREN STYLING
+            // Instead of moving the whole <li> (which breaks grid/alignment), 
+            // we just indent the text/name inside the grid cell!
+            css += `${cSel} [class*='prompt_manager_prompt_name'] { padding-left: 20px !important; }\n`;
+            
+            // Optionally add a subtle left border to the children to group them visually
+            css += `${cSel} { border-left: 2px solid rgba(255,255,255,0.05) !important; padding-left: 3px !important; filter: brightness(0.9); }\n`;
+
             if (!isOpen) {
                 css += `${cSel} { display: none !important; }\n`;
             }
