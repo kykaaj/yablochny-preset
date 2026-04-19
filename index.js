@@ -5073,9 +5073,11 @@ function updateSectionCss() {
     const headerSels = _ypSectionMap.headerIds.map(id => `li[data-pm-identifier="${id}"]`);
     if (headerSels.length > 0) {
         const hSel = headerSels.join(",");
-        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; }\n`;
-        // Chevron via ::before pseudo-element (no DOM needed!)
-        css += `${hSel} [class*='prompt_manager_prompt_name']::before { content: "›"; display: inline-block; margin-right: 6px; font-size: 14px; font-weight: bold; opacity: 0.5; transition: transform 0.25s ease; }\n`;
+        // Headers: full opacity, pointer, slightly bigger text
+        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; position: relative !important; }\n`;
+        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600 !important; font-size: 1.05em !important; }\n`;
+        // Chevron on the LI itself (::after to avoid conflicts with ST ::before)
+        css += `${hSel}::after { content: "›" !important; position: absolute !important; left: 6px !important; top: 50% !important; transform: translateY(-50%) !important; font-size: 16px !important; font-weight: bold !important; opacity: 0.4 !important; transition: transform 0.25s ease !important; pointer-events: none !important; }\n`;
     }
 
     // Per-header open/closed chevron rotation + child visibility
@@ -5085,15 +5087,15 @@ function updateSectionCss() {
         const hSel = `li[data-pm-identifier="${headerId}"]`;
 
         if (isOpen) {
-            css += `${hSel} [class*='prompt_manager_prompt_name']::before { transform: rotate(90deg); }\n`;
+            css += `${hSel}::after { transform: translateY(-50%) rotate(90deg) !important; }\n`;
         }
 
         const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
         if (childIds.length > 0) {
             const childSels = childIds.map(id => `li[data-pm-identifier="${id}"]`);
             const cSel = childSels.join(",");
-            // Indent + smaller
-            css += `${cSel} { margin-left: 14px !important; font-size: 0.92em !important; border-left: 1px solid rgba(255,255,255,0.08) !important; }\n`;
+            // Children: indented, smaller, slightly dimmer
+            css += `${cSel} { margin-left: 16px !important; font-size: 0.9em !important; opacity: 0.85 !important; }\n`;
             // Hide if section is closed
             if (!isOpen) {
                 css += `${cSel} { display: none !important; }\n`;
