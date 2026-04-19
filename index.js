@@ -5191,7 +5191,14 @@ function applySectionCollapse() {
     if (sections.length === 0) { _ypSectionObserverPaused = false; return; }
 
     const STOPElements = [
-        "main", "jailbreak", "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4", "0a2c3465-e2a8-4e71-8e09-e39557967df3"
+        "main", 
+        "jailbreak", 
+        "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4", // self-audit
+        "0a2c3465-e2a8-4e71-8e09-e39557967df3", // setvars
+        "6473fd43-9e1f-4da7-9848-14a1fced05a9", // ◈︎ ╮︎ ゛ˎˊ˗ •
+        "18bf4d4a-e928-4fa2-9bb7-375680388ff4", // ◈︎ ╯︎ - ゛ˎˊ˗ •
+        "260cae70-6d53-4cbe-8329-e7df82881284", // ◈︎ ╮︎
+        "7b59ab7f-e528-4ac3-b914-ac53b2f6d44d"  // ◈︎ ╯︎
     ];
 
     for (let s = 0; s < sections.length; s++) {
@@ -5200,20 +5207,10 @@ function applySectionCollapse() {
         for (let j = startIdx; j < endIdx; j++) {
             const item = jQuery(items[j]);
             const id = item.attr("data-pm-identifier");
-            const nameEl = item.find("[class*='prompt_manager_prompt_name']");
-            const name = nameEl.text().trim();
             
             // If we hit a known standalone toggle (or ST default), stop swallowing children!
-            // This prevents "jb", "core", "self-audit" from becoming children of the last folder.
-            // ALSO break on the user's custom ASCII block separator lines (like ◈ ╮, ◈ ╯, ✂, ↓, ↑)
-            if (
-                STOPElements.includes(id) || 
-                name.includes("╮") || 
-                name.includes("╯") || 
-                name.includes("↓") || 
-                name.includes("↑") || 
-                name.includes("✂")
-            ) {
+            // This prevents system blocks from becoming children of the last folder.
+            if (STOPElements.includes(id)) {
                 break;
             }
             
