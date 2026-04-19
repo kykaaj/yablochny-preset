@@ -5215,6 +5215,7 @@ function applySectionCollapse() {
 }
 function injectDynamicStyles() {
     const styleId = "yablochny-dynamic-styles";
+    console.log("[Yablochny] injectDynamicStyles called, existing tag:", !!document.getElementById(styleId));
     if (document.getElementById(styleId)) return;
     
     let css = ".yp-virtual-btn-controls { position: relative; padding-left: 24px !important; } .yp-virtual-btn-controls::before { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 0; top: 50%; transform: translateY(-50%); font-size: 14px; cursor: pointer; transition: color 0.2s; width: 20px; text-align: center; z-index: 10; }\n";
@@ -5238,10 +5239,10 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { color: #4a9e5c !important; opacity: 1 !important; }\n`;
-        css += `${cBeforeDisabled} { color: #4a9e5c !important; opacity: 0.5 !important; }\n`;
+        css += `${lisDisabled} { color: #16a34a !important; opacity: 1 !important; }\n`;
+        css += `${cBeforeDisabled} { color: #16a34a !important; opacity: 0.5 !important; }\n`;
         const lisDisabledName = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name']`).join(",");
-        css += `${lisDisabledName} { color: #4a9e5c !important; text-decoration: none !important; }\n`;
+        css += `${lisDisabledName} { color: #16a34a !important; text-decoration: none !important; }\n`;
         
         // Enabled State
         css += `${lisEnabled} { color: #4ade80 !important; opacity: 1 !important; }\n`;
@@ -5268,10 +5269,10 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { color: #c49b0c !important; opacity: 1 !important; }\n`;
-        css += `${cBeforeDisabled} { color: #c49b0c !important; opacity: 0.5 !important; }\n`;
+        css += `${lisDisabled} { color: #d97706 !important; opacity: 1 !important; }\n`;
+        css += `${cBeforeDisabled} { color: #d97706 !important; opacity: 0.5 !important; }\n`;
         const lisDisabledName = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name']`).join(",");
-        css += `${lisDisabledName} { color: #c49b0c !important; text-decoration: none !important; }\n`;
+        css += `${lisDisabledName} { color: #d97706 !important; text-decoration: none !important; }\n`;
         
         // Enabled State
         css += `${lisEnabled} { color: #fbbf24 !important; opacity: 1 !important; }\n`;
