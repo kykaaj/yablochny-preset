@@ -1395,10 +1395,10 @@ const MODEL_PRESETS = {
         },
         toggles: {
             "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
-            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // ◈︎ ↗ universal prefill
         },
         disableToggles: [
             "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f", // ◈︎ ↗ universal prefill
         ],
     },
     gemini: {
@@ -3074,7 +3074,7 @@ function syncReasoningSettings(cfg) {
     if (!cfg.syncReasoning) return;
     if (jQuery('#reasoning_prefix').length === 0) return; 
 
-    const isGptConf = cfg.modelPreset && (cfg.modelPreset.startsWith("gpt") || cfg.modelPreset === "claude-no-cot");
+    const isGptConf = cfg.modelPreset && (cfg.modelPreset.startsWith("gpt") || cfg.modelPreset === "claude-no-cot" || cfg.modelPreset === "claude-47");
     
     // Always apply these settings to ALL modes
     jQuery('#reasoning_auto_parse').prop('checked', true).trigger('change');
@@ -5295,6 +5295,18 @@ function injectDynamicStyles() {
     const defaultSTPrompts = ['main', 'nsfw', 'dialogueExamples', 'jailbreak', 'chatHistory', 'worldInfoAfter', 'worldInfoBefore', 'enhanceDefinitions', 'charDescription', 'charPersonality', 'scenario', 'personaDescription'];
     const hiddenSelectors = defaultSTPrompts.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
     css += `${hiddenSelectors} { display: none !important; }\n`;
+
+    const folderHeadersIds = [
+        'a4f8713c-2990-4422-9431-a4cfc4bd81e9', // base
+        '842947dc-fd0d-4207-94dd-3a35af7027c4', // scribbling
+        '6d261700-060c-4f0c-9136-84083a657f6c', // branches
+        'd82a3d2f-7c61-41dc-8352-0d864d2debb5', // nsfw
+        '9bd6acf4-bc06-42fe-b80a-ce167768590d', // tweaks
+        'cd695919-0ad1-4b33-a037-448fd55e287d', // patches
+        '2920387b-3af5-4150-9f3d-defaa9e272da'  // preparation
+    ];
+    const folderSelectors = folderHeadersIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_name']`).join(",");
+    css += `${folderSelectors} { pointer-events: none !important; }\n`;
     
     const styleEl = document.createElement("style"); styleEl.id = styleId; styleEl.textContent = css; document.head.appendChild(styleEl);
 
