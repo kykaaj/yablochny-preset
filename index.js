@@ -4318,10 +4318,13 @@ function updatePresetActiveState() {
     const active = isYablochnyPresetActive();
     if (active) {
         container.removeClass("yp-preset-inactive");
+        jQuery("#yp-restore-banner").slideUp(200);
     } else {
         container.addClass("yp-preset-inactive");
+        jQuery("#yp-restore-banner").slideDown(200);
     }
 }
+
 
 function initControls() {
     const cfg = getConfig();
