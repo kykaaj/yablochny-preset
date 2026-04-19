@@ -1337,7 +1337,7 @@ const MODEL_PRESETS = {
         ],
     },
     "claude-no-cot": {
-        name: "Claude 4.6/4.7",
+        name: "Claude 4.6",
         settings: {
             temperature: 0.8,
             frequency_penalty: 0.17,
@@ -1383,6 +1383,22 @@ const MODEL_PRESETS = {
         disableToggles: [
             "4ad8a657-f24c-40c9-bffc-976a6ab39003", // ◦︎ COT
             "6c0ab122-aa65-4c14-ae20-199c2010df2f", // universal prefill
+        ],
+    },
+    "claude-47": {
+        name: "Claude 4.7",
+        settings: {
+            temperature: 1.0,
+            frequency_penalty: 0.17,
+            presence_penalty: 0.26,
+            top_p: 0,
+        },
+        toggles: {
+            "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
+        },
+        disableToggles: [
+            "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f", // ◈︎ ↗ universal prefill
         ],
     },
     gemini: {
@@ -5239,11 +5255,11 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { color: #5c9e67 !important; opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.25) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; }\n`;
+        css += `${lisDisabled} { opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.25) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; }\n`;
         css += `${cBeforeDisabled} { color: #5c9e67 !important; opacity: 0.5 !important; }\n`;
         
         // Enabled State
-        css += `${lisEnabled} { color: #6bcb77 !important; opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.7) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.15), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(107, 203, 119, 0.1) !important; }\n`;
+        css += `${lisEnabled} { opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.7) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.15), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(107, 203, 119, 0.1) !important; }\n`;
         css += `${cBeforeEnabled} { color: #6bcb77 !important; opacity: 0.9 !important; }\n`;
     }
 
@@ -5265,11 +5281,11 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { color: #a4843b !important; opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.25) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.05), transparent) !important; }\n`;
+        css += `${lisDisabled} { opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.25) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.05), transparent) !important; }\n`;
         css += `${cBeforeDisabled} { color: #a4843b !important; opacity: 0.5 !important; }\n`;
         
         // Enabled State
-        css += `${lisEnabled} { color: #f1c40f !important; opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.7) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.15), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(241, 196, 15, 0.1) !important; }\n`;
+        css += `${lisEnabled} { opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.7) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.15), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(241, 196, 15, 0.1) !important; }\n`;
         css += `${cBeforeEnabled} { color: #f1c40f !important; opacity: 0.9 !important; }\n`;
     }
 
