@@ -5068,52 +5068,58 @@ function applySectionCollapseDebounced() {
 function updateSectionCss() {
     if (!_ypSectionMap) return;
     let css = "";
+    
+    // Use an ultra-high specificity prefix so ST doesn't override our UI tweaks
+    const prefix = "html body #completion_prompt_manager #completion_prompt_manager_list";
 
     // HEADER STYLING
-    // Using FontAwesome chevron content via ::before on the name element.
-    const headerSels = _ypSectionMap.headerIds.map(id => `li[data-pm-identifier="${id}"]`);
+    const headerSels = _ypSectionMap.headerIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
     if (headerSels.length > 0) {
         const hSel = headerSels.join(",");
         // Headers: Full opacity so they don't look dim/disabled, pointer cursor
-        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; }\n`;
-        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600 !important; font-size: 1.1em !important; opacity: 1 !important; color: var(--SmartThemeBodyColor) !important; }\n`;
+        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; filter: none !important; border: 1px solid rgba(255,255,255,0.1) !important; }\n`;
+        // Force the name of the header to be bright and bold
+        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600 !important; font-size: 1.05em !important; opacity: 1 !important; color: var(--SmartThemeBodyColor) !important; }\n`;
+        // Force any inspect action links inside to also be bright
+        css += `${hSel} [class*='prompt_manager_prompt_name'] .prompt-manager-inspect-action { color: var(--SmartThemeBodyColor) !important; opacity: 1 !important; }\n`;
 
         // FontAwesome chevron injected via CSS to avoid DOM flicker
         css += `${hSel} [class*='prompt_manager_prompt_name']::before { 
-            content: "\\f054"; /* fa-chevron-right */
-            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
-            font-weight: 900;
-            display: inline-block;
-            margin-right: 10px;
-            font-size: 14px;
-            opacity: 0.7;
-            transition: transform 0.2s ease;
-            vertical-align: middle;
+            content: "\\f054" !important; /* fa-chevron-right */
+            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free" !important;
+            font-weight: 900 !important;
+            display: inline-block !important;
+            margin-right: 12px !important;
+            margin-left: 2px !important;
+            font-size: 14px !important;
+            opacity: 0.9 !important;
+            transition: transform 0.2s ease !important;
+            vertical-align: baseline !important;
+            color: var(--SmartThemeBodyColor) !important;
         }\n`;
     }
 
     for (const headerId of _ypSectionMap.headerIds) {
         const storageKey = "yp_section_" + headerId;
         const isOpen = localStorage.getItem(storageKey) === "true";
-        const hSel = `li[data-pm-identifier="${headerId}"]`;
+        const hSel = `${prefix} li[data-pm-identifier="${headerId}"]`;
 
         // Rotate chevron if open
         if (isOpen) {
-            css += `${hSel} [class*='prompt_manager_prompt_name']::before { transform: rotate(90deg); }\n`;
+            css += `${hSel} [class*='prompt_manager_prompt_name']::before { transform: rotate(90deg) !important; }\n`;
         }
 
         const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
         if (childIds.length > 0) {
-            const childSels = childIds.map(id => `li[data-pm-identifier="${id}"]`);
+            const childSels = childIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
             const cSel = childSels.join(",");
             
             // CHILDREN STYLING
-            // Instead of moving the whole <li> (which breaks grid/alignment), 
-            // we just indent the text/name inside the grid cell!
-            css += `${cSel} [class*='prompt_manager_prompt_name'] { padding-left: 20px !important; }\n`;
+            // To indent, we add padding-left to the name container and make it inline-block if needed
+            css += `${cSel} [class*='prompt_manager_prompt_name'] { padding-left: 24px !important; display: inline-block !important; font-size: 0.9em !important; }\n`;
             
-            // Optionally add a subtle left border to the children to group them visually
-            css += `${cSel} { border-left: 2px solid rgba(255,255,255,0.05) !important; padding-left: 3px !important; filter: brightness(0.9); }\n`;
+            // Make the entire child slightly dimmer and grouped
+            css += `${cSel} { border-left: 2px solid rgba(255,255,255,0.06) !important; padding-left: 3px !important; opacity: 0.8 !important; }\n`;
 
             if (!isOpen) {
                 css += `${cSel} { display: none !important; }\n`;
