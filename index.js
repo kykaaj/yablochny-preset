@@ -4239,6 +4239,7 @@ function initControls() {
     setSafeVal("#yp-swearing", cfg.swearingMode || "custom", "custom");
     setSafeVal("#yp-pace", cfg.paceMode || "natural", "natural");
     setSafeVal("#yp-extras-lang", cfg.extrasLangMode || "custom", "custom");
+    setSafeVal("#yp-focus", cfg.focusMode || "off", "off");
     setSafeVal("#yp-deconstruction", cfg.deconstructionMode || "large", "large");
     setSafeVal("#yp-image-style", cfg.imageStyleMode || "anime_inspired_realism", "anime_inspired_realism");
     setSafeVal("#yp-addon", cfg.addonMode || "comic", "comic");
@@ -4618,11 +4619,58 @@ function initControls() {
         }
     });
 
-    function onPresetOptionChanged(updater) {
+    function showSavedCheckmark(element) {
+        if (!element) return;
+        const el = jQuery(element);
+        
+        let targetArea;
+        if (el.is(':checkbox')) {
+            if (el.parent().is('label')) {
+                targetArea = el.parent();
+            } else {
+                targetArea = el.next('label');
+                if (targetArea.length === 0) targetArea = el.parent();
+            }
+        } else {
+            targetArea = el.closest('.yablochny-field-half').find('.yablochny-label');
+            if (targetArea.length === 0) {
+               targetArea = el.parent();
+            }
+        }
+        
+        let checkmark = targetArea.find('.yp-saved-checkmark');
+        if (checkmark.length === 0) {
+            if (targetArea.hasClass('yablochny-label') || targetArea.is('label')) {
+                checkmark = jQuery('<i class="fa-solid fa-check yp-saved-checkmark" style="color: #6bcb77; font-size: 0.9em; margin-left: 6px; opacity: 0; transition: opacity 0.3s; pointer-events: none;"></i>');
+                targetArea.append(checkmark);
+            } else {
+                checkmark = jQuery('<i class="fa-solid fa-check yp-saved-checkmark" style="color: #6bcb77; position: absolute; right: 0; top: -15px; opacity: 0; transition: opacity 0.3s; pointer-events: none; font-size: 1.1em; z-index: 10;"></i>');
+                targetArea.css('position', 'relative').append(checkmark);
+            }
+        }
+        
+        // Force reflow
+        checkmark[0].offsetHeight;
+        checkmark.css('opacity', '1');
+        
+        if (checkmark.data('timeout')) {
+            clearTimeout(checkmark.data('timeout'));
+        }
+        
+        const timeout = setTimeout(() => {
+            checkmark.css('opacity', '0');
+        }, 1500);
+        checkmark.data('timeout', timeout);
+    }
+
+    async function onPresetOptionChanged(updater, element) {
         updater();
         saveSettingsDebounced();
         // Automatically resync preset on variant change (silent)
-        syncPreset(false);
+        await syncPreset(false);
+        if (element) {
+            showSavedCheckmark(element);
+        }
     }
 
     jQuery("#yp-language").on("change", function () {
@@ -4630,7 +4678,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.languageMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-length").on("change", function () {
@@ -4638,7 +4686,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.lengthMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-pov").on("change", function () {
@@ -4646,7 +4694,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.POVMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-tense").on("change", function () {
@@ -4654,7 +4702,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.TENSEMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-prose").on("change", function () {
@@ -4662,7 +4710,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.proseStyle = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-speech").on("change", function () {
@@ -4670,7 +4718,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.speechStyle = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-roleplay").on("change", function () {
@@ -4678,7 +4726,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.roleplayMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-thoughts").on("change", function () {
@@ -4686,7 +4734,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.thoughtsMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-swearing").on("change", function () {
@@ -4694,7 +4742,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.swearingMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-pace").on("change", function () {
@@ -4702,7 +4750,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.paceMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-extras-lang").on("change", function () {
@@ -4710,7 +4758,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.extrasLangMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-focus").on("change", function () {
@@ -4718,7 +4766,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.focusMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-deconstruction").on("change", function () {
@@ -4726,7 +4774,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.deconstructionMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-addon").on("change", function () {
@@ -4734,7 +4782,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.addonMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-rating").on("change", function () {
@@ -4742,7 +4790,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.ratingMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-narrator-lens").on("change", function () {
@@ -4750,7 +4798,7 @@ function initControls() {
         onPresetOptionChanged(() => {
             const cfg = getConfig();
             cfg.narratorLensMode = value;
-        });
+        }, this);
     });
 
     jQuery("#yp-image-style").on("change", function () {
@@ -4766,7 +4814,7 @@ function initControls() {
             // I'll make it so if they change it manually in the dropdown, 
             // we'll update the 'enabled' state to true to make it easier for them to use.
             cfg.imageStyleEnabled = true;
-        });
+        }, this);
     });
 
 
@@ -4801,7 +4849,7 @@ function initControls() {
             cfg.thingsSelected = sel;
         };
 
-        onPresetOptionChanged(updateSelection);
+        onPresetOptionChanged(updateSelection, this);
     });
 
     // Regex controls
