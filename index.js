@@ -1165,77 +1165,6 @@ const TENSE_VARIANTS = {
     "Future": `{{setvar::tense::- Future tense.}}`,
 };
 
-const SPEECH_VARIANTS = {
-    salinger: `{{setvar::speech_author::
-
-[AUTHOR-METHOD ADAPTATION (SPEECH STYLE)]
-Apply author's METHOD to character voice — not their prose style.
-- Flynn's forensic psychology → character cuts with clinical precision
-- Pratchett's absurdist warmth → character carries observational wit
-Question: how would this author write THIS character?
-
-[SALINGER METHOD]
-Raw, fragmented dialogue. Defensively authentic. Thoughts bleed into speech unfiltered.
-
-[BALANCE]
-Secondary influences ENHANCE primary author, never replace.
-Blend organically — innate, not showcased.
-Targets: character voice or comedic tone, not narration.}}
-{{setvar::speech_style::
-- SPEECH STYLE: author method in character voice, blends with main style?}}`,
-    pratchett: `{{setvar::speech_author::
-
-[AUTHOR-METHOD ADAPTATION (SPEECH STYLE)]
-Apply author's METHOD to character voice — not their prose style.
-- Flynn's forensic psychology → character cuts with clinical precision
-- Pratchett's absurdist warmth → character carries observational wit
-Question: how would this author write THIS character?
-
-[TERRY PRATCHETT]
-Dialogue warm, humane, laced with gentle absurdity—wise fools and foolish wisdom. Thoughts are compassionate observations finding humor in human flaws.
-
-[BALANCE]
-Secondary influences ENHANCE primary author, never replace.
-Blend organically — innate, not showcased.
-Targets: character voice or comedic tone, not narration.}}
-{{setvar::speech_style::
-- SPEECH STYLE: author method in character voice, blends with main style?}}`,
-    le_guin: `{{setvar::speech_author::
-
-[AUTHOR-METHOD ADAPTATION (SPEECH STYLE)]
-Apply author's METHOD to character voice — not their prose style.
-- Flynn's forensic psychology → character cuts with clinical precision
-- Pratchett's absurdist warmth → character carries observational wit
-Question: how would this author write THIS character?
-
-[URSULA LE GUIN]
-Dialogue sparse, weighted; thoughts flow like myth–patient, moral, deeply rooted in cultural logic. Characters speak as if each word is a stone placed carefully in a river.
-
-[BALANCE]
-Secondary influences ENHANCE primary author, never replace.
-Blend organically — innate, not showcased.
-Targets: character voice or comedic tone, not narration.}}
-{{setvar::speech_style::
-- SPEECH STYLE: author method in character voice, blends with main style?}}`,
-    wilde: `{{setvar::speech_author::
-
-[AUTHOR-METHOD ADAPTATION (SPEECH STYLE)]
-Apply author's METHOD to character voice — not their prose style.
-- Flynn's forensic psychology → character cuts with clinical precision
-- Pratchett's absurdist warmth → character carries observational wit
-Question: how would this author write THIS character?
-
-[OSCAR WILDE]
-Dialogue as elegant fencing—witty, performative, every line polished to epigrammatic perfection. Thoughts are aesthetic manifestos, even vulnerability is staged beautifully.
-
-[BALANCE]
-Secondary influences ENHANCE primary author, never replace.
-Blend organically — innate, not showcased.
-Targets: character voice or comedic tone, not narration.}}
-{{setvar::speech_style::
-- SPEECH STYLE: author method in character voice, blends with main style?}}`,
-    none: ``,
-};
 
 const PROSE_VARIANTS = {
     yablochny: `<prose_style>{{getvar::lens}}
@@ -1273,7 +1202,7 @@ End the scene or chapter with a line that feels like a beat or hook: a strong im
 CHARACTERIZATION AND RELATIONSHIPS:
 - Make every character feel distinct through their choices, voice, gestures, and small habits.
 - Show relationship dynamics through banter, tension, physical distance or closeness, and what characters choose to say or hide.
-- Avoid summarizing development; instead, reveal it through specific moments, callbacks, and recurring motifs.{{getvar::speech_style}}
+- Avoid summarizing development; instead, reveal it through specific moments, callbacks, and recurring motifs.
 </prose_style>
 {{setvar::prose_check::- PROSE STYLE: You write in the prose style indicated in \`<prose_style>\`?}}`,
     anne_rice: `<prose_style>
@@ -1281,7 +1210,7 @@ CHARACTERIZATION AND RELATIONSHIPS:
 Renette becomes the chosen author completely, think and write like they.
 
 [ANNE RICE]
-Ornate, decadent prose layered with sensory overload. Long, winding, hypnotic sentences. Accumulate adjectives like gilded layers. But don't overdo it.{{getvar::speech_author}}
+Ornate, decadent prose layered with sensory overload. Long, winding, hypnotic sentences. Accumulate adjectives like gilded layers. But don't overdo it.
 </prose_style>
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     donna_tartt: `<prose_style>
@@ -1289,7 +1218,7 @@ Ornate, decadent prose layered with sensory overload. Long, winding, hypnotic se
 Renette becomes the chosen author completely, think and write like they.
 
 [DONNA TARTT]
-Dense, intellectual prose treating every scene like forensic analysis. Complex, academic, deliberate sentences — each clause builds a case. Describe through lenses of history, art, philosophy.{{getvar::speech_author}}
+Dense, intellectual prose treating every scene like forensic analysis. Complex, academic, deliberate sentences — each clause builds a case. Describe through lenses of history, art, philosophy.
 </prose_style>
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     pratchett: `<prose_style>
@@ -1297,7 +1226,7 @@ Dense, intellectual prose treating every scene like forensic analysis. Complex, 
 Renette becomes the chosen author completely, think and write like they.
 
 [TERRY PRATCHETT]
-Deceptively simple, warm, humane prose. Clear sentences carrying layered meaning — like well‑told jokes revealing truth on the third laugh. Use gentle observational humor highlighting human absurdity without cruelty.{{getvar::speech_author}}
+Deceptively simple, warm, humane prose. Clear sentences carrying layered meaning — like well‑told jokes revealing truth on the third laugh. Use gentle observational humor highlighting human absurdity without cruelty.
 </prose_style>
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     salinger: `<prose_style>
@@ -1305,7 +1234,7 @@ Deceptively simple, warm, humane prose. Clear sentences carrying layered meaning
 Renette becomes the chosen author completely, think and write like they.
 
 [J.D. SALINGER]
-Fragmented, conversational prose feeling overheard, not composed. Sentences are abrupt, honest, defensive—like someone thinking aloud while trying not to cry. Dialogue is authentic, awkward, revealing.{{getvar::speech_author}}
+Fragmented, conversational prose feeling overheard, not composed. Sentences are abrupt, honest, defensive—like someone thinking aloud while trying not to cry. Dialogue is authentic, awkward, revealing.
 </prose_style>
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     le_guin: `<prose_style>
@@ -1313,7 +1242,7 @@ Fragmented, conversational prose feeling overheard, not composed. Sentences are 
 Renette becomes the chosen author completely, think and write like they.
 
 [URSULA LE GUIN]
-Wise, anthropological prose grounded in cultural depth. Sentences are clear, measured, and carry the weight of myth. Describe worlds through customs, rituals, and social structures—not just scenery. Magic feels natural, part of the world’s fabric. Dialogue is sparse, meaningful; silence holds as much weight as speech.{{getvar::speech_author}}
+Wise, anthropological prose grounded in cultural depth. Sentences are clear, measured, and carry the weight of myth. Describe worlds through customs, rituals, and social structures—not just scenery. Magic feels natural, part of the world’s fabric. Dialogue is sparse, meaningful; silence holds as much weight as speech.
 </prose_style>
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
     backman: `<prose_style>
@@ -1321,7 +1250,7 @@ Wise, anthropological prose grounded in cultural depth. Sentences are clear, mea
 Renette becomes the chosen author completely, think and write like they.
 
 [FREDRICK BACKMAN]
-Write in a style inspired by Fredrik Backman. Use a warm, empathetic, and observational narrative voice. Focus on character quirks and the hidden emotional depth behind grumpy or stubborn exteriors. Employ a mix of humor and poignancy, using repetitive phrasing only for comedic or emotional emphasis. The narrative should feel like a storyteller recounting a local legend about ordinary people.{{getvar::speech_author}}
+Write in a style inspired by Fredrik Backman. Use a warm, empathetic, and observational narrative voice. Focus on character quirks and the hidden emotional depth behind grumpy or stubborn exteriors. Employ a mix of humor and poignancy, using repetitive phrasing only for comedic or emotional emphasis. The narrative should feel like a storyteller recounting a local legend about ordinary people.
 </prose_style>
 {{setvar::prose_check::- PROSE STYLE: Write in the prose style indicated in <prose_style>. How is the author's style expressed and can be applied in the story?}}`,
 };
@@ -1860,7 +1789,6 @@ function getConfig() {
     cfg.POVMode ??= "3rd";
     cfg.TENSEMode ??= "Present";
     cfg.proseStyle ??= "yablochny";
-    cfg.speechStyle ??= "custom";
     cfg.roleplayMode ??= "dont_speak";
     cfg.thoughtsMode ??= "thoughts";
     cfg.swearingMode ??= "custom";
@@ -2162,54 +2090,6 @@ function applyTENSEVariant(master, cfg, existingPreset) {
     }
 }
 
-function applySpeechVariant(master, cfg, existingPreset) {
-    const id = "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c";
-    const prompt = master.prompts.find(p => p.identifier === id);
-    if (!prompt) return;
-
-    // Force enable the prompt so updates apply immediately
-    prompt.enabled = true;
-
-    const rawMode = cfg.speechStyle || "none";
-    const mode = getSafeVariant(rawMode, SPEECH_VARIANTS, "none");
-
-    // 1. CUSTOM MODE: Direct preservation
-    if (mode === "custom") {
-        const existingContent = getContentFromExisting(existingPreset, id);
-        if (existingContent !== null) {
-            prompt.content = existingContent;
-        }
-        return;
-    }
-
-    // 2. NONE MODE (Off / Custom in UI): 
-    // If the user has custom text, keep it. If it's a known variant or empty, turn the prompt off.
-    if (mode === "none") {
-        const existingContent = getContentFromExisting(existingPreset, id);
-        if (existingContent !== null && existingContent.trim() !== "") {
-            const known = Object.values(SPEECH_VARIANTS).some(v => v.trim() === existingContent.trim());
-            if (!known) {
-                // User has custom content, preserve it and return
-                prompt.content = existingContent;
-                return;
-            }
-        }
-        // No custom content -> normal 'Off' behavior
-        prompt.enabled = false;
-        prompt.content = "";
-        return;
-    }
-
-    // 3. PRESET MODES
-    let text = SPEECH_VARIANTS[mode];
-    if (cfg.promptEdits && cfg.promptEdits.speech && cfg.promptEdits.speech[mode]) {
-        text = cfg.promptEdits.speech[mode];
-    }
-
-    if (text !== undefined) {
-        prompt.content = text;
-    }
-}
 
 function getSafeVariant(selected, dictionary, defaultValue) {
     if (selected === "custom") return "custom";
@@ -2738,7 +2618,6 @@ function buildMasterWithVariants(basePreset, cfg, uiLang, existingPreset = null)
     applyLengthVariant(master, cfg, existingPreset);
     applyPOVVariant(master, cfg, existingPreset);
     applyTENSEVariant(master, cfg, existingPreset);
-    applySpeechVariant(master, cfg, existingPreset);
     applyProseVariant(master, cfg, existingPreset);
 
     // New Variants
@@ -2969,7 +2848,6 @@ function buildMergedPreset(existingPreset, master, cfg) {
         "9adda56b-6f32-416a-b947-9aa9f41564eb", // Length
         "5907aad3-0519-45e9-b6f7-40d9e434ef28", // POV
         "e0ce2a23-98e3-4772-8984-5e9aa4c5c551", // Tense
-        "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c", // Speech
         "92f96f89-c01d-4a91-bea3-c8abb75b995a", // Prose
 
         "6b235beb-7de9-4f84-9b09-6f20210eae6d", // Things
@@ -2989,6 +2867,7 @@ function buildMergedPreset(existingPreset, master, cfg) {
     ];
 
     const OBSOLETE_IDS = [
+        "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c", // Speech
         "a56a28d6-21fa-42d4-862e-fe688dea9fec", // Speak for user
         "d82dc302-0257-4bbf-99d0-c9a8149c98e6", // More thoughts
         "944b0d08-4c0a-44c2-8f3b-d5d6dfc82fa4", // Ua Swearing
@@ -3206,7 +3085,6 @@ async function syncPreset(showToasts = false, disableCapture = false) {
             POVMode: cfg.POVMode,
             TENSEMode: cfg.TENSEMode,
             proseStyle: cfg.proseStyle,
-            speechStyle: cfg.speechStyle,
             roleplayMode: cfg.roleplayMode,
             thoughtsMode: cfg.thoughtsMode,
             swearingMode: cfg.swearingMode,
@@ -3363,7 +3241,6 @@ async function syncPreset(showToasts = false, disableCapture = false) {
             POVMode: cfg.POVMode,
             TENSEMode: cfg.TENSEMode,
             proseStyle: cfg.proseStyle,
-            speechStyle: cfg.speechStyle,
             roleplayMode: cfg.roleplayMode,
             thoughtsMode: cfg.thoughtsMode,
             swearingMode: cfg.swearingMode,
@@ -3408,9 +3285,6 @@ async function syncPreset(showToasts = false, disableCapture = false) {
                 changes.push(`Prose: ${oldSettings.proseStyle} → ${cfg.proseStyle}`);
             }
 
-            if (oldSettings.speechStyle !== cfg.speechStyle) {
-                changes.push(`Speech: ${oldSettings.speechStyle} → ${cfg.speechStyle}`);
-            }
 
             if (oldSettings.roleplayMode !== cfg.roleplayMode) {
                 changes.push(`Roleplay: ${oldSettings.roleplayMode} → ${cfg.roleplayMode}`);
@@ -3496,7 +3370,6 @@ const VARIANT_TYPE_MAP = {
     pov: { constants: "POV_VARIANTS", keys: ["1st", "2nd", "3rd"] },
     tense: { constants: "TENSE_VARIANTS", keys: ["Present", "Past", "Future"] },
     prose: { constants: "PROSE_VARIANTS", keys: ["ao3", "anne_rice", "donna_tartt", "pratchett", "salinger", "le_guin", "backman"] },
-    speech: { constants: "SPEECH_VARIANTS", keys: ["salinger", "pratchett", "le_guin", "wilde"] },
 
     roleplay: { constants: "ROLEPLAY_VARIANTS", keys: ["dont_speak", "speak"] },
     thoughts: { constants: "THOUGHTS_VARIANTS", keys: ["off", "thoughts", "more_thoughts"] },
@@ -3526,7 +3399,6 @@ const PROMPT_ID_TO_VARIANT = {
     "9adda56b-6f32-416a-b947-9aa9f41564eb": { type: "length", configKey: "lengthMode" },
     "5907aad3-0519-45e9-b6f7-40d9e434ef28": { type: "pov", configKey: "POVMode" },
     "e0ce2a23-98e3-4772-8984-5e9aa4c5c551": { type: "tense", configKey: "TENSEMode" },
-    "eb4955d3-8fa0-4c27-ab87-a2fc938f9b6c": { type: "speech", configKey: "speechStyle" },
     "92f96f89-c01d-4a91-bea3-c8abb75b995a": { type: "prose", configKey: "proseStyle" },
     "bc1d852e-f20c-4fce-bacf-10380a4c333f": { type: "rating", configKey: "ratingMode" },
 };
@@ -3816,7 +3688,6 @@ function applyLocaleToUi() {
     jQuery("#yp-pov-label").text(dict.POVLabel);
     jQuery("#yp-tense-label").text(dict.tenseLabel);
     jQuery("#yp-prose-label").text(dict.proseLabel);
-    jQuery("#yp-speech-label").text(dict.speechLabel);
 
     jQuery("#yp-roleplay-label").text(dict.roleplayLabel);
     jQuery("#yp-thoughts-label").text(dict.thoughtsLabel);
@@ -3869,7 +3740,6 @@ function applyLocaleToUi() {
     jQuery("#yp-swearing-label, #yp-swearing-container").attr("title", dict.ttSwearing);
     jQuery("#yp-length-label, #yp-length-container").attr("title", dict.ttLength);
     jQuery("#yp-prose-label, #yp-prose-container").attr("title", dict.ttProse);
-    jQuery("#yp-speech-label, #yp-speech-container").attr("title", dict.ttSpeech);
     jQuery("#yp-roleplay-label, #yp-roleplay-container").attr("title", dict.ttRoleplay);
     jQuery("#yp-pov-label, #yp-pov-container").attr("title", dict.ttPOV);
     jQuery("#yp-tense-label, #yp-tense-container").attr("title", dict.ttTense);
@@ -3925,11 +3795,6 @@ function applyLocaleToUi() {
     jQuery("#yp-opt-prose-le_guin").text(dict.optProseLeGuin);
     jQuery("#yp-opt-prose-backman").text(dict.optProseBackman);
 
-    jQuery("#yp-opt-speech-none").text(dict.optSpeechOff);
-    jQuery("#yp-opt-speech-salinger").text(dict.optSpeechSalinger);
-    jQuery("#yp-opt-speech-pratchett").text(dict.optSpeechPratchett);
-    jQuery("#yp-opt-speech-le_guin").text(dict.optSpeechLeGuin);
-    jQuery("#yp-opt-speech-wilde").text(dict.optSpeechWilde);
 
     jQuery("#yp-opt-rp-dont").text(dict.optRpDont);
     jQuery("#yp-opt-rp-speak").text(dict.optRpSpeak);
@@ -4233,7 +4098,6 @@ function initControls() {
     setSafeVal("#yp-pov", cfg.POVMode || "3rd", "3rd");
     setSafeVal("#yp-tense", cfg.TENSEMode || "Present", "Present");
     setSafeVal("#yp-prose", cfg.proseStyle || "ao3", "ao3");
-    setSafeVal("#yp-speech", cfg.speechStyle || "none", "none");
     setSafeVal("#yp-roleplay", cfg.roleplayMode || "dont_speak", "dont_speak");
     setSafeVal("#yp-thoughts", cfg.thoughtsMode || "thoughts", "thoughts");
     setSafeVal("#yp-swearing", cfg.swearingMode || "custom", "custom");
@@ -4713,13 +4577,6 @@ function initControls() {
         }, this);
     });
 
-    jQuery("#yp-speech").on("change", function () {
-        const value = String(jQuery(this).val());
-        onPresetOptionChanged(() => {
-            const cfg = getConfig();
-            cfg.speechStyle = value;
-        }, this);
-    });
 
     jQuery("#yp-roleplay").on("change", function () {
         const value = String(jQuery(this).val());
