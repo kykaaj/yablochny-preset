@@ -5551,10 +5551,10 @@ function updateSectionCss() {
             if (
                 name.includes("setvars") ||
                 name.includes("self-audit") ||
-                name.includes("JB") ||
-                name.includes("core") ||
+                name === "★ ◦ JB" ||
+                name === "★ ⋄ core" ||
                 name.includes("world (before)") ||
-                name.includes("cards") ||
+                name === "📌 ◦ cards" || name === "* ⋄ cards" || name === "cards" ||
                 name.includes("world (after)") ||
                 name.includes("chat examples") ||
                 name.includes("summary") ||
@@ -5566,14 +5566,7 @@ function updateSectionCss() {
                 name.includes("╯") ||
                 name.includes("@ 1") ||
                 name.includes("@ 0") ||
-                name.includes("✂") ||
-                
-                // Hide default built-ins just in case they appear
-                id === "main" || id === "jailbreak" || id === "nsfw" || 
-                id === "world_info_before" || id === "world_info_after" ||
-                id === "scenario_description" || id === "persona_description" ||
-                id === "dialogue_examples" || id === "lore_book" || id === "chat_history" ||
-                id === "authors_note" || id === "depth_prompt" || id === "bias"
+                name.includes("✂")
             ) {
                 // If it's NOT a section header in Yablochny (Headers shouldn't be hidden)
                 if (!SECTION_HEADER_PATTERN.test(name)) {
