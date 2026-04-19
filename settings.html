@@ -1,11 +1,14 @@
 <div class="yablochny-settings">
-  <div id="yp-restore-banner" style="display: none; background: rgba(243, 156, 18, 0.1); border: 1px solid rgba(243, 156, 18, 0.4); border-radius: 12px; padding: 15px; margin-bottom: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-      <i class="fa-solid fa-triangle-exclamation" style="color: #f39c12; margin-bottom: 8px; font-size: 1.5em;"></i>
-      <div style="font-weight: bold; margin-bottom: 4px; color: #f39c12;">Yablochny Preset Not Selected</div>
-      <div style="font-size: 0.85em; margin-bottom: 12px; color: #ccc; line-height: 1.4;">If you accidentally deleted the preset or chose another one, you can restore all Yablochny settings now.</div>
-      <button id="yp-reinstall-btn" class="menu_button primary" style="width: 100%; justify-content: center; padding: 10px; font-weight: bold; font-size: 1em;">
-         <i class="fa-solid fa-rotate-left"></i> Restore Yablochny Preset
-      </button>
+  <div id="yp-restore-banner-container" style="display: none; margin-bottom: 8px;">
+    <div id="yp-restore-banner" style="background: rgba(243, 156, 18, 0.1); border: 1px solid rgba(243, 156, 18, 0.3); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+        <div style="font-size: 0.85em; color: #ddd; display: flex; align-items: center; gap: 8px; line-height: 1.2;">
+            <i class="fa-solid fa-triangle-exclamation" style="color: #f39c12;"></i>
+            <span id="yp-banner-text">Yablochny Preset not selected or corrupted.</span>
+        </div>
+        <button id="yp-reinstall-btn" class="menu_button primary" style="padding: 5px 12px; font-size: 0.85em; white-space: nowrap; flex-shrink: 0; margin: 0;">
+           <i class="fa-solid fa-rotate-left"></i> <span id="yp-banner-btn-text">Restore</span>
+        </button>
+    </div>
   </div>
   <div class="inline-drawer">
     <div class="inline-drawer-toggle inline-drawer-header yablochny-main-toggle">
