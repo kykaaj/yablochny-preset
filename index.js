@@ -5061,19 +5061,48 @@ function applySectionCollapseDebounced() {
  * Injects/updates a <style> tag that hides children of collapsed sections.
  * This is instant and survives DOM re-renders (no flicker).
  */
+/**
+ * Generates ALL section styling as CSS attribute selectors.
+ * This prevents flicker because CSS applies instantly to new DOM elements.
+ */
 function updateSectionCss() {
     if (!_ypSectionMap) return;
     let css = "";
+
+    // Header styling (attribute-based so it works instantly on re-render)
+    const headerSels = _ypSectionMap.headerIds.map(id => `li[data-pm-identifier="${id}"]`);
+    if (headerSels.length > 0) {
+        const hSel = headerSels.join(",");
+        css += `${hSel} { border-left: 3px solid rgba(255,255,255,0.25) !important; background: linear-gradient(90deg, rgba(255,255,255,0.06), transparent) !important; cursor: pointer !important; user-select: none; }\n`;
+        css += `${hSel}:hover { background: linear-gradient(90deg, rgba(255,255,255,0.1), transparent) !important; }\n`;
+        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600 !important; letter-spacing: 0.3px; }\n`;
+        // Chevron via ::before pseudo-element (no DOM needed!)
+        css += `${hSel} [class*='prompt_manager_prompt_name']::before { content: "›"; display: inline-block; margin-right: 6px; font-size: 14px; font-weight: bold; opacity: 0.5; transition: transform 0.25s ease; }\n`;
+    }
+
+    // Per-header open/closed chevron rotation + child visibility
     for (const headerId of _ypSectionMap.headerIds) {
         const storageKey = "yp_section_" + headerId;
         const isOpen = localStorage.getItem(storageKey) === "true";
-        if (!isOpen) {
-            const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
-            for (const cid of childIds) {
-                css += `li[data-pm-identifier="${cid}"] { display: none !important; }\n`;
+        const hSel = `li[data-pm-identifier="${headerId}"]`;
+
+        if (isOpen) {
+            css += `${hSel} [class*='prompt_manager_prompt_name']::before { transform: rotate(90deg); }\n`;
+        }
+
+        const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
+        if (childIds.length > 0) {
+            const childSels = childIds.map(id => `li[data-pm-identifier="${id}"]`);
+            const cSel = childSels.join(",");
+            // Indent + smaller
+            css += `${cSel} { margin-left: 14px !important; font-size: 0.92em !important; opacity: 0.9; border-left: 1px solid rgba(255,255,255,0.08) !important; }\n`;
+            // Hide if section is closed
+            if (!isOpen) {
+                css += `${cSel} { display: none !important; }\n`;
             }
         }
     }
+
     let styleEl = document.getElementById("yp-section-hide-css");
     if (!styleEl) {
         styleEl = document.createElement("style");
@@ -5082,7 +5111,6 @@ function updateSectionCss() {
     }
     styleEl.textContent = css;
 }
-
 function applySectionCollapse() {
     const pmList = jQuery("#completion_prompt_manager_list");
     if (pmList.length === 0) return;
@@ -5092,7 +5120,6 @@ function applySectionCollapse() {
 
     _ypSectionObserverPaused = true;
 
-    // Find section headers by name pattern
     const sections = [];
     items.each(function (i) {
         const el = jQuery(this);
@@ -5105,7 +5132,6 @@ function applySectionCollapse() {
 
     if (sections.length === 0) { _ypSectionObserverPaused = false; return; }
 
-    // Collect children
     for (let s = 0; s < sections.length; s++) {
         const startIdx = sections[s].index + 1;
         const endIdx = (s + 1 < sections.length) ? sections[s + 1].index : items.length;
@@ -5114,52 +5140,30 @@ function applySectionCollapse() {
         }
     }
 
-    // Build/update section map for CSS-based hiding
+    // Build section map and update CSS (instant, no DOM changes)
     _ypSectionMap = { headerIds: [], childIdsByHeader: {} };
     sections.forEach(section => {
         _ypSectionMap.headerIds.push(section.id);
         _ypSectionMap.childIdsByHeader[section.id] = section.children.map(c => c.attr("data-pm-identifier"));
     });
-
-    // Apply CSS hiding (instant, no flicker)
     updateSectionCss();
 
-    // Style headers and children via classes
+    // Attach click handlers only (no DOM visual changes!)
     sections.forEach(section => {
         const el = section.el;
+        if (el.data("yp-section-bound")) return; // already bound
+        el.data("yp-section-bound", true);
         const storageKey = "yp_section_" + section.id;
-        const isOpen = localStorage.getItem(storageKey) === "true";
 
-        section.children.forEach(child => {
-            if (!child.hasClass("yp-section-child")) child.addClass("yp-section-child");
+        el.on("click.ypsection", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            const open = localStorage.getItem(storageKey) === "true";
+            localStorage.setItem(storageKey, String(!open));
+            updateSectionCss();
+            return false;
         });
-
-        if (!el.hasClass("yp-section-header")) {
-            el.addClass("yp-section-header");
-            const nameEl = el.find("[class*='prompt_manager_prompt_name']");
-            if (nameEl.find(".yp-section-chevron").length === 0) {
-                nameEl.prepend(jQuery('<i class="yp-section-chevron fa-solid fa-chevron-right"></i>'));
-            }
-
-            el.off("click.ypsection").on("click.ypsection", function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-
-                const open = localStorage.getItem(storageKey) === "true";
-                localStorage.setItem(storageKey, String(!open));
-
-                const chevronEl = jQuery(this).find(".yp-section-chevron");
-                chevronEl.css("transform", !open ? "rotate(90deg)" : "rotate(0deg)");
-
-                // Update CSS to show/hide children instantly
-                updateSectionCss();
-                return false;
-            });
-        }
-
-        // Update chevron
-        el.find(".yp-section-chevron").css("transform", isOpen ? "rotate(90deg)" : "rotate(0deg)");
     });
 
     setTimeout(() => { _ypSectionObserverPaused = false; }, 150);
