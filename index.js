@@ -5016,22 +5016,30 @@ async function injectYablochnyUI(htmlContent) {
  * Stable high-precision "Local" glow.
  * Positions absolutely within the target's relative parent.
  */
-function showStandaloneGlow(target, isGold) {
-    if (!target || target.length === 0) return;
+function showStandaloneGlow(target, isGold = false) {
+    target = jQuery(target);
+    if (target.length === 0) return;
+
     const parent = target.parent();
     
-    // Ensure parent is relative for absolute positioning
-    if (parent.css("position") === "static") parent.css("position", "relative");
+    // Ensure parent is relative so absolute positioning works
+    if (parent.css("position") === "static") {
+        parent.css("position", "relative");
+    }
 
-    const pos = target.position();
+    const tOffset = target.offset();
+    const pOffset = parent.offset();
+    const tTop = tOffset.top - pOffset.top + parent.scrollTop();
+    const tLeft = tOffset.left - pOffset.left + parent.scrollLeft();
+
     const hClass = isGold ? "yp-overlay-gold" : "yp-overlay-green";
     
     const overlay = jQuery("<div class='yp-highlight-overlay'></div>")
         .addClass(hClass)
         .css({
             position: 'absolute',
-            top: (pos.top - 2) + 'px',
-            left: (pos.left - 2) + 'px',
+            top: (tTop - 2) + 'px',
+            left: (tLeft - 2) + 'px',
             width: (target.outerWidth() + 4) + 'px',
             height: (target.outerHeight() + 4) + 'px',
             borderRadius: '16px', // FORCED
