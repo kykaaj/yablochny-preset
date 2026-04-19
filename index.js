@@ -5190,11 +5190,27 @@ function applySectionCollapse() {
 
     if (sections.length === 0) { _ypSectionObserverPaused = false; return; }
 
+    const STOPElements = [
+        "main", "jailbreak", "charDescription", "charPersonality", "scenario", "personaDescription", 
+        "dialogueExamples", "chatHistory", "worldInfoAfter", "worldInfoBefore", 
+        "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4", // self-audit
+        "0a2c3465-e2a8-4e71-8e09-e39557967df3"  // setvars
+    ];
+
     for (let s = 0; s < sections.length; s++) {
         const startIdx = sections[s].index + 1;
         const endIdx = (s + 1 < sections.length) ? sections[s + 1].index : items.length;
         for (let j = startIdx; j < endIdx; j++) {
-            sections[s].children.push(jQuery(items[j]));
+            const item = jQuery(items[j]);
+            const id = item.attr("data-pm-identifier");
+            
+            // If we hit a known standalone toggle (or ST default), stop swallowing children!
+            // This prevents "jb", "core", "self-audit" from becoming children of the last folder.
+            if (STOPElements.includes(id)) {
+                break;
+            }
+            
+            sections[s].children.push(item);
         }
     }
 
