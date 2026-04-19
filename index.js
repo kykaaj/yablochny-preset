@@ -170,6 +170,7 @@ const LANG_MAP = {
 const UI_TEXT = {
     en: {
         title: "Settings",
+        macroTitle: "Quick Toggles",
         inactiveBadge: "Other preset active",
         desc: "Adaptive Yablochny chat preset. The extension creates/updates a normal preset and keeps your toggle state and custom prompts.",
         sync: "Sync preset",
@@ -359,6 +360,56 @@ const UI_TEXT = {
         optDecoLarge: "Large",
         optDecoMini: "Mini",
 
+        // Quick Toggles - Style
+        btnDrawn: "Drawn-out narrative",
+        btnLess: "Less descriptions",
+        btnQuotes: "Double quotes",
+        btnPorn: "Porn mode",
+        btnGptsex: "GPT sex scenes",
+        btnDirty: "Dirty talk",
+        btnVocal: "Vocalization",
+        btnGore: "Violence",
+        btnNohorny: "No horny",
+
+        // Quick Toggles - Focus
+        btnSummary: "Summary",
+        btnReg: "REG",
+        btnSpeechEnh: "Speech enhance",
+        btnMomentum: "Scene momentum",
+        btnAutonomy: "Char & NPC autonomy",
+        btnGrounding: "Real world grounding",
+        btnSilent: "User silent turn",
+        btnAntiloop: "Anti-loop",
+        btnNodrama: "No drama",
+        btnAntipronoun: "Anti-pronouns",
+        btnAntiecho: "Anti-echo",
+        btnAe: "GPT A-E reminder",
+        btnAudit: "Self-audit",
+
+        // Tooltips
+        ttbtnDrawn: "More detailed and slow-paced storytelling",
+        ttbtnLess: "Minimize environmental descriptions",
+        ttbtnQuotes: "Wrap speech in double quotes",
+        ttbtnPorn: "Enable explicit NSFW content",
+        ttbtnGptsex: "AI-directed explicit scenes",
+        ttbtnDirty: "Rough and explicit dialogue",
+        ttbtnVocal: "Detailed auditory grunts/moans",
+        ttbtnGore: "Enable explicit violence and gore",
+        ttbtnNohorny: "Strictly bypass NSFW output",
+        ttbtnSummary: "Retain chat context summary",
+        ttbtnReg: "Enforce format specifications",
+        ttbtnSpeechEnh: "Enhance dialogue realism",
+        ttbtnMomentum: "Push the scene forward",
+        ttbtnAutonomy: "Let characters act independently",
+        ttbtnGrounding: "Apply real word logic",
+        ttbtnSilent: "Bot continues without user action",
+        ttbtnAntiloop: "Prevent repetitive phrasing",
+        ttbtnNodrama: "Reduce melodrama",
+        ttbtnAntipronoun: "Reduce name/pronoun repetition",
+        ttbtnAntiecho: "Prevent repeating user's words",
+        ttbtnAe: "Remind GPT-model structure",
+        ttbtnAudit: "AI self-evaluates output",
+
         // Things
         thing_webchapter: "Web-Chapter Style",
         thing_interview: "Actor Interview",
@@ -384,6 +435,7 @@ const UI_TEXT = {
     },
     ru: {
         title: "Настройки",
+        macroTitle: "Быстрые переключатели",
         inactiveBadge: "Выбран другой пресет",
         desc: "Адаптивный пресет Яблочный. Расширение создает и обновляет пресет, сохраняя ваши тоглы и кастомные промпты.",
         sync: "Синхронизировать пресет",
@@ -575,6 +627,56 @@ const UI_TEXT = {
         optDecoLarge: "Полная",
         optDecoMini: "Мини-разбор",
 
+        // Quick Toggles - Style
+        btnDrawn: "Развёрнутое повествование",
+        btnLess: "Меньше описаний",
+        btnQuotes: "Двойные кавычки",
+        btnPorn: "Порно-режим",
+        btnGptsex: "Секс-сцены от GPT",
+        btnDirty: "Грязные разговоры",
+        btnVocal: "Озвучка (Vocalization)",
+        btnGore: "Насилие и жестокость",
+        btnNohorny: "Отключить возбуждение",
+
+        // Quick Toggles - Focus
+        btnSummary: "Саммари",
+        btnReg: "REG (настройка формата)",
+        btnSpeechEnh: "Улучшение речи",
+        btnMomentum: "Развитие сцены",
+        btnAutonomy: "Самостоятельность NPC",
+        btnGrounding: "Заземление в реальность",
+        btnSilent: "Действия без участия юзера",
+        btnAntiloop: "Анти-луп",
+        btnNodrama: "Без драмы",
+        btnAntipronoun: "Анти-местоимения",
+        btnAntiecho: "Анти-эхо",
+        btnAe: "Напоминание A-E",
+        btnAudit: "Самопроверка (Авто-оценка)",
+
+        // Tooltips
+        ttbtnDrawn: "Более детальный и неспешный текст",
+        ttbtnLess: "Снизить количество декоративных описаний",
+        ttbtnQuotes: "Оборачивать прямую речь в двойные кавычки",
+        ttbtnPorn: "Включить откровенные NSFW сцены",
+        ttbtnGptsex: "ИИ берёт секс-сцены в свои руки",
+        ttbtnDirty: "Грубые и грязные диалоги в NSFW",
+        ttbtnVocal: "Озвучивание стонов и звуков",
+        ttbtnGore: "Разрешить детальное насилие и кровь",
+        ttbtnNohorny: "Строго запретить ИИ уходить в NSFW",
+        ttbtnSummary: "Саммари: удержание контекста истории",
+        ttbtnReg: "Жёсткое соблюдение формата выдачи",
+        ttbtnSpeechEnh: "Сделать речь более живой и естественной",
+        ttbtnMomentum: "Толкать сцену вперёд, избегая застоя (Моментум)",
+        ttbtnAutonomy: "Позволить NPC принимать решения самим",
+        ttbtnGrounding: "Логика реального мира и физики",
+        ttbtnSilent: "Продолжать сюжет, пока юзер молчит / бездействует",
+        ttbtnAntiloop: "Предотвращать зацикливание нейросети",
+        ttbtnNodrama: "Уменьшить излишний драматизм",
+        ttbtnAntipronoun: "Избегать частого повторения имён и местоимений",
+        ttbtnAntiecho: "Запретить ИИ повторять слова юзера",
+        ttbtnAe: "Напоминание о правильной структуре для GPT",
+        ttbtnAudit: "ИИ самостоятельно оценивает и улучшает свой ответ",
+
         // Things
         thing_webchapter: "Стиль веб-главы",
         thing_interview: "Интервью с Актерами",
@@ -600,6 +702,7 @@ const UI_TEXT = {
     },
     uk: {
         title: "Налаштування",
+        macroTitle: "Швидкі перемикачі",
         inactiveBadge: "Вибрано інший пресет",
         desc: "Адаптивний пресет Яблучний. Розширення створює та оновлює пресет, зберігаючи ваші тогли та кастомні промпти.",
         sync: "Синхронізувати пресет",
@@ -790,6 +893,56 @@ const UI_TEXT = {
         // Options - Deconstruction
         optDecoLarge: "Повна",
         optDecoMini: "Міні-розбір",
+
+        // Quick Toggles - Style
+        btnDrawn: "Розгорнута розповідь",
+        btnLess: "Менше описів",
+        btnQuotes: "Подвійні лапки",
+        btnPorn: "Порно-режим",
+        btnGptsex: "Секс-сцени від GPT",
+        btnDirty: "Брудні розмови",
+        btnVocal: "Озвучка (Vocalization)",
+        btnGore: "Насильство та жорстокість",
+        btnNohorny: "Вимкнути збудження",
+
+        // Quick Toggles - Focus
+        btnSummary: "Саммарі",
+        btnReg: "REG (налаштування формату)",
+        btnSpeechEnh: "Покращення мови",
+        btnMomentum: "Розвиток сцени",
+        btnAutonomy: "Самостійність NPC",
+        btnGrounding: "Заземлення в реальність",
+        btnSilent: "Дії без участі юзера",
+        btnAntiloop: "Анти-луп",
+        btnNodrama: "Без драми",
+        btnAntipronoun: "Анти-займенники",
+        btnAntiecho: "Анти-ехо",
+        btnAe: "Нагадування A-E",
+        btnAudit: "Самоперевірка (Авто-оцінка)",
+
+        // Tooltips
+        ttbtnDrawn: "Більш детальний і повільний текст",
+        ttbtnLess: "Знизити кількість декоративних описів",
+        ttbtnQuotes: "Обгортати пряму мову в подвійні лапки",
+        ttbtnPorn: "Увімкнути відверті NSFW сцени",
+        ttbtnGptsex: "ШІ бере секс-сцени у свої руки",
+        ttbtnDirty: "Грубі та брудні діалоги у NSFW",
+        ttbtnVocal: "Озвучування стогонів і звуків",
+        ttbtnGore: "Дозволити детальне насильство та кров",
+        ttbtnNohorny: "Суворо заборонити ШІ йти в NSFW",
+        ttbtnSummary: "Саммарі: утримання контексту історії",
+        ttbtnReg: "Жорстке дотримання формату видачі",
+        ttbtnSpeechEnh: "Зробити мову більш живою",
+        ttbtnMomentum: "Штовхати сцену вперед (Моментум)",
+        ttbtnAutonomy: "Дозволити NPC приймати рішення самим",
+        ttbtnGrounding: "Логіка реального світу та фізики",
+        ttbtnSilent: "Продовжувати сюжет, поки юзер мовчить",
+        ttbtnAntiloop: "Запобігати зацикленню нейромережі",
+        ttbtnNodrama: "Зменшити зайвий драматизм",
+        ttbtnAntipronoun: "Уникати частого повторення імен",
+        ttbtnAntiecho: "Заборонити ШІ повторювати слова юзера",
+        ttbtnAe: "Нагадування про правильну структуру для GPT",
+        ttbtnAudit: "ШІ самостійно оцінює свою відповідь",
 
         // Things
         thing_webchapter: "Стиль веб-розділу",
@@ -3791,6 +3944,34 @@ function applyLocaleToUi() {
     if (dict.sectionFocus) jQuery("#yp-section-focus").html("<i class=\"fa-solid fa-brain\"></i> " + dict.sectionFocus);
     if (dict.sectionAdditional) jQuery("#yp-hdr-additional").html("<i class=\"fa-solid fa-plus\"></i> " + dict.sectionAdditional);
 
+    if (dict.macroTitle) jQuery(".yablochny-macro-title").text(dict.macroTitle);
+
+    // Quick Toggles - Style
+    if (dict.btnDrawn) { jQuery("#yp-btn-drawn").text(dict.btnDrawn); jQuery("#yp-btn-drawn").closest("label").attr("title", dict.ttbtnDrawn); }
+    if (dict.btnLess) { jQuery("#yp-btn-less").text(dict.btnLess); jQuery("#yp-btn-less").closest("label").attr("title", dict.ttbtnLess); }
+    if (dict.btnQuotes) { jQuery("#yp-btn-quotes").text(dict.btnQuotes); jQuery("#yp-btn-quotes").closest("label").attr("title", dict.ttbtnQuotes); }
+    if (dict.btnPorn) { jQuery("#yp-btn-porn").text(dict.btnPorn); jQuery("#yp-btn-porn").closest("label").attr("title", dict.ttbtnPorn); }
+    if (dict.btnGptsex) { jQuery("#yp-btn-gptsex").text(dict.btnGptsex); jQuery("#yp-btn-gptsex").closest("label").attr("title", dict.ttbtnGptsex); }
+    if (dict.btnDirty) { jQuery("#yp-btn-dirty").text(dict.btnDirty); jQuery("#yp-btn-dirty").closest("label").attr("title", dict.ttbtnDirty); }
+    if (dict.btnVocal) { jQuery("#yp-btn-vocal").text(dict.btnVocal); jQuery("#yp-btn-vocal").closest("label").attr("title", dict.ttbtnVocal); }
+    if (dict.btnGore) { jQuery("#yp-btn-gore").text(dict.btnGore); jQuery("#yp-btn-gore").closest("label").attr("title", dict.ttbtnGore); }
+    if (dict.btnNohorny) { jQuery("#yp-btn-nohorny").text(dict.btnNohorny); jQuery("#yp-btn-nohorny").closest("label").attr("title", dict.ttbtnNohorny); }
+
+    // Quick Toggles - Focus
+    if (dict.btnSummary) { jQuery("#yp-btn-summary").text(dict.btnSummary); jQuery("#yp-btn-summary").closest("label").attr("title", dict.ttbtnSummary); }
+    if (dict.btnReg) { jQuery("#yp-btn-reg").text(dict.btnReg); jQuery("#yp-btn-reg").closest("label").attr("title", dict.ttbtnReg); }
+    if (dict.btnSpeechEnh) { jQuery("#yp-btn-speech").text(dict.btnSpeechEnh); jQuery("#yp-btn-speech").closest("label").attr("title", dict.ttbtnSpeechEnh); }
+    if (dict.btnMomentum) { jQuery("#yp-btn-momentum").text(dict.btnMomentum); jQuery("#yp-btn-momentum").closest("label").attr("title", dict.ttbtnMomentum); }
+    if (dict.btnAutonomy) { jQuery("#yp-btn-autonomy").text(dict.btnAutonomy); jQuery("#yp-btn-autonomy").closest("label").attr("title", dict.ttbtnAutonomy); }
+    if (dict.btnGrounding) { jQuery("#yp-btn-grounding").text(dict.btnGrounding); jQuery("#yp-btn-grounding").closest("label").attr("title", dict.ttbtnGrounding); }
+    if (dict.btnSilent) { jQuery("#yp-btn-silent").text(dict.btnSilent); jQuery("#yp-btn-silent").closest("label").attr("title", dict.ttbtnSilent); }
+    if (dict.btnAntiloop) { jQuery("#yp-btn-antiloop").text(dict.btnAntiloop); jQuery("#yp-btn-antiloop").closest("label").attr("title", dict.ttbtnAntiloop); }
+    if (dict.btnNodrama) { jQuery("#yp-btn-nodrama").text(dict.btnNodrama); jQuery("#yp-btn-nodrama").closest("label").attr("title", dict.ttbtnNodrama); }
+    if (dict.btnAntipronoun) { jQuery("#yp-btn-antipronoun").text(dict.btnAntipronoun); jQuery("#yp-btn-antipronoun").closest("label").attr("title", dict.ttbtnAntipronoun); }
+    if (dict.btnAntiecho) { jQuery("#yp-btn-antiecho").text(dict.btnAntiecho); jQuery("#yp-btn-antiecho").closest("label").attr("title", dict.ttbtnAntiecho); }
+    if (dict.btnAe) { jQuery("#yp-btn-ae").text(dict.btnAe); jQuery("#yp-btn-ae").closest("label").attr("title", dict.ttbtnAe); }
+    if (dict.btnAudit) { jQuery("#yp-btn-audit").text(dict.btnAudit); jQuery("#yp-btn-audit").closest("label").attr("title", dict.ttbtnAudit); }
+
     // Dropdown Options
     jQuery("#yp-opt-lang-custom").text(dict.optLangCustom);
     jQuery("#yp-opt-lang-auto").text(dict.optLangAuto);
@@ -5018,8 +5199,13 @@ async function injectYablochnyUI(htmlContent) {
                         applySectionCollapseDebounced();
                     }
                 }
+                
+                // For macro buttons: ST doesn't add nodes on toggle, it just modifies class/DOM. We sync when anything changes.
+                if (window.ypSyncMacrosToST) {
+                    window.ypSyncMacrosToST();
+                }
             });
-            observer.observe(pmList, { childList: true });
+            observer.observe(pmList, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
         }
     };
     setInterval(insertUI, 1100);
@@ -5027,6 +5213,151 @@ async function injectYablochnyUI(htmlContent) {
     // Also apply section collapse periodically for robustness
     setInterval(() => { if (!_ypSectionObserverPaused) applySectionCollapseDebounced(); }, 2500);
 }
+
+// MACRO TOGGLES LOGIC
+window.ypSyncMacrosToST = function() {
+    // Read state from actual preset data, not DOM
+    const cfg = extension_settings?.["yablochny-preset"];
+    if (!cfg) return;
+    const presetName = cfg.presetName || "Yablochny Preset";
+    const index = findPresetIndexByName(presetName);
+    if (index === null) return;
+    const currentPreset = openai_settings[index];
+    if (!currentPreset) return;
+
+    // Build a map: prompt identifier -> enabled
+    const idToEnabled = new Map();
+    if (Array.isArray(currentPreset.prompts)) {
+        for (const p of currentPreset.prompts) {
+            if (p.identifier) {
+                idToEnabled.set(p.identifier, !!p.enabled);
+            }
+        }
+    }
+
+    for (const btn of document.querySelectorAll(".yp-macro-btn")) {
+        const targetName = btn.getAttribute("data-pm-name").trim();
+        
+        let targetId = null;
+        if (targetName.includes("summary")) {
+            targetId = "978520a2-c29b-45fb-86d8-99fc81204f37";
+        } else if (targetName.includes("audit")) {
+            targetId = "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4";
+        }
+
+        let isOn = targetId && idToEnabled.has(targetId) ? idToEnabled.get(targetId) : false;
+
+        const inp = btn.querySelector("input");
+        if (inp) inp.checked = isOn;
+        if (isOn) {
+            btn.classList.add("active-macro");
+        } else {
+            btn.classList.remove("active-macro");
+        }
+    }
+};
+
+if (!window.yablochnyMacroListenerAdded) {
+    window.yablochnyMacroListenerAdded = true;
+    jQuery(document).on("change", ".yp-macro-btn input", function(e) {
+        const label = jQuery(this).closest(".yp-macro-btn");
+        const targetName = label.attr("data-pm-name"); // Either "◦︎ summary" or "◦︎ self-audit"
+
+        let targetId = null;
+        if (targetName.includes("summary")) {
+            targetId = "978520a2-c29b-45fb-86d8-99fc81204f37";
+        } else if (targetName.includes("audit")) {
+            targetId = "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4";
+        }
+
+        const cfg = extension_settings?.["yablochny-preset"];
+        if (!cfg) return;
+        const presetName = cfg.presetName || "Yablochny Preset";
+        const index = findPresetIndexByName(presetName);
+        if (index === null) return;
+        const currentPreset = openai_settings[index];
+        if (!currentPreset) return;
+
+        // Find prompt by ID
+        let foundPrompt = null;
+        if (Array.isArray(currentPreset.prompts)) {
+            for (const p of currentPreset.prompts) {
+                if (p.identifier === targetId) {
+                    foundPrompt = p;
+                    break;
+                }
+            }
+        }
+
+        if (!foundPrompt) {
+            console.warn("[Yablochny] Macro toggle: prompt not found for", targetName);
+            if (window.toastr) window.toastr.error("Could not find prompt: " + targetName);
+            return;
+        }
+
+        // Toggle
+        const newState = !foundPrompt.enabled;
+        foundPrompt.enabled = newState;
+
+        // Also update prompt_order
+        if (Array.isArray(currentPreset.prompt_order)) {
+            for (const group of currentPreset.prompt_order) {
+                if (Array.isArray(group.order)) {
+                    for (const item of group.order) {
+                        if (item.identifier === targetId) {
+                            item.enabled = newState;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Show checkmark inline to guarantee it works regardless of event target
+        const btnLabel = jQuery(e.target).closest(".yp-macro-btn");
+        let checkmark = btnLabel.find('.yp-macro-checkmark');
+        if (checkmark.length === 0) {
+            checkmark = jQuery('<i class="fa-solid fa-check yp-macro-checkmark" style="color: #6bcb77; font-size: 0.9em; margin-left: 6px; opacity: 0; transition: opacity 0.3s; pointer-events: none; align-self: center;"></i>');
+            btnLabel.append(checkmark);
+        }
+        checkmark[0].offsetHeight; // force reflow
+        checkmark.css('opacity', '1');
+        if (checkmark.data('timeout')) clearTimeout(checkmark.data('timeout'));
+        checkmark.data('timeout', setTimeout(() => { checkmark.css('opacity', '0'); }, 1500));
+
+
+        saveSettingsDebounced();
+        
+        // SAVE PRESET TO DISK
+        const ctx = window.SillyTavern?.getContext?.();
+        const headers = ctx?.getRequestHeaders ? ctx.getRequestHeaders() : {};
+
+        fetch("/api/presets/save", {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                apiId: "openai",
+                name: presetName,
+                preset: currentPreset,
+            }),
+        }).then(res => {
+            if (res.ok) {
+                // Refresh ST prompt manager list
+                if (jQuery("#settings_preset_openai").length > 0) {
+                    jQuery("#settings_preset_openai").trigger("change");
+                }
+            } else {
+                console.error("[Yablochny] Failed to save quick toggle preset", res.status);
+            }
+        });
+
+        // Update our UI
+        setTimeout(() => { if (window.ypSyncMacrosToST) window.ypSyncMacrosToST(); }, 100);
+        
+        console.log(`[Yablochny] Macro toggle: ${foundPrompt.name} (${targetId}) → ${newState ? "ON" : "OFF"}`);
+    });
+}
+
+
 
 /**
  * Stable high-precision "Local" glow.
@@ -5320,6 +5651,12 @@ function injectDynamicStyles() {
     const defaultSTPrompts = ['nsfw', 'enhanceDefinitions', 'charDescription', 'charPersonality', 'scenario', 'personaDescription'];
     const hiddenSelectors = defaultSTPrompts.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
     css += `${hiddenSelectors} { display: none !important; }\n`;
+
+    css += `.yablochny-macro-list { padding: 4px; }\n`;
+    css += `.yp-macro-btn { opacity: 0.7; transition: all 0.2s ease; padding: 2px 4px; margin: 0; display: flex; border-radius: 4px; }\n`;
+    css += `.yp-macro-btn:hover { background: rgba(255,255,255, 0.1); opacity: 1; }\n`;
+    css += `.yp-macro-btn.active-macro { opacity: 1; }\n`;
+    css += `.yp-macro-btn.active-macro span { color: var(--SmartThemeQuoteColor); }\n`;
 
     const styleEl = document.createElement("style"); styleEl.id = styleId; styleEl.textContent = css; document.head.appendChild(styleEl);
 
