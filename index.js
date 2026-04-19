@@ -5239,16 +5239,16 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { color: #16a34a !important; opacity: 1 !important; }\n`;
-        css += `${cBeforeDisabled} { color: #16a34a !important; opacity: 0.5 !important; }\n`;
+        css += `${lisDisabled} { color: #5c9e67 !important; opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.45) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.1), transparent) !important; }\n`;
+        css += `${cBeforeDisabled} { color: #5c9e67 !important; opacity: 0.5 !important; }\n`;
         const lisDisabledName = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name'], ${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name'] *`).join(",");
-        css += `${lisDisabledName} { color: #16a34a !important; text-decoration: none !important; transition: color 0.15s; }\n`;
+        css += `${lisDisabledName} { color: #5c9e67 !important; text-decoration: none !important; transition: color 0.15s; }\n`;
         
         // Enabled State
-        css += `${lisEnabled} { color: #4ade80 !important; opacity: 1 !important; }\n`;
-        css += `${cBeforeEnabled} { color: #4ade80 !important; opacity: 0.85 !important; }\n`;
+        css += `${lisEnabled} { color: #6bcb77 !important; opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.9) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.25), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(107, 203, 119, 0.15) !important; }\n`;
+        css += `${cBeforeEnabled} { color: #6bcb77 !important; opacity: 0.9 !important; }\n`;
         const lisEnabledName = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_name'], ${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_name'] *`).join(",");
-        css += `${lisEnabledName} { color: #4ade80 !important; text-decoration: none !important; font-weight: 700 !important; transition: color 0.15s; }\n`;
+        css += `${lisEnabledName} { color: #6bcb77 !important; text-decoration: none !important; font-weight: 700 !important; transition: color 0.15s; }\n`;
     }
 
     const goldIds = Object.keys(REGEX_PROMPT_MAP);
@@ -5269,16 +5269,16 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { color: #d97706 !important; opacity: 1 !important; }\n`;
-        css += `${cBeforeDisabled} { color: #d97706 !important; opacity: 0.5 !important; }\n`;
+        css += `${lisDisabled} { color: #a4843b !important; opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.45) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important; }\n`;
+        css += `${cBeforeDisabled} { color: #a4843b !important; opacity: 0.5 !important; }\n`;
         const lisDisabledName = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name'], ${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name'] *`).join(",");
-        css += `${lisDisabledName} { color: #d97706 !important; text-decoration: none !important; transition: color 0.15s; }\n`;
+        css += `${lisDisabledName} { color: #a4843b !important; text-decoration: none !important; transition: color 0.15s; }\n`;
         
         // Enabled State
-        css += `${lisEnabled} { color: #fbbf24 !important; opacity: 1 !important; }\n`;
-        css += `${cBeforeEnabled} { color: #fbbf24 !important; opacity: 0.85 !important; }\n`;
+        css += `${lisEnabled} { color: #f1c40f !important; opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.9) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.25), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(241, 196, 15, 0.15) !important; }\n`;
+        css += `${cBeforeEnabled} { color: #f1c40f !important; opacity: 0.9 !important; }\n`;
         const lisEnabledName = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_name'], ${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_name'] *`).join(",");
-        css += `${lisEnabledName} { color: #fbbf24 !important; text-decoration: none !important; font-weight: 700 !important; transition: color 0.15s; }\n`;
+        css += `${lisEnabledName} { color: #f1c40f !important; text-decoration: none !important; font-weight: 700 !important; transition: color 0.15s; }\n`;
     }
 
     css += ".yp-overlay-green { box-shadow: 0 0 15px 5px rgba(107, 203, 119, 0.4), inset 0 0 20px 2px rgba(107, 203, 119, 0.1); background-color: rgba(107, 203, 119, 0.05); } ";
