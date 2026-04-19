@@ -1334,7 +1334,7 @@ const MODEL_PRESETS = {
         ],
     },
     "claude-no-cot": {
-        name: "Claude 4.6",
+        name: "Claude 4.6/4.7",
         settings: {
             temperature: 0.8,
             frequency_penalty: 0.17,
