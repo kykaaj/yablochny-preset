@@ -167,6 +167,7 @@ const LANG_MAP = {
 const UI_TEXT = {
     en: {
         title: "Settings",
+        inactiveBadge: "Other preset active",
         desc: "Adaptive Yablochny chat preset. The extension creates/updates a normal preset and keeps your toggle state and custom prompts.",
         sync: "Sync preset",
         auto: "Sync on start",
@@ -380,6 +381,7 @@ const UI_TEXT = {
     },
     ru: {
         title: "Настройки",
+        inactiveBadge: "Выбран другой пресет",
         desc: "Адаптивный пресет Яблочный. Расширение создает и обновляет пресет, сохраняя ваши тоглы и кастомные промпты.",
         sync: "Синхронизировать пресет",
         auto: "Синхронизация при запуске",
@@ -595,6 +597,7 @@ const UI_TEXT = {
     },
     uk: {
         title: "Налаштування",
+        inactiveBadge: "Вибрано інший пресет",
         desc: "Адаптивний пресет Яблучний. Розширення створює та оновлює пресет, зберігаючи ваші тогли та кастомні промпти.",
         sync: "Синхронізувати пресет",
         auto: "Синхронізація при запуску",
@@ -3074,6 +3077,10 @@ function syncReasoningSettings(cfg) {
 
 async function syncPreset(showToasts = false, disableCapture = false) {
     try {
+        // Guard: don't silently overwrite a different preset
+        if (!showToasts && typeof isYablochnyPresetActive === "function" && !isYablochnyPresetActive()) {
+            return;
+        }
         const cfg = getConfig();
         const uiLang = getUiLang();
         const basePreset = await loadBasePreset();
@@ -3675,6 +3682,7 @@ function applyLocaleToUi() {
     const dict = UI_TEXT[lang] || UI_TEXT.en;
 
     jQuery("#yp-title-text").text(dict.title);
+    if (dict.inactiveBadge) jQuery("#yp-inactive-badge-text").text(dict.inactiveBadge);
     jQuery("#yp-desc-text").text(dict.desc);
     jQuery("#yp-site-label").text(dict.siteLabel);
     jQuery("#yp-guide-label").text(dict.guideLabel);
@@ -4087,8 +4095,42 @@ function removeRegexPack(packId) {
     }
 }
 
+/**
+ * Checks whether the currently selected OpenAI preset in the ST UI
+ * is the Yablochny one (by name).
+ */
+function isYablochnyPresetActive() {
+    const cfg = getConfig();
+    const yablochnyName = cfg.presetName || DEFAULT_PRESET_NAME;
+    const selector = jQuery("#settings_preset_openai");
+    if (selector.length === 0) return true; // can't determine — assume active
+    const selectedText = selector.find("option:selected").text().trim();
+    return selectedText === yablochnyName;
+}
+
+/**
+ * Updates the visual state of the Yablochny settings panel
+ * depending on whether the Yablochny preset is currently active.
+ */
+function updatePresetActiveState() {
+    const container = jQuery(".yablochny-settings");
+    if (container.length === 0) return;
+    const active = isYablochnyPresetActive();
+    if (active) {
+        container.removeClass("yp-preset-inactive");
+    } else {
+        container.addClass("yp-preset-inactive");
+    }
+}
+
 function initControls() {
     const cfg = getConfig();
+
+    // --- Preset activity check ---
+    updatePresetActiveState();
+    jQuery("#settings_preset_openai").off("change.yablochny").on("change.yablochny", () => {
+        updatePresetActiveState();
+    });
 
     // Render Things UI based on definitions
     renderThingsUI(cfg);
