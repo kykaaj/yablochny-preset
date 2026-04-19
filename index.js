@@ -5231,21 +5231,23 @@ function injectDynamicStyles() {
         const cBeforeDisabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_controls']::before`).join(",");
         const cBeforeEnabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_controls']::before`).join(",");
         
-        css += `${lis} { border-left: 3px solid rgba(107, 203, 119, 0.6) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; }\n`;
+        css += `${lis} { border-left: 3px solid rgba(107, 203, 119, 0.6) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; opacity: 1 !important; }\n`;
         css += `${controls} { position: relative; padding-left: 28px !important; }\n`;
         
         const controlsBefore = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']::before`).join(",");
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
-        // Disabled State (dimmer)
+        // Disabled State
+        css += `${lisDisabled} { color: #4a9e5c !important; opacity: 1 !important; }\n`;
+        css += `${cBeforeDisabled} { color: #4a9e5c !important; opacity: 0.5 !important; }\n`;
         const lisDisabledName = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name']`).join(",");
-        css += `${cBeforeDisabled} { color: #6bcb77 !important; opacity: 0.3 !important; }\n`;
-        css += `${lisDisabledName} { color: #6bcb77 !important; text-decoration: none !important; }\n`;
+        css += `${lisDisabledName} { color: #4a9e5c !important; text-decoration: none !important; }\n`;
         
-        // Enabled State (bright)
+        // Enabled State
+        css += `${lisEnabled} { color: #4ade80 !important; opacity: 1 !important; }\n`;
+        css += `${cBeforeEnabled} { color: #4ade80 !important; opacity: 0.85 !important; }\n`;
         const lisEnabledName = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_name']`).join(",");
-        css += `${cBeforeEnabled} { color: #8be096 !important; opacity: 0.8 !important; text-shadow: none !important; }\n`;
-        css += `${lisEnabledName} { color: #8be096 !important; text-decoration: none !important; font-weight: 700 !important; text-shadow: 0 0 8px rgba(107,203,119,0.4) !important; letter-spacing: 0.02em; }\n`;
+        css += `${lisEnabledName} { color: #4ade80 !important; text-decoration: none !important; font-weight: 700 !important; }\n`;
     }
 
     const goldIds = Object.keys(REGEX_PROMPT_MAP);
@@ -5259,21 +5261,23 @@ function injectDynamicStyles() {
         const cBeforeDisabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_controls']::before`).join(",");
         const cBeforeEnabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_controls']::before`).join(",");
         
-        css += `${lis} { border-left: 4px solid #f1c40f !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important; }\n`;
+        css += `${lis} { border-left: 4px solid #f1c40f !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important; opacity: 1 !important; }\n`;
         css += `${controls} { position: relative; padding-left: 28px !important; }\n`;
         
         const controlsBefore = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']::before`).join(",");
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
+        css += `${lisDisabled} { color: #c49b0c !important; opacity: 1 !important; }\n`;
+        css += `${cBeforeDisabled} { color: #c49b0c !important; opacity: 0.5 !important; }\n`;
         const lisDisabledName = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name']`).join(",");
-        css += `${cBeforeDisabled} { color: #f1c40f !important; opacity: 0.3 !important; }\n`;
-        css += `${lisDisabledName} { color: #f1c40f !important; text-decoration: none !important; }\n`;
+        css += `${lisDisabledName} { color: #c49b0c !important; text-decoration: none !important; }\n`;
         
         // Enabled State
+        css += `${lisEnabled} { color: #fbbf24 !important; opacity: 1 !important; }\n`;
+        css += `${cBeforeEnabled} { color: #fbbf24 !important; opacity: 0.85 !important; }\n`;
         const lisEnabledName = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_name']`).join(",");
-        css += `${cBeforeEnabled} { color: #f5d76e !important; opacity: 0.8 !important; text-shadow: none !important; }\n`;
-        css += `${lisEnabledName} { color: #f5d76e !important; text-decoration: none !important; font-weight: 700 !important; text-shadow: 0 0 8px rgba(241,196,15,0.4) !important; letter-spacing: 0.02em; }\n`;
+        css += `${lisEnabledName} { color: #fbbf24 !important; text-decoration: none !important; font-weight: 700 !important; }\n`;
     }
 
     css += ".yp-overlay-green { box-shadow: 0 0 15px 5px rgba(107, 203, 119, 0.4), inset 0 0 20px 2px rgba(107, 203, 119, 0.1); background-color: rgba(107, 203, 119, 0.05); } ";
