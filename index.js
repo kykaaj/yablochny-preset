@@ -5351,6 +5351,24 @@ function setupLongPressSettingsNavigation() {
 function navigateToPromptManagerItem(identifier, isGold = false) {
     const pmButton = jQuery("#prompt_manager_button"); if (!jQuery("#prompt_manager").is(":visible")) { if (pmButton.length > 0) pmButton.click(); }
     setTimeout(() => {
+        // Find if this item is inside a collapsed section, and if so, expand it!
+        if (typeof _ypSectionMap !== "undefined" && _ypSectionMap && _ypSectionMap.childIdsByHeader) {
+            let parentHeaderId = null;
+            for (const [hId, childIds] of Object.entries(_ypSectionMap.childIdsByHeader)) {
+                if (childIds.includes(identifier)) {
+                    parentHeaderId = hId;
+                    break;
+                }
+            }
+            if (parentHeaderId) {
+                const storageKey = "yp_section_" + parentHeaderId;
+                if (localStorage.getItem(storageKey) !== "true") {
+                    localStorage.setItem(storageKey, "true");
+                    if (typeof updateSectionCss === "function") updateSectionCss();
+                }
+            }
+        }
+
         const item = jQuery(`li[data-pm-identifier='${identifier}']`);
         if (item.length > 0) { 
             item[0].scrollIntoView({ behavior: "smooth", block: "center" }); 
