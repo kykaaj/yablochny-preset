@@ -3855,6 +3855,19 @@ function applyLocaleToUi() {
 
     jQuery("#yp-title-text").text(dict.title);
     if (dict.inactiveBadge) jQuery("#yp-inactive-badge-text").text(dict.inactiveBadge);
+    
+    // Add banner translations dynamically without altering the massive UI_TEXT dict directly
+    if (lang === "ru") {
+        jQuery("#yp-banner-text").text("Пресет Yablochny не выбран или удален.");
+        jQuery("#yp-banner-btn-text").text("Восстановить");
+    } else if (lang === "uk") {
+        jQuery("#yp-banner-text").text("Пресет Yablochny не вибрано або пошкоджено.");
+        jQuery("#yp-banner-btn-text").text("Відновити");
+    } else {
+        jQuery("#yp-banner-text").text("Yablochny Preset not selected or corrupted.");
+        jQuery("#yp-banner-btn-text").text("Restore");
+    }
+
     jQuery("#yp-desc-text").text(dict.desc);
     jQuery("#yp-site-label").text(dict.siteLabel);
     jQuery("#yp-guide-label").text(dict.guideLabel);
