@@ -5296,18 +5296,6 @@ function injectDynamicStyles() {
     const hiddenSelectors = defaultSTPrompts.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
     css += `${hiddenSelectors} { display: none !important; }\n`;
 
-    const folderHeadersIds = [
-        'a4f8713c-2990-4422-9431-a4cfc4bd81e9', // base
-        '842947dc-fd0d-4207-94dd-3a35af7027c4', // scribbling
-        '6d261700-060c-4f0c-9136-84083a657f6c', // branches
-        'd82a3d2f-7c61-41dc-8352-0d864d2debb5', // nsfw
-        '9bd6acf4-bc06-42fe-b80a-ce167768590d', // tweaks
-        'cd695919-0ad1-4b33-a037-448fd55e287d', // patches
-        '2920387b-3af5-4150-9f3d-defaa9e272da'  // preparation
-    ];
-    const folderSelectors = folderHeadersIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_name']`).join(",");
-    css += `${folderSelectors} { pointer-events: none !important; }\n`;
-    
     const styleEl = document.createElement("style"); styleEl.id = styleId; styleEl.textContent = css; document.head.appendChild(styleEl);
 
     if (!window.yablochnyVirtualListenerAdded) {
