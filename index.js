@@ -5560,6 +5560,10 @@ function updateSectionCss() {
                 name.includes("summary") ||
                 name.includes("chat history") ||
                 name.includes("¨ ˎ - •") ||
+                name.includes("゛ˎˊ˗") ||
+                name.includes("◈") ||
+                name.includes("╮") ||
+                name.includes("╯") ||
                 name.includes("@ 1") ||
                 name.includes("@ 0") ||
                 name.includes("✂") ||
