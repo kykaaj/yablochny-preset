@@ -5073,11 +5073,11 @@ function updateSectionCss() {
     const headerSels = _ypSectionMap.headerIds.map(id => `li[data-pm-identifier="${id}"]`);
     if (headerSels.length > 0) {
         const hSel = headerSels.join(",");
-        // Headers: full opacity, pointer, slightly bigger text
-        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; position: relative !important; }\n`;
+        // Headers: full opacity, pointer, bigger text, padding for chevron
+        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; position: relative !important; padding-left: 20px !important; }\n`;
         css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600 !important; font-size: 1.05em !important; }\n`;
-        // Chevron on the LI itself (::after to avoid conflicts with ST ::before)
-        css += `${hSel}::after { content: "›" !important; position: absolute !important; left: 6px !important; top: 50% !important; transform: translateY(-50%) !important; font-size: 16px !important; font-weight: bold !important; opacity: 0.4 !important; transition: transform 0.25s ease !important; pointer-events: none !important; }\n`;
+        // Chevron in the padding area (::after to avoid conflicts with ST ::before)
+        css += `${hSel}::after { content: "›" !important; position: absolute !important; left: 4px !important; top: 50% !important; transform: translateY(-50%) !important; font-size: 16px !important; font-weight: bold !important; opacity: 0.4 !important; transition: transform 0.25s ease !important; pointer-events: none !important; }\n`;
     }
 
     // Per-header open/closed chevron rotation + child visibility
