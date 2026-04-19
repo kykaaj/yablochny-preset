@@ -4398,6 +4398,27 @@ function initControls() {
         syncPreset(true);
     });
 
+    jQuery("#yp-reinstall-btn").on("click", async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        const cfg = getConfig();
+        const name = cfg.presetName || "Yablochny Preset";
+        if (window.toastr) window.toastr.info(`Restoring ${name} from factory settings...`);
+        
+        // Force full rebuild from base JSON, disabling edits capture
+        await syncPreset(true, true);
+        
+        // Auto-select it in SillyTavern's dropdown
+        const idx = findPresetIndexByName(name);
+        if (idx !== null) {
+            jQuery("#settings_preset_openai").val(idx).trigger("change");
+            updatePresetActiveState();
+        }
+        
+        if (window.toastr) window.toastr.success("Preset restored!");
+    });
+
 
 
     jQuery("#yp-auto-sync").on("change", function () {
