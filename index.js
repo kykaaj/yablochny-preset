@@ -5449,5 +5449,6 @@ function navigateToPromptManagerItem(identifier, isGold = false) {
 jQuery(async () => {
     try { const settingsHtml = await jQuery.get(`${SCRIPT_PATH}/settings.html`); await injectYablochnyUI(settingsHtml); } 
     catch (e) { console.error("[Yablochny] Failed to load settings.html", e); return; }
-    await waitForOpenAI(); const cfg = getConfig(); if (cfg.autoSyncOnStart) syncPreset(false); injectDynamicStyles();
+    injectDynamicStyles();
+    await waitForOpenAI(); const cfg = getConfig(); if (cfg.autoSyncOnStart) syncPreset(false);
 });
