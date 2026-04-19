@@ -5073,7 +5073,7 @@ function updateSectionCss() {
     const headerSels = _ypSectionMap.headerIds.map(id => `li[data-pm-identifier="${id}"]`);
     if (headerSels.length > 0) {
         const hSel = headerSels.join(",");
-        css += `${hSel} { cursor: pointer !important; user-select: none; }\n`;
+        css += `${hSel} { cursor: pointer !important; user-select: none; opacity: 1 !important; }\n`;
         // Chevron via ::before pseudo-element (no DOM needed!)
         css += `${hSel} [class*='prompt_manager_prompt_name']::before { content: "›"; display: inline-block; margin-right: 6px; font-size: 14px; font-weight: bold; opacity: 0.5; transition: transform 0.25s ease; }\n`;
     }
