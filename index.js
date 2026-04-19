@@ -5080,74 +5080,53 @@ function updateSectionCss() {
     const prefix = "html body #completion_prompt_manager #completion_prompt_manager_list";
 
     // HEADER STYLING
-    const hBaseSels = _ypSectionMap.headerIds.map(id => `${prefix} li[data-pm-idfunction injectDynamicStyles() {
-    const styleId = "yablochny-dynamic-styles";
-    if (document.getElementById(styleId)) return;
-    
-    let css = ".yp-virtual-btn-controls { position: relative; padding-left: 24px !important; } .yp-virtual-btn-controls::before { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 0; top: 50%; transform: translateY(-50%); font-size: 14px; cursor: pointer; transition: color 0.2s; width: 20px; text-align: center; z-index: 10; }\n";
-    
-    const prefix = "html body #completion_prompt_manager #completion_prompt_manager_list";
+    const hBaseSels = _ypSectionMap.headerIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
+    if (hBaseSels.length > 0) {
+        const hSelList = hBaseSels.join(",");
+        const hSelNameList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name']`).join(",");
+        const hSelInspectList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name'] .prompt-manager-inspect-action`).join(",");
+        const hSelControlsList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_controls']`).join(",");
+        const hSelTokensList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_tokens']`).join(",");
+        
+        // Headers: Full opacity so they don't look dim/disabled, pointer cursor. Single column grid to maximize space.
+        css += `${hSelList} { cursor: pointer !important; user-select: none; opacity: 1 !important; filter: none !important; border: 1px solid rgba(255,255,255,0.1) !important; grid-template-columns: 1fr !important; }\n`;
+        
+        // Hide controls and tokens on headers to prevent accidental clicks
+        css += `${hSelControlsList}, ${hSelTokensList} { display: none !important; }\n`;
 
-    const greenIds = Object.keys(PROMPT_TO_CONTROL_MAP);
-    if (greenIds.length > 0) {
-        const lis = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
-        const lisDisabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled`).join(",");
-        const lisEnabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled)`).join(",");
-        
-        const controls = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']`).join(",");
-        const controlsBeforeDisabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_controls']::before`).join(",");
-        const controlsBeforeEnabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_controls']::before`).join(",");
-        
-        css += `${lis} { border-left: 3px solid rgba(107, 203, 119, 0.6) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; }\n`;
-        css += `${controls} { position: relative; padding-left: 28px !important; }\n`;
-        
-        // Base styling for the virtual button
-        const controlsBefore = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']::before`).join(",");
-        css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
-        
-        // Disabled State (dimmer)
-        css += `${controlsBeforeDisabled} { color: #6bcb77; opacity: 0.35; }\n`;
-        css += `${lisDisabled} [class*='prompt_manager_prompt_name'] { color: rgba(107, 203, 119, 0.6) !important; text-decoration: none !important; }\n`;
-        
-        // Enabled State (bright)
-        css += `${controlsBeforeEnabled} { color: #8be096; opacity: 1; text-shadow: 0 0 5px rgba(107,203,119,0.3); }\n`;
-        css += `${lisEnabled} [class*='prompt_manager_prompt_name'] { color: #8be096 !important; text-decoration: none !important; font-weight: 600 !important; }\n`;
+        // Force the name of the header to be bright and bold
+        css += `${hSelNameList} { font-weight: 600 !important; font-size: 1.05em !important; opacity: 1 !important; color: var(--SmartThemeBodyColor) !important; }\n`;
+        // Force any inspect action links inside to also be bright
+        css += `${hSelInspectList} { color: var(--SmartThemeBodyColor) !important; opacity: 1 !important; }\n`;
+
+        // FontAwesome chevron injected via CSS to avoid DOM flicker
+        const hSelBeforeList = hBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name']::before`).join(",");
+        css += `${hSelBeforeList} { 
+            content: "\\f054" !important; /* fa-chevron-right */
+            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free" !important;
+            font-weight: 900 !important;
+            display: inline-block !important;
+            margin-right: 12px !important;
+            margin-left: 2px !important;
+            font-size: 14px !important;
+            opacity: 0.9 !important;
+            transition: transform 0.2s ease !important;
+            vertical-align: baseline !important;
+            color: var(--SmartThemeBodyColor) !important;
+        }\n`;
     }
 
-    const goldIds = [];
-    for (const k in REGEX_PROMPT_MAP) { 
-        const v = REGEX_PROMPT_MAP[k]; 
-        if (Array.isArray(v)) v.forEach(id => goldIds.push(id)); 
-        else goldIds.push(v); 
-    }
-    
-    if (goldIds.length > 0) {
-        const lis = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
-        const lisDisabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled`).join(",");
-        const lisEnabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled)`).join(",");
-        
-        const controls = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']`).join(",");
-        const controlsBeforeDisabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_controls']::before`).join(",");
-        const controlsBeforeEnabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_controls']::before`).join(",");
-        
-        css += `${lis} { border-left: 4px solid #f1c40f !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important; }\n`;
-        css += `${controls} { position: relative; padding-left: 28px !important; }\n`;
-        
-        const controlsBefore = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']::before`).join(",");
-        css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
-        
-        css += `${controlsBeforeDisabled} { color: #f1c40f; opacity: 0.35; }\n`;
-        css += `${lisDisabled} [class*='prompt_manager_prompt_name'] { color: rgba(241, 196, 15, 0.6) !important; text-decoration: none !important; }\n`;
-        
-        css += `${controlsBeforeEnabled} { color: #f39c12; opacity: 1; text-shadow: 0 0 5px rgba(241,196,15,0.3); }\n`;
-        css += `${lisEnabled} [class*='prompt_manager_prompt_name'] { color: #f39c12 !important; text-decoration: none !important; font-weight: 600 !important; }\n`;
-    }
+    for (const headerId of _ypSectionMap.headerIds) {
+        const storageKey = "yp_section_" + headerId;
+        const isOpen = localStorage.getItem(storageKey) === "true";
+        const hSel = `${prefix} li[data-pm-identifier="${headerId}"]`;
 
-    css += ".yp-overlay-green { box-shadow: 0 0 15px 5px rgba(107, 203, 119, 0.4), inset 0 0 20px 2px rgba(107, 203, 119, 0.1); background-color: rgba(107, 203, 119, 0.05); } ";
-    css += ".yp-overlay-gold { box-shadow: 0 0 15px 5px rgba(241, 196, 15, 0.4), inset 0 0 20px 2px rgba(241, 196, 15, 0.1); background-color: rgba(241, 196, 15, 0.05); } ";
-    
-    const styleEl = document.createElement("style"); styleEl.id = styleId; styleEl.textContent = css; document.head.appendChild(styleEl);
-}       const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
+        // Rotate chevron if open
+        if (isOpen) {
+            css += `${hSel} [class*='prompt_manager_prompt_name']::before { transform: rotate(90deg) !important; }\n`;
+        }
+
+        const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
         if (childIds.length > 0) {
             const cBaseSels = childIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
             const cSelList = cBaseSels.join(",");
@@ -5237,20 +5216,70 @@ function applySectionCollapse() {
 function injectDynamicStyles() {
     const styleId = "yablochny-dynamic-styles";
     if (document.getElementById(styleId)) return;
-    let css = ".yp-virtual-btn-controls { position: relative; padding-left: 24px !important; } .yp-virtual-btn-controls::before { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 0; top: 50%; transform: translateY(-50%); font-size: 14px; cursor: pointer; transition: color 0.2s; width: 20px; text-align: center; z-index: 10; } ";
+    
+    let css = ".yp-virtual-btn-controls { position: relative; padding-left: 24px !important; } .yp-virtual-btn-controls::before { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 0; top: 50%; transform: translateY(-50%); font-size: 14px; cursor: pointer; transition: color 0.2s; width: 20px; text-align: center; z-index: 10; }\n";
+    
+    const prefix = "html body #completion_prompt_manager #completion_prompt_manager_list";
+
     const greenIds = Object.keys(PROMPT_TO_CONTROL_MAP);
     if (greenIds.length > 0) {
-        const sel = greenIds.map(id => `li[data-pm-identifier='${id}']`).join(",");
-        const csel = greenIds.map(id => `li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']`).join(",");
-        css += `${sel} { border-left: 3px solid rgba(107, 203, 119, 0.6) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; } ${sel.replace(/]/g, "] [class*='prompt_manager_prompt_name']")} { color: #6bcb77 !important; text-decoration: none !important; } ${csel} { position: relative; padding-left: 28px !important; } ${csel.replace(/controls']/g, "controls']::before")} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 16px; cursor: pointer; color: #6bcb77; opacity: 0.6; transition: all 0.2s; } ${csel.replace(/controls']/g, "controls']:hover::before")} { color: #8be096; opacity: 1; } `;
+        const lis = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
+        const lisDisabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled`).join(",");
+        const lisEnabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled)`).join(",");
+        
+        const controls = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']`).join(",");
+        const cBeforeDisabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_controls']::before`).join(",");
+        const cBeforeEnabled = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_controls']::before`).join(",");
+        
+        css += `${lis} { border-left: 3px solid rgba(107, 203, 119, 0.6) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; }\n`;
+        css += `${controls} { position: relative; padding-left: 28px !important; }\n`;
+        
+        const controlsBefore = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']::before`).join(",");
+        css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
+        
+        // Disabled State (dimmer)
+        css += `${cBeforeDisabled} { color: #6bcb77; opacity: 0.35; }\n`;
+        css += `${lisDisabled} [class*='prompt_manager_prompt_name'] { color: rgba(107, 203, 119, 0.6) !important; text-decoration: none !important; }\n`;
+        
+        // Enabled State (bright)
+        css += `${cBeforeEnabled} { color: #8be096; opacity: 1; text-shadow: 0 0 5px rgba(107,203,119,0.3); }\n`;
+        css += `${lisEnabled} [class*='prompt_manager_prompt_name'] { color: #8be096 !important; text-decoration: none !important; font-weight: 600 !important; }\n`;
     }
-    const goldIds = Object.keys(REGEX_PROMPT_MAP);
+
+    const goldIds = [];
+    for (const k in REGEX_PROMPT_MAP) { 
+        const v = REGEX_PROMPT_MAP[k]; 
+        if (Array.isArray(v)) v.forEach(id => goldIds.push(id)); 
+        else goldIds.push(v); 
+    }
+    
     if (goldIds.length > 0) {
-        const sel = goldIds.map(id => `li[data-pm-identifier='${id}']`).join(",");
-        const csel = goldIds.map(id => `li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']`).join(",");
-        css += `${sel} { border-left: 4px solid #f1c40f !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important; } ${sel.replace(/]/g, "] [class*='prompt_manager_prompt_name']")} { color: #f1c40f !important; text-decoration: none !important; } ${csel} { position: relative; padding-left: 28px !important; } ${csel.replace(/controls']/g, "controls']::before")} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 16px; cursor: pointer; color: #f1c40f; opacity: 0.6; transition: all 0.2s; } ${csel.replace(/controls']/g, "controls']:hover::before")} { color: #f39c12; opacity: 1; } `;
+        const lis = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
+        const lisDisabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled`).join(",");
+        const lisEnabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled)`).join(",");
+        
+        const controls = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']`).join(",");
+        const cBeforeDisabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_controls']::before`).join(",");
+        const cBeforeEnabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_controls']::before`).join(",");
+        
+        css += `${lis} { border-left: 4px solid #f1c40f !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important; }\n`;
+        css += `${controls} { position: relative; padding-left: 28px !important; }\n`;
+        
+        const controlsBefore = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']::before`).join(",");
+        css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
+        
+        css += `${cBeforeDisabled} { color: #f1c40f; opacity: 0.35; }\n`;
+        css += `${lisDisabled} [class*='prompt_manager_prompt_name'] { color: rgba(241, 196, 15, 0.6) !important; text-decoration: none !important; }\n`;
+        
+        css += `${cBeforeEnabled} { color: #f39c12; opacity: 1; text-shadow: 0 0 5px rgba(241,196,15,0.3); }\n`;
+        css += `${lisEnabled} [class*='prompt_manager_prompt_name'] { color: #f39c12 !important; text-decoration: none !important; font-weight: 600 !important; }\n`;
     }
-    const style = document.createElement("style"); style.id = styleId; style.textContent = css; document.head.appendChild(style);
+
+    css += ".yp-overlay-green { box-shadow: 0 0 15px 5px rgba(107, 203, 119, 0.4), inset 0 0 20px 2px rgba(107, 203, 119, 0.1); background-color: rgba(107, 203, 119, 0.05); } ";
+    css += ".yp-overlay-gold { box-shadow: 0 0 15px 5px rgba(241, 196, 15, 0.4), inset 0 0 20px 2px rgba(241, 196, 15, 0.1); background-color: rgba(241, 196, 15, 0.05); } ";
+    
+    const styleEl = document.createElement("style"); styleEl.id = styleId; styleEl.textContent = css; document.head.appendChild(styleEl);
+
     if (!window.yablochnyVirtualListenerAdded) {
         window.yablochnyVirtualListenerAdded = true;
         jQuery(document).on("click", "[class*='prompt_manager_prompt_controls']", function(e) {
