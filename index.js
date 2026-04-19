@@ -5238,12 +5238,14 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State (dimmer)
+        const lisDisabledName = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name']`).join(",");
         css += `${cBeforeDisabled} { color: #6bcb77; opacity: 0.35; }\n`;
-        css += `${lisDisabled} [class*='prompt_manager_prompt_name'] { color: rgba(107, 203, 119, 0.6) !important; text-decoration: none !important; }\n`;
+        css += `${lisDisabledName} { color: rgba(107, 203, 119, 0.6) !important; text-decoration: none !important; }\n`;
         
         // Enabled State (bright)
+        const lisEnabledName = greenIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_name']`).join(",");
         css += `${cBeforeEnabled} { color: #8be096; opacity: 1; text-shadow: 0 0 5px rgba(107,203,119,0.3); }\n`;
-        css += `${lisEnabled} [class*='prompt_manager_prompt_name'] { color: #8be096 !important; text-decoration: none !important; font-weight: 600 !important; }\n`;
+        css += `${lisEnabledName} { color: #8be096 !important; text-decoration: none !important; font-weight: 600 !important; }\n`;
     }
 
     const goldIds = [];
@@ -5268,11 +5270,15 @@ function injectDynamicStyles() {
         const controlsBefore = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']::before`).join(",");
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
+        // Disabled State
+        const lisDisabledName = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_name']`).join(",");
         css += `${cBeforeDisabled} { color: #f1c40f; opacity: 0.35; }\n`;
-        css += `${lisDisabled} [class*='prompt_manager_prompt_name'] { color: rgba(241, 196, 15, 0.6) !important; text-decoration: none !important; }\n`;
+        css += `${lisDisabledName} { color: rgba(241, 196, 15, 0.6) !important; text-decoration: none !important; }\n`;
         
-        css += `${cBeforeEnabled} { color: #f39c12; opacity: 1; text-shadow: 0 0 5px rgba(241,196,15,0.3); }\n`;
-        css += `${lisEnabled} [class*='prompt_manager_prompt_name'] { color: #f39c12 !important; text-decoration: none !important; font-weight: 600 !important; }\n`;
+        // Enabled State
+        const lisEnabledName = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_name']`).join(",");
+        css += `${cBeforeEnabled} { color: #f39c12 !important; opacity: 1 !important; text-shadow: 0 0 5px rgba(241,196,15,0.3) !important; }\n`;
+        css += `${lisEnabledName} { color: #f39c12 !important; text-decoration: none !important; font-weight: 600 !important; }\n`;
     }
 
     css += ".yp-overlay-green { box-shadow: 0 0 15px 5px rgba(107, 203, 119, 0.4), inset 0 0 20px 2px rgba(107, 203, 119, 0.1); background-color: rgba(107, 203, 119, 0.05); } ";
