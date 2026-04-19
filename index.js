@@ -5297,7 +5297,7 @@ function injectDynamicStyles() {
     css += ".yp-overlay-green { box-shadow: 0 0 15px 5px rgba(107, 203, 119, 0.4), inset 0 0 20px 2px rgba(107, 203, 119, 0.1); background-color: rgba(107, 203, 119, 0.05); } ";
     css += ".yp-overlay-gold { box-shadow: 0 0 15px 5px rgba(241, 196, 15, 0.4), inset 0 0 20px 2px rgba(241, 196, 15, 0.1); background-color: rgba(241, 196, 15, 0.05); } ";
     
-    const defaultSTPrompts = ['main', 'nsfw', 'dialogueExamples', 'jailbreak', 'chatHistory', 'worldInfoAfter', 'worldInfoBefore', 'enhanceDefinitions', 'charDescription', 'charPersonality', 'scenario', 'personaDescription'];
+    const defaultSTPrompts = ['nsfw', 'dialogueExamples', 'chatHistory', 'worldInfoAfter', 'worldInfoBefore', 'enhanceDefinitions', 'charDescription', 'charPersonality', 'scenario', 'personaDescription'];
     const hiddenSelectors = defaultSTPrompts.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
     css += `${hiddenSelectors} { display: none !important; }\n`;
 
