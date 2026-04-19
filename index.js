@@ -4480,6 +4480,11 @@ function initControls() {
 
         // Re-render Things UI to show/hide edit buttons
         renderThingsUI(cfg);
+
+        // Update CSS rules to toggle hidden system blocks
+        if (typeof updateSectionHidingRules === "function") {
+            updateSectionHidingRules();
+        }
     });
 
     // Initialize edit button visibility
@@ -5526,6 +5531,34 @@ function updateSectionCss() {
             if (!isOpen) {
                 css += `${cSelList} { display: none !important; }\n`;
             }
+        }
+    }
+
+    // --- HIDE SYSTEM TOGGLES ---
+    // Hide standard ST components and Yablochny technical toggles 
+    // from the Prompt Manager unless Dev Mode is enabled.
+    const cfg = getConfig();
+    if (!cfg.devMode) {
+        const sysIds = [
+            // Yablochny tech blocks
+            "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4", // self-audit
+            "0a2c3465-e2a8-4e71-8e09-e39557967df3", // setvars
+            "6473fd43-9e1f-4da7-9848-14a1fced05a9", // ◈︎ ╮︎ ゛ˎˊ˗ •
+            "18bf4d4a-e928-4fa2-9bb7-375680388ff4", // ◈︎ ╯︎ - ゛ˎˊ˗ •
+            "260cae70-6d53-4cbe-8329-e7df82881284", // ◈︎ ╮︎
+            "7b59ab7f-e528-4ac3-b914-ac53b2f6d44d", // ◈︎ ╯︎
+            
+            // ST built-in core blocks
+            "main", "jailbreak", "nsfw", "world_info_before", "world_info_after",
+            "cards", "scenario_description", "persona_description", "dialogue_examples",
+            "lore_book", "summary", "chat_history", "authors_note", "depth_prompt",
+            "bias", "wi_scenario_before", "wi_scenario_after"
+        ];
+        
+        const hidSels = sysIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
+        // If the selector encounters any of these, set it to none
+        if (hidSels.length > 0) {
+            css += `${hidSels.join(", ")} { display: none !important; }\n`;
         }
     }
 
