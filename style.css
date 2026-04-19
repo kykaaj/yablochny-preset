@@ -727,4 +727,31 @@
 .yablochny-settings.yp-preset-inactive .yp-inactive-badge {
   display: inline-flex;
 }
+
+/* --- PROMPT MANAGER SECTION HEADERS --- */
+li.yp-section-header {
+  border-left: 3px solid rgba(255, 165, 0, 0.5) !important;
+  background: linear-gradient(90deg, rgba(255, 165, 0, 0.08), transparent) !important;
+  cursor: pointer !important;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+li.yp-section-header:hover {
+  background: linear-gradient(90deg, rgba(255, 165, 0, 0.15), transparent) !important;
+}
+
+li.yp-section-header [class*='prompt_manager_prompt_name'] {
+  color: #ffa500 !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+}
+
+.yp-section-chevron {
+  margin-right: 5px;
+  font-size: 9px;
+  transition: transform 0.25s ease;
+  display: inline-block;
+  opacity: 0.7;
+}
 

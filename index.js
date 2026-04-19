@@ -57,6 +57,9 @@ const REGEX_PACK_FILES = [
     "psychological-portraits-mobile",
 ];
 
+// Section headers in the prompt list — prompts with ◜︎...◞︎ in the name
+const SECTION_HEADER_PATTERN = /◜︎.*◞︎/;
+
 const VARIANT_PROMPT_IDS = new Set([
     // ◈︎ language (change)
     "28ec4454-b3c2-4c06-8fd0-52cb123b778f",
@@ -4994,7 +4997,9 @@ async function injectYablochnyUI(htmlContent) {
                 // This avoids missing complex nested updates.
                 // Scanning ~20-30 items is negligible for performance.
                 if (mutations.some(m => m.addedNodes.length > 0)) {
+                    jQuery("#completion_prompt_manager_list").removeData("yp-sections-applied");
                     highlightManagedPrompts();
+                    applySectionCollapse();
                 }
             });
             observer.observe(pmList, { childList: true, subtree: true });
@@ -5002,6 +5007,8 @@ async function injectYablochnyUI(htmlContent) {
     };
     setInterval(insertUI, 1100);
     setTimeout(insertUI, 500);
+    // Also apply section collapse periodically for robustness
+    setInterval(() => { jQuery("#completion_prompt_manager_list").removeData("yp-sections-applied"); applySectionCollapse(); }, 2000);
 }
 
 /**
@@ -5035,6 +5042,95 @@ function showStandaloneGlow(target, isGold) {
     setTimeout(() => { overlay.fadeOut(650, () => overlay.remove()); }, 4000);
 }
 
+/**
+ * Applies collapsible sections to the Prompt Manager list.
+ * Section headers are detected by the ◜︎...◞︎ pattern in their name.
+ * All items between two section headers are treated as children and can be collapsed.
+ */
+function applySectionCollapse() {
+    const pmList = jQuery("#completion_prompt_manager_list");
+    if (pmList.length === 0) return;
+
+    const items = pmList.children("li[data-pm-identifier]");
+    if (items.length === 0) return;
+
+    // Don't re-process if already done for this render
+    if (pmList.data("yp-sections-applied")) return;
+    pmList.data("yp-sections-applied", true);
+
+    // Find section headers by name pattern
+    const sections = [];
+    items.each(function (i) {
+        const el = jQuery(this);
+        const nameEl = el.find("[class*='prompt_manager_prompt_name']");
+        const name = nameEl.text().trim();
+        if (SECTION_HEADER_PATTERN.test(name)) {
+            sections.push({ index: i, el: el, name: name, children: [] });
+        }
+    });
+
+    if (sections.length === 0) return;
+
+    // Collect children for each section (items between headers)
+    for (let s = 0; s < sections.length; s++) {
+        const startIdx = sections[s].index + 1;
+        const endIdx = (s + 1 < sections.length) ? sections[s + 1].index : items.length;
+        for (let j = startIdx; j < endIdx; j++) {
+            sections[s].children.push(jQuery(items[j]));
+        }
+    }
+
+    // Apply collapse/expand to each section
+    sections.forEach(section => {
+        const el = section.el;
+        const id = el.attr("data-pm-identifier");
+        const storageKey = "yp_section_" + id;
+        const isOpen = localStorage.getItem(storageKey) === "true";
+
+        // Style the header (only once)
+        if (!el.hasClass("yp-section-header")) {
+            el.addClass("yp-section-header");
+            el.css({ "cursor": "pointer", "border-left": "3px solid rgba(255, 165, 0, 0.5)", "background": "linear-gradient(90deg, rgba(255, 165, 0, 0.08), transparent)" });
+
+            // Add chevron before name
+            const nameEl = el.find("[class*='prompt_manager_prompt_name']");
+            if (nameEl.find(".yp-section-chevron").length === 0) {
+                const chevron = jQuery('<i class="yp-section-chevron fa-solid fa-chevron-right" style="margin-right:5px;font-size:9px;transition:transform 0.25s ease;display:inline-block;opacity:0.7;"></i>');
+                nameEl.prepend(chevron);
+            }
+
+            // Intercept click on the whole li to toggle section (not open editor)
+            el.off("click.ypsection").on("click.ypsection", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                const open = localStorage.getItem(storageKey) === "true";
+                const newState = !open;
+                localStorage.setItem(storageKey, String(newState));
+
+                const chevronEl = jQuery(this).find(".yp-section-chevron");
+                if (newState) {
+                    chevronEl.css("transform", "rotate(90deg)");
+                    section.children.forEach(child => child.slideDown(150));
+                } else {
+                    chevronEl.css("transform", "rotate(0deg)");
+                    section.children.forEach(child => child.slideUp(150));
+                }
+                return false;
+            });
+        }
+
+        // Update chevron & visibility for current state
+        const chevron = el.find(".yp-section-chevron");
+        if (isOpen) {
+            chevron.css("transform", "rotate(90deg)");
+            section.children.forEach(child => child.show());
+        } else {
+            chevron.css("transform", "rotate(0deg)");
+            section.children.forEach(child => child.hide());
+        }
+    });
+}
 function injectDynamicStyles() {
     const styleId = "yablochny-dynamic-styles";
     if (document.getElementById(styleId)) return;
