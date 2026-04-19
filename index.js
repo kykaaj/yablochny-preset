@@ -5206,26 +5206,31 @@ function applySectionCollapse() {
     });
     updateSectionCss();
 
-    // Attach click handlers only (no DOM visual changes!)
-    sections.forEach(section => {
-        const el = section.el;
-        if (el.data("yp-section-bound")) return; // already bound
-        el.data("yp-section-bound", true);
-        const storageKey = "yp_section_" + section.id;
-
-        // Bind click ONLY to the name element, not the whole <li>
-        // This preserves toggle/edit/delete buttons on section headers
-        const nameEl = el.find("[class*='prompt_manager_prompt_name']");
-        nameEl.on("click.ypsection", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            const open = localStorage.getItem(storageKey) === "true";
-            localStorage.setItem(storageKey, String(!open));
-            updateSectionCss();
-            return false;
-        });
-    });
+    // Attach one global capture-phase listener if not already attached
+    // This allows us to intercept the click and toggle the section BEFORE SillyTavern's
+    // native event listeners trigger the Inspect panel!
+    if (!window.ypSectionCaptureBound) {
+        window.ypSectionCaptureBound = true;
+        document.addEventListener("click", function (e) {
+            const nameEl = e.target.closest("[class*='prompt_manager_prompt_name']");
+            if (!nameEl) return;
+            const li = nameEl.closest("li[data-pm-identifier]");
+            if (!li) return;
+            
+            const id = li.getAttribute("data-pm-identifier");
+            if (typeof _ypSectionMap !== "undefined" && _ypSectionMap.headerIds && _ypSectionMap.headerIds.includes(id)) {
+                // IT'S A FOLDER HEADER! Intercept before ST sees it.
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                e.preventDefault();
+                
+                const storageKey = "yp_section_" + id;
+                const open = localStorage.getItem(storageKey) === "true";
+                localStorage.setItem(storageKey, String(!open));
+                if (typeof updateSectionCss === "function") updateSectionCss();
+            }
+        }, true); // true = Use capture phase!
+    }
 
     setTimeout(() => { _ypSectionObserverPaused = false; }, 150);
 }
