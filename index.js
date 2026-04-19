@@ -1395,10 +1395,10 @@ const MODEL_PRESETS = {
         },
         toggles: {
             "4ad8a657-f24c-40c9-bffc-976a6ab39003": true, // ◦︎ COT
+            "6c0ab122-aa65-4c14-ae20-199c2010df2f": true, // ◈︎ ↗ universal prefill
         },
         disableToggles: [
             "d0851faf-af18-40c6-8bf4-35e2338061e5", // no COT prefill
-            "6c0ab122-aa65-4c14-ae20-199c2010df2f", // ◈︎ ↗ universal prefill
         ],
     },
     gemini: {
