@@ -5539,24 +5539,45 @@ function updateSectionCss() {
     // from the Prompt Manager unless Dev Mode is enabled.
     const cfg = getConfig();
     if (!cfg.devMode) {
-        const sysIds = [
-            // Yablochny tech blocks
-            "f753dcfd-122f-45d3-bb9b-a7dd231e5bb4", // self-audit
-            "0a2c3465-e2a8-4e71-8e09-e39557967df3", // setvars
-            "6473fd43-9e1f-4da7-9848-14a1fced05a9", // ◈︎ ╮︎ ゛ˎˊ˗ •
-            "18bf4d4a-e928-4fa2-9bb7-375680388ff4", // ◈︎ ╯︎ - ゛ˎˊ˗ •
-            "260cae70-6d53-4cbe-8329-e7df82881284", // ◈︎ ╮︎
-            "7b59ab7f-e528-4ac3-b914-ac53b2f6d44d", // ◈︎ ╯︎
-            
-            // ST built-in core blocks
-            "main", "jailbreak", "nsfw", "world_info_before", "world_info_after",
-            "cards", "scenario_description", "persona_description", "dialogue_examples",
-            "lore_book", "summary", "chat_history", "authors_note", "depth_prompt",
-            "bias", "wi_scenario_before", "wi_scenario_after"
-        ];
+        const hidSels = [];
         
-        const hidSels = sysIds.map(id => `${prefix} li[data-pm-identifier="${id}"]`);
-        // If the selector encounters any of these, set it to none
+        // Scan the DOM for items to hide based on their display name in the exact layout
+        jQuery("#completion_prompt_manager_list li[data-pm-identifier]").each(function() {
+            const name = jQuery(this).find("[class*='prompt_manager_prompt_name']").text().trim();
+            const id = jQuery(this).attr("data-pm-identifier");
+            
+            // To ensure we don't accidentally hide user's own prompts, we look for structural marks + name
+            // The items to hide from screenshots
+            if (
+                name.includes("setvars") ||
+                name.includes("self-audit") ||
+                name.includes("JB") ||
+                name.includes("core") ||
+                name.includes("world (before)") ||
+                name.includes("cards") ||
+                name.includes("world (after)") ||
+                name.includes("chat examples") ||
+                name.includes("summary") ||
+                name.includes("chat history") ||
+                name.includes("¨ ˎ - •") ||
+                name.includes("@ 1") ||
+                name.includes("@ 0") ||
+                name.includes("✂") ||
+                
+                // Hide default built-ins just in case they appear
+                id === "main" || id === "jailbreak" || id === "nsfw" || 
+                id === "world_info_before" || id === "world_info_after" ||
+                id === "scenario_description" || id === "persona_description" ||
+                id === "dialogue_examples" || id === "lore_book" || id === "chat_history" ||
+                id === "authors_note" || id === "depth_prompt" || id === "bias"
+            ) {
+                // If it's NOT a section header in Yablochny (Headers shouldn't be hidden)
+                if (!SECTION_HEADER_PATTERN.test(name)) {
+                    hidSels.push(`${prefix} li[data-pm-identifier="${id}"]`);
+                }
+            }
+        });
+        
         if (hidSels.length > 0) {
             css += `${hidSels.join(", ")} { display: none !important; }\n`;
         }
