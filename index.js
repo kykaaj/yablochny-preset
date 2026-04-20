@@ -5678,64 +5678,49 @@ function bindAppleIconObserver() {
     
     // Fallback: forcefully check select2 every half second for the preset text
     setInterval(() => {
-        // Patch ST's internal dictionaries so that if we strip emojis from the visible text, ST can still find the preset by the stripped name!
-        if (typeof oai_settings !== 'undefined' && oai_settings.preset_settings_openai) {
-            Object.keys(oai_settings.preset_settings_openai).forEach(key => {
-                const stripped = key.replace(/🍏[\uFE0E\uFE0F]?/g, '').replace(/🍎[\uFE0E\uFE0F]?/g, '').trim();
-                if (stripped !== key && !oai_settings.preset_settings_openai[stripped]) {
-                    oai_settings.preset_settings_openai[stripped] = oai_settings.preset_settings_openai[key];
-                }
-            });
-        }
-
         // Native selects (ST API menus)
         jQuery("select.text_pole, select[data-preset-manager-for]").each(function() {
             const selectEl = jQuery(this);
-            // Ignore Select2 internally mapped elements
             if (selectEl.hasClass("select2-hidden-accessible")) return;
             
-            // Hide text emojis in native options
-            let modified = false;
-            selectEl.find("option").each(function() {
-                const opt = jQuery(this);
-                let text = opt.text();
-                // Store the kind of apple if it hasn't been parsed yet
-                if (text.includes("🍏")) opt.attr("data-yp-apple", "green");
-                else if (text.includes("🍎")) opt.attr("data-yp-apple", "red");
-                
-                if (text.includes("🍏") || text.includes("🍎")) {
-                    opt.text(text.replace(/🍏[\uFE0E\uFE0F]?/g, '   ').replace(/🍎[\uFE0E\uFE0F]?/g, '   '));
-                    modified = true;
-                }
-            });
-
-            // Float overlay image based on the selected option's saved apple type
             const selectedOpt = selectEl.find("option:selected");
-            const appleType = selectedOpt.attr("data-yp-apple");
+            const text = selectedOpt.text() || "";
+            
+            let appleType = null;
+            if (text.includes("🍏")) appleType = "green";
+            else if (text.includes("🍎")) appleType = "red";
+            
+            let blocker = selectEl.parent().find("> .yp-native-select-blocker");
             let overlay = selectEl.parent().find("> .yp-native-select-overlay");
             
-            if (appleType === "green" || appleType === "red") {
-                if (overlay.length === 0) {
+            if (appleType) {
+                if (blocker.length === 0) {
+                    blocker = jQuery('<div class="yp-native-select-blocker"></div>');
+                    let bgColor = selectEl.css("background-color");
+                    if (!bgColor || bgColor === "rgba(0, 0, 0, 0)" || bgColor === "transparent") {
+                        bgColor = "var(--SmartThemeSurface, #1a1a1d)";
+                    }
+                    blocker.css({
+                        position: "absolute", left: "12px", top: "4px", bottom: "4px", width: "24px",
+                        backgroundColor: bgColor,
+                        pointerEvents: "none", zIndex: 9, borderRadius: "2px"
+                    });
+                    
                     overlay = jQuery('<img class="yp-native-select-overlay yp-custom-apple">');
                     overlay.css({
-                        position: "absolute",
-                        left: "12px", 
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        pointerEvents: "none",
-                        zIndex: 10
+                        position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "18px",
+                        pointerEvents: "none", zIndex: 10
                     });
+                    
                     if (selectEl.parent().css("position") === "static") {
                         selectEl.parent().css("position", "relative");
                     }
-                    selectEl.parent().append(overlay);
+                    selectEl.parent().append(blocker).append(overlay);
                 }
-                
                 overlay.attr("src", appleType === "green" ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png");
-                selectEl.css("padding-left", "38px"); // Ensure text is pushed far past the image
             } else {
+                if (blocker.length > 0) blocker.remove();
                 if (overlay.length > 0) overlay.remove();
-                if (modified) selectEl.css("padding-left", "");
             }
         });
 
