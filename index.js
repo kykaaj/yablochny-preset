@@ -5659,8 +5659,50 @@ function bindAppleIconObserver() {
         }
     });
     
-    // Fallback: forcefully check select2 every half second for the preset text
+    // Fallback: forcefully check select2 and native selects every half second
     setInterval(() => {
+        // Native selects (ST API menus)
+        jQuery("select.settings_preset, select.settings_presets").each(function() {
+            const selectEl = jQuery(this);
+            // Hide text emojis in native options
+            selectEl.find("option").each(function() {
+                const opt = jQuery(this);
+                let text = opt.text();
+                if (text.includes("🍏") || text.includes("🍎")) {
+                    opt.text(text.replace(/🍏/g, '    ').replace(/🍎/g, '    '));
+                }
+            });
+
+            // Float overlay image based on actual chosen value
+            const val = selectEl.val() || "";
+            let overlay = selectEl.parent().find("> .yp-native-select-overlay");
+            
+            if (val.includes("🍏") || val.includes("🍎")) {
+                if (overlay.length === 0) {
+                    overlay = jQuery('<img class="yp-native-select-overlay yp-custom-apple">');
+                    overlay.css({
+                        position: "absolute",
+                        left: "12px", // Safe margin to align nicely inside ST's padding
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        pointerEvents: "none",
+                        zIndex: 10
+                    });
+                    if (selectEl.parent().css("position") === "static") {
+                        selectEl.parent().css("position", "relative");
+                    }
+                    selectEl.parent().append(overlay);
+                }
+                
+                overlay.attr("src", val.includes("🍏") ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png");
+                selectEl.css("padding-left", "32px"); // Shift the text out of the way
+            } else {
+                if (overlay.length > 0) overlay.remove();
+                selectEl.css("padding-left", "");
+            }
+        });
+
+        // Select2 selects
         jQuery(".select2-selection__rendered, .select2-results__option").each(function() {
             let el = jQuery(this);
             let textHtml = el.html();
