@@ -5690,7 +5690,7 @@ function bindAppleIconObserver() {
                         bgColor = "var(--SmartThemeBlurTintColor, #1a1a1d)";
                     }
                     blocker = jQuery('<div class="yp-native-select-blocker">').css({
-                        position: "absolute", left: "6px", top: "4px", bottom: "4px", width: "22px",
+                        position: "absolute", left: "4px", top: "3px", bottom: "3px", width: "28px",
                         background: bgColor, pointerEvents: "none", zIndex: 9, borderRadius: "2px"
                     });
                     // Our custom apple on top
