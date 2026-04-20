@@ -4317,8 +4317,10 @@ function isYablochnyPresetActive() {
     const yablochnyName = cfg.presetName || DEFAULT_PRESET_NAME;
     const selector = jQuery("#settings_preset_openai");
     if (selector.length === 0) return true; // can't determine — assume active
-    const selectedVal = selector.val();
-    return selectedVal === yablochnyName;
+    const selectedText = selector.find("option:selected").text().trim();
+    // In case the text has emojis stripped or is accessed via val(), check both
+    const selectedVal = selector.val() || "";
+    return selectedText === yablochnyName || selectedVal === yablochnyName || selectedText.includes(yablochnyName) || selectedVal.includes(yablochnyName);
 }
 
 /**
@@ -5594,19 +5596,26 @@ function replaceEmojisInNode(node) {
             const span = document.createElement("span");
             span.className = "yp-prompt-name-wrapper";
             
-            // Reconstruct the text safely to remove the pure emojis
+            // Reconstruct the text safely respecting original order
             let cleanText = text.replace(/🍏[\uFE0E\uFE0F]?/g, '').replace(/🍎[\uFE0E\uFE0F]?/g, '').trim();
             
             let html = '';
-            if (text.includes("🍏")) {
-                html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple yp-apple-left" alt="🍏">';
-            }
+            // Determine order based on original string
+            const greenFirst = text.indexOf("🍏") !== -1 && text.indexOf("🍏") < text.indexOf(cleanText);
+            const redFirst = text.indexOf("🍎") !== -1 && text.indexOf("🍎") < text.indexOf(cleanText);
+            
+            if (greenFirst) html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple yp-apple-left" alt="🍏">';
+            if (redFirst) html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple yp-apple-left" alt="🍎">';
             
             html += `<span class="yp-prompt-name-text">${cleanText}</span>`;
             
-            if (text.includes("🍎")) {
-                html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple yp-apple-right" alt="🍎">';
-            }
+            // Check right side
+            const greenLast = text.indexOf("🍏") !== -1 && text.indexOf("🍏") > text.indexOf(cleanText) && text.indexOf(cleanText) !== -1;
+            const redLast = text.indexOf("🍎") !== -1 && text.indexOf("🍎") > text.indexOf(cleanText) && text.indexOf(cleanText) !== -1;
+            // Also handle if text is ONLY an emoji (index of cleantext is -1)
+            
+            if (greenLast || (text.includes("🍏") && !greenFirst)) html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple yp-apple-right" alt="🍏">';
+            if (redLast || (text.includes("🍎") && !redFirst)) html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple yp-apple-right" alt="🍎">';
             
             span.innerHTML = html;
             node.parentNode.replaceChild(span, node);
@@ -5668,63 +5677,11 @@ function bindAppleIconObserver() {
         }
     });
     
-    // Fallback: forcefully check select2 and native selects every half second
+    // Fallback: forcefully check select2 every half second for the preset text
     setInterval(() => {
-        // Native selects (ST API menus)
-        jQuery("select.text_pole, select[data-preset-manager-for]").each(function() {
-            const selectEl = jQuery(this);
-            // Hide text emojis in native options
-            selectEl.find("option").each(function() {
-                const opt = jQuery(this);
-                let text = opt.text();
-                // Store the kind of apple if it hasn't been parsed yet
-                if (text.includes("🍏")) opt.attr("data-yp-apple", "green");
-                else if (text.includes("🍎")) opt.attr("data-yp-apple", "red");
-                
-                if (text.includes("🍏") || text.includes("🍎")) {
-                    opt.text(text.replace(/🍏/g, '    ').replace(/🍎/g, '    '));
-                }
-            });
-
-            // Float overlay image based on the selected option's saved apple type
-            const selectedOpt = selectEl.find("option:selected");
-            const appleType = selectedOpt.attr("data-yp-apple");
-            let overlay = selectEl.parent().find("> .yp-native-select-overlay");
-            
-            if (appleType === "green" || appleType === "red") {
-                if (overlay.length === 0) {
-                    overlay = jQuery('<img class="yp-native-select-overlay yp-custom-apple">');
-                    overlay.css({
-                        position: "absolute",
-                        left: "10px", 
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        pointerEvents: "none",
-                        zIndex: 10
-                    });
-                    if (selectEl.parent().css("position") === "static") {
-                        selectEl.parent().css("position", "relative");
-                    }
-                    selectEl.parent().append(overlay);
-                }
-                
-                overlay.attr("src", appleType === "green" ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png");
-                selectEl.css("padding-left", "38px"); // Increased padding so text doesn't hit apple
-            } else {
-                if (overlay.length > 0) overlay.remove();
-                selectEl.css("padding-left", "");
-            }
-        });
-
-        // Select2 selects
+        // Select2 selects & results
         jQuery(".select2-selection__rendered, .select2-results__option").each(function() {
-            let el = jQuery(this);
-            let textHtml = el.html();
-            if (textHtml && (textHtml.includes("🍎") || textHtml.includes("🍏")) && !textHtml.includes("yp-custom-apple")) {
-                textHtml = textHtml.replace(/🍏/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" alt="🍏">');
-                textHtml = textHtml.replace(/🍎/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" alt="🍎">');
-                el.html(textHtml);
-            }
+            replaceEmojisInNode(this);
         });
     }, 500);
 
