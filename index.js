@@ -5702,6 +5702,11 @@ function bindAppleIconObserver() {
 
     // Initial run
     updateApplesForNode();
+
+    // Listen for changes that don't trigger Mutations (like value selection)
+    jQuery(document).on('change input', selectSels, function() {
+        updateApplesForNode(this);
+    });
 }
 
 function applySectionCollapse() {
