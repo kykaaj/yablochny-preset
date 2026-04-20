@@ -5662,7 +5662,7 @@ function bindAppleIconObserver() {
     // Fallback: forcefully check select2 and native selects every half second
     setInterval(() => {
         // Native selects (ST API menus)
-        jQuery("select.settings_preset, select.settings_presets").each(function() {
+        jQuery("select.text_pole, select[data-preset-manager-for]").each(function() {
             const selectEl = jQuery(this);
             // Hide text emojis in native options
             selectEl.find("option").each(function() {
