@@ -5594,34 +5594,20 @@ function replaceEmojisInNode(node) {
         let text = node.nodeValue;
         if (text && (text.includes("🍏") || text.includes("🍎"))) {
             const span = document.createElement("span");
-            span.className = "yp-prompt-name-wrapper";
+            span.style.display = "inline-flex";
+            span.style.alignItems = "center";
+            span.style.verticalAlign = "middle";
+            span.style.margin = "0 auto";
             
-            // Reconstruct the text safely respecting original order
-            let cleanText = text.replace(/🍏[\uFE0E\uFE0F]?/g, '').replace(/🍎[\uFE0E\uFE0F]?/g, '').trim();
-            
-            let html = '';
-            // Determine order based on original string
-            const greenFirst = text.indexOf("🍏") !== -1 && text.indexOf("🍏") < text.indexOf(cleanText);
-            const redFirst = text.indexOf("🍎") !== -1 && text.indexOf("🍎") < text.indexOf(cleanText);
-            
-            if (greenFirst) html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple yp-apple-left" alt="🍏">';
-            if (redFirst) html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple yp-apple-left" alt="🍎">';
-            
-            html += `<span class="yp-prompt-name-text">${cleanText}</span>`;
-            
-            // Check right side
-            const greenLast = text.indexOf("🍏") !== -1 && text.indexOf("🍏") > text.indexOf(cleanText) && text.indexOf(cleanText) !== -1;
-            const redLast = text.indexOf("🍎") !== -1 && text.indexOf("🍎") > text.indexOf(cleanText) && text.indexOf(cleanText) !== -1;
-            // Also handle if text is ONLY an emoji (index of cleantext is -1)
-            
-            if (greenLast || (text.includes("🍏") && !greenFirst)) html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple yp-apple-right" alt="🍏">';
-            if (redLast || (text.includes("🍎") && !redFirst)) html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple yp-apple-right" alt="🍎">';
+            // Just replace the emojis natively and add spacing via inline styles
+            let html = text.replace(/🍏[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" style="margin: 0 10px;" alt="🍏">');
+            html = html.replace(/🍎[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" style="margin: 0 10px;" alt="🍎">');
             
             span.innerHTML = html;
             node.parentNode.replaceChild(span, node);
         }
     } else if (node.nodeType === 1) { // Element node
-        if (node.classList && (node.classList.contains("yp-custom-apple") || node.classList.contains("yp-prompt-name-wrapper"))) return;
+        if (node.classList && (node.classList.contains("yp-custom-apple") || node.style && node.style.margin === "0px auto")) return;
         // Iterate backwards
         for (let i = node.childNodes.length - 1; i >= 0; i--) {
             replaceEmojisInNode(node.childNodes[i]);
