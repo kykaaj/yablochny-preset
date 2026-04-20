@@ -5518,7 +5518,7 @@ function updateSectionCss() {
         }
         
         // Make the container flex so arrows stay left while text centers
-        css += `${hSel} [class*='prompt_manager_prompt_name'] { display: flex; align-items: center; width: 100%; font-weight: 600; }\n`;
+        css += `${hSel} [class*='prompt_manager_prompt_name'] { display: flex !important; align-items: center !important; width: 100% !important; flex-wrap: nowrap !important; font-weight: 600; }\n`;
 
         const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
         if (childIds.length > 0) {
@@ -5528,7 +5528,7 @@ function updateSectionCss() {
             
             // CHILDREN STYLING
             // Shrink the text slightly and ensure it inherits the same flex-stretch to allow centering
-            css += `${cSelNameList} { display: flex; align-items: center; width: 100%; font-size: 0.9em !important; }\n`;
+            css += `${cSelNameList} { display: flex !important; align-items: center !important; width: 100% !important; flex-wrap: nowrap !important; font-size: 0.9em !important; }\n`;
             
             // Shift the ENTIRE child pill to the right, and reduce width so right controls stay aligned! Wait, no opacity.
             css += `${cSelList} { margin-left: 16px !important; width: calc(100% - 16px) !important; border-left: 2px solid rgba(255,255,255,0.1) !important; }\n`;
@@ -5596,8 +5596,12 @@ function replaceEmojisInNode(node) {
             const span = document.createElement("span");
             span.style.display = "inline-flex";
             span.style.alignItems = "center";
+            span.style.justifyContent = "center";
             span.style.verticalAlign = "middle";
             span.style.margin = "0 auto";
+            span.style.flexGrow = "1";
+            span.style.width = "100%";
+            span.style.textAlign = "center";
             
             // Just replace the emojis natively and add spacing via inline styles
             let html = text.replace(/🍏[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" style="margin: 0 10px;" alt="🍏">');
