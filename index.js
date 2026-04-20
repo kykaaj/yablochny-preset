@@ -5592,18 +5592,27 @@ function replaceEmojisInNode(node) {
         let text = node.nodeValue;
         if (text && (text.includes("🍏") || text.includes("🍎"))) {
             const span = document.createElement("span");
-            // Use flexbox inside the span to ensure everything aligns on the same baseline perfectly
-            span.style.display = "inline-flex";
-            span.style.alignItems = "center";
-            span.style.verticalAlign = "middle";
+            span.className = "yp-prompt-name-wrapper";
             
-            let html = text.replace(/🍏/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" alt="🍏">');
-            html = html.replace(/🍎/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" alt="🍎">');
+            // Reconstruct the text safely to remove the pure emojis
+            let cleanText = text.replace(/🍏[\uFE0E\uFE0F]?/g, '').replace(/🍎[\uFE0E\uFE0F]?/g, '').trim();
+            
+            let html = '';
+            if (text.includes("🍏")) {
+                html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple yp-apple-left" alt="🍏">';
+            }
+            
+            html += `<span class="yp-prompt-name-text">${cleanText}</span>`;
+            
+            if (text.includes("🍎")) {
+                html += '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple yp-apple-right" alt="🍎">';
+            }
+            
             span.innerHTML = html;
             node.parentNode.replaceChild(span, node);
         }
     } else if (node.nodeType === 1) { // Element node
-        if (node.classList && node.classList.contains("yp-custom-apple")) return;
+        if (node.classList && (node.classList.contains("yp-custom-apple") || node.classList.contains("yp-prompt-name-wrapper"))) return;
         // Iterate backwards
         for (let i = node.childNodes.length - 1; i >= 0; i--) {
             replaceEmojisInNode(node.childNodes[i]);

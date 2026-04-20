@@ -4,13 +4,61 @@
 }
 
 .yp-custom-apple {
-    width: 1.25em;
-    height: 1.25em;
-    vertical-align: text-bottom;
-    margin: 0 4px;
+    width: 1.3em;
+    height: 1.3em;
+    vertical-align: middle;
     object-fit: contain;
     display: inline-block;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+}
+
+.yp-custom-apple:hover {
+    transform: scale(1.15) rotate(5deg);
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+}
+
+.yp-prompt-name-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.yp-prompt-name-text {
+    flex-grow: 1;
+    margin: 0 8px;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.yp-apple-left {
+    margin-right: 6px;
+}
+
+.yp-apple-right {
+    margin-left: auto;
+    margin-right: 12px;
+}
+
+.yp-header-logo {
+    width: 26px;
+    height: 26px;
+    filter: drop-shadow(0 2px 6px rgba(107, 203, 119, 0.4));
+    transition: transform 0.4s ease;
+}
+
+.yablochny-title:hover .yp-header-logo {
+    transform: rotate(-15deg) scale(1.15);
+}
+
+.yp-title-text-styled {
+    font-weight: 800; 
+    font-size: 19px; 
+    letter-spacing: 0.5px; 
+    text-transform: uppercase; 
+    background: linear-gradient(135deg, #a8e063, #56ab2f); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent;
 }
 
 .yablochny-header {
