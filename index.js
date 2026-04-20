@@ -5517,8 +5517,8 @@ function updateSectionCss() {
             css += `${hSel} [class*='prompt_manager_prompt_name']::before { transform: rotate(90deg) !important; }\n`;
         }
         
-        // Style the Header Text
-        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600; }\n`;
+        // Make the container flex so arrows stay left while text centers
+        css += `${hSel} [class*='prompt_manager_prompt_name'] { display: flex; align-items: center; width: 100%; font-weight: 600; }\n`;
 
         const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
         if (childIds.length > 0) {

@@ -21,23 +21,23 @@
 .yp-prompt-name-wrapper {
     display: flex;
     align-items: center;
-    width: 100%;
+    justify-content: center;
+    flex-grow: 1;
 }
 
 .yp-prompt-name-text {
-    flex-grow: 1;
-    margin: 0 8px;
+    flex-grow: 0;
+    margin: 0 4px; /* Tiny native space, let apples add margin */
     font-weight: 600;
     opacity: 0.9;
 }
 
 .yp-apple-left {
-    margin-right: 6px;
+    margin-right: 8px !important;
 }
 
 .yp-apple-right {
-    margin-left: auto;
-    margin-right: 12px;
+    margin-left: 8px !important;
 }
 
 .yp-header-logo {
