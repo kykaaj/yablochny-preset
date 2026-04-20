@@ -69,6 +69,13 @@
     }
 }
 
+/* On mobile (and desktop), play the animation briefly when pressed/clicked */
+.yablochny-main-toggle:active .yp-header-logo-wrapper,
+.inline-drawer-toggle:active .yp-header-logo-wrapper {
+    transform: rotate(-25deg) scale(0.95) !important;
+    transition: transform 0.1s ease-out !important;
+}
+
 @keyframes yp-logo-pulse {
     0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(107, 203, 119, 0.4)); }
     50% { transform: scale(1.05); filter: drop-shadow(0 0 12px rgba(107, 203, 119, 0.7)); }
@@ -138,6 +145,12 @@
   width: 100%;
   gap: 8px;
   padding: 2px 0; /* Add slight breathing room */
+}
+
+/* Targeting the ID specifically for maximum priority and consistency */
+#yp-title-text {
+  color: #ffffff !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .yablochny-title {
