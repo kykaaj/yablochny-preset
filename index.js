@@ -5669,54 +5669,8 @@ function bindAppleIconObserver() {
     
     // Check select2 every half second for the preset text
     setInterval(() => {
-        // Native selects (ST API menus) overlay hack!
-        // We do NOT modify opt.text() because ST uses it for dictionary lookups.
-        jQuery("select.text_pole, select[data-preset-manager-for]").each(function() {
-            const selectEl = jQuery(this);
-            if (selectEl.hasClass("select2-hidden-accessible")) return;
-            
-            const selectedOpt = selectEl.find("option:selected");
-            const text = selectedOpt.text() || "";
-            
-            let appleType = null;
-            if (text.includes("🍏")) appleType = "green";
-            else if (text.includes("🍎")) appleType = "red";
-            
-            let blocker = selectEl.parent().find("> .yp-native-select-blocker");
-            let overlay = selectEl.parent().find("> .yp-native-select-overlay");
-            
-            if (appleType) {
-                if (blocker.length === 0) {
-                    blocker = jQuery('<div class="yp-native-select-blocker"></div>');
-                    let bgColor = selectEl.css("background-color");
-                    if (!bgColor || bgColor === "rgba(0, 0, 0, 0)" || bgColor === "transparent") {
-                        bgColor = "var(--SmartThemeSurface, #1a1a1d)";
-                    }
-                    blocker.css({
-                        position: "absolute", left: "10px", top: "5px", bottom: "5px", width: "24px",
-                        backgroundColor: bgColor,
-                        pointerEvents: "none", zIndex: 9, borderRadius: "2px"
-                    });
-                    
-                    overlay = jQuery('<img class="yp-native-select-overlay yp-custom-apple">');
-                    overlay.css({
-                        position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "18px",
-                        pointerEvents: "none", zIndex: 10
-                    });
-                    
-                    if (selectEl.parent().css("position") === "static") {
-                        selectEl.parent().css("position", "relative");
-                    }
-                    selectEl.parent().append(blocker).append(overlay);
-                }
-                overlay.attr("src", appleType === "green" ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png");
-            } else {
-                if (blocker.length > 0) blocker.remove();
-                if (overlay.length > 0) overlay.remove();
-            }
-        });
-
         // We leave Native Selects untouched as ST natively relies on option.text() across dynamic dicts
+        // Native <select> hacking is abandoned because it's impossible to perfectly align an overlay without graphical glitches cross-theme.
         // Select2 selects & results
         jQuery(".select2-selection__rendered, .select2-results__option").each(function() {
             replaceEmojisInNode(this);
