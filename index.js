@@ -5689,9 +5689,10 @@ function bindAppleIconObserver() {
                     <img src="${src}" class="yp-custom-apple ${colorClass}" style="width:19px;min-width:19px;height:19px;vertical-align:middle;">
                     <span style="color: ${styles.color !== 'rgba(0, 0, 0, 0)' && styles.color !== 'transparent' ? styles.color : 'var(--SmartThemeBodyColor, #ccc)'}; font-family: ${styles.fontFamily}; font-size: ${styles.fontSize}; font-weight: ${styles.fontWeight}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9;">${cleanText}</span>
                 `);
-            } else if (!isApple) {
+            } else {
+                // Nuke overlay if not an apple OR if select is hidden (Select2 is active)
                 overlay.remove();
-                selectEl.css("color", "");
+                if (!isApple) selectEl.css("color", "");
             }
         });
 
