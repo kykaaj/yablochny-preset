@@ -5709,7 +5709,7 @@ function bindAppleIconObserver() {
                 // Copy font styles dynamically
                 const styles = window.getComputedStyle(selectEl[0]);
                 overlay.html(`
-                    <img src="${src}" class="yp-custom-apple ${colorClass}" style="width:16px;min-width:16px;height:16px;vertical-align:middle;margin-right:4px;">
+                    <img src="${src}" class="yp-custom-apple ${colorClass}" style="width:19px;min-width:19px;height:19px;vertical-align:middle;">
                     <span style="color: ${styles.color !== 'rgba(0, 0, 0, 0)' && styles.color !== 'transparent' ? styles.color : 'var(--SmartThemeBodyColor, #ccc)'}; font-family: ${styles.fontFamily}; font-size: ${styles.fontSize}; font-weight: ${styles.fontWeight}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9;">${cleanText}</span>
                 `);
             } else {
