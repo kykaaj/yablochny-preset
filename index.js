@@ -5665,8 +5665,41 @@ function bindAppleIconObserver() {
     
     // Check select2 every half second for the preset text
     setInterval(() => {
-        // We leave Native Selects untouched as ST natively relies on option.text() across dynamic dicts
-        // Native <select> hacking is abandoned because it's impossible to perfectly align an overlay without graphical glitches cross-theme.
+        // Native <select> visual overlay: cover the OS emoji with our custom apple
+        // We do NOT touch option.text() to avoid breaking ST's preset lookup
+        jQuery("#settings_preset_openai").each(function() {
+            const selectEl = jQuery(this);
+            const text = selectEl.find("option:selected").text() || "";
+            
+            let appleType = null;
+            if (text.includes("\ud83c\udf4f")) appleType = "green";
+            else if (text.includes("\ud83c\udf4e")) appleType = "red";
+            
+            let overlay = selectEl.siblings(".yp-native-select-overlay");
+            
+            if (appleType) {
+                if (overlay.length === 0) {
+                    const wrapper = selectEl.parent();
+                    if (wrapper.css("position") === "static") {
+                        wrapper.css("position", "relative");
+                    }
+                    overlay = jQuery('<img class="yp-native-select-overlay yp-custom-apple">').css({
+                        position: "absolute", left: "8px", top: "50%", transform: "translateY(-50%)",
+                        width: "16px", height: "16px", pointerEvents: "none", zIndex: 10
+                    });
+                    selectEl.after(overlay);
+                    selectEl.css("padding-left", "28px");
+                }
+                const src = appleType === "green" 
+                    ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" 
+                    : "/scripts/extensions/third-party/yablochny-preset/img/red.png";
+                overlay.attr("src", src);
+            } else {
+                overlay.remove();
+                selectEl.css("padding-left", "");
+            }
+        });
+
         // Select2 selects & results
         jQuery(".select2-selection__rendered, .select2-results__option").each(function() {
             replaceEmojisInNode(this);
