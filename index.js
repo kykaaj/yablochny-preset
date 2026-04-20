@@ -5634,69 +5634,17 @@ function bindAppleIconObserver() {
     const updateApplesForNode = (target = document.body) => {
         const $target = jQuery(target);
         
-        // --- 1. CLEANUP STALE OVERLAYS ---
-        // If the selector no longer needs an overlay (or we are refreshing), remove all fakes first to avoid 'sticking'
-        jQuery(".yp-native-select-fake").each(function() {
-            const overlay = jQuery(this);
-            const selectEl = overlay.siblings("select");
-            // If the select exists and NO LONGER has an apple, or if we just want to be sure, nuke it.
-            if (selectEl.length > 0) {
-                const text = selectEl.find("option:selected").text() || selectEl.text() || "";
-                if (!/[🍏🍎]/.test(text)) {
-                    overlay.remove();
-                    selectEl.css("color", "");
-                }
-            } else {
-                // Orphaned overlay
-                overlay.remove();
-            }
-        });
+        // --- 1. CLEANUP LEGACY OVERLAYS ---
+        jQuery(".yp-native-select-fake").remove();
 
-        // --- 2. HANDLE MAIN PRESET SELECTOR OVERLAY ---
+        // --- 2. FORCED RESET FOR SELECT ELEMENTS ---
+        // Ensure standard selects don't have transparent text if we removed overlays
         const selectSels = "#settings_preset_openai, #active_preset, select[id*='preset']";
         const selects = $target.is(selectSels) ? $target : $target.find(selectSels);
-        
-        selects.each(function() {
-            const selectEl = jQuery(this);
-            // Don't overlay if the select is hidden by Select2 (Select2 handles its own display)
-            // unless it's a specific ST view that doesn't use Select2.
-            // BUT, if ST uses Select2, the select stays 'display: none', and my overlay inside its parent might be visible incorrectly.
-            // FIX: Only overlay if the select IS VISIBLE or if it's the primary ST one we want to style.
-            
-            const text = selectEl.find("option:selected").text() || selectEl.text() || "";
-            const isApple = /[🍏🍎]/.test(text);
-            const appleType = /🍏/.test(text) ? "green" : "red";
-            let overlay = selectEl.siblings(".yp-native-select-fake");
-            
-            if (isApple && selectEl.is(":visible")) {
-                if (overlay.length === 0) {
-                    const wrapper = selectEl.parent();
-                    if (wrapper.css("position") === "static") wrapper.css("position", "relative");
-                    selectEl.css("color", "transparent");
-                    overlay = jQuery('<div class="yp-native-select-fake">').css({
-                        position: "absolute", left: "0", top: "0", bottom: "0", right: "20px",
-                        display: "flex", alignItems: "center", pointerEvents: "none", zIndex: 10,
-                        paddingLeft: selectEl.css("padding-left") || "10px",
-                        paddingRight: selectEl.css("padding-right") || "10px", gap: "6px"
-                    });
-                    selectEl.after(overlay);
-                }
-                const src = appleType === "green" ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png";
-                const cleanText = text.replace(/[\ud83c\udf4f\ud83c\udf4e🍏🍎]/g, '').trim();
-                const colorClass = appleType === "green" ? "yp-apple-green" : "yp-apple-red";
-                const styles = window.getComputedStyle(selectEl[0]);
-                overlay.html(`
-                    <img src="${src}" class="yp-custom-apple ${colorClass}" style="width:19px;min-width:19px;height:19px;vertical-align:middle;">
-                    <span style="color: ${styles.color !== 'rgba(0, 0, 0, 0)' && styles.color !== 'transparent' ? styles.color : 'var(--SmartThemeBodyColor, #ccc)'}; font-family: ${styles.fontFamily}; font-size: ${styles.fontSize}; font-weight: ${styles.fontWeight}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9;">${cleanText}</span>
-                `);
-            } else {
-                // Nuke overlay if not an apple OR if select is hidden (Select2 is active)
-                overlay.remove();
-                if (!isApple) selectEl.css("color", "");
-            }
-        });
+        selects.css("color", "");
 
         // --- 3. HANDLE SELECT2 & OTHER TEXT ELEMENTS ---
+        // We target the Select2 containers directly and replaceEmojisInNode does the rest
         const searchSels = ".select2-selection__rendered, .select2-results__option, .inline-drawer-header, .yp-prompt-name, [class*='prompt_name']";
         const nodes = $target.is(searchSels) ? $target : $target.find(searchSels);
         nodes.each(function() {
@@ -5725,17 +5673,16 @@ function bindAppleIconObserver() {
     // Initial run
     updateApplesForNode();
 
-    // Listen for changes that don't trigger Mutations (like value selection)
+    // Listen for changes that don't trigger Mutations (like value selection or programmatic updates)
+    // ST often triggers these, but doesn't always perform a DOM insertion that MutationObserver catches.
     jQuery(document).on('change input', selectSels, function() {
-        // Multi-stage update to reliably catch Select2 rendering
         const refresh = () => {
             updateApplesForNode();
-            jQuery(".select2-selection__rendered, .select2-results__option").each(function() { 
-                replaceEmojisInNode(this); 
-            });
         };
-        setTimeout(refresh, 50);
-        setTimeout(refresh, 250); // Safety fallback
+        // Run immediately AND with a slight delay to ensure ST/Select2 has finished its DOM work.
+        refresh();
+        setTimeout(refresh, 80);
+        setTimeout(refresh, 300);
     });
 }
 
