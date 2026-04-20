@@ -5631,93 +5631,72 @@ function bindAppleIconObserver() {
     if (_ypAppleObserverBound) return;
     _ypAppleObserverBound = true;
     
-    // Efficient update function to replace emojis logic
+    let _ypAppleDebounceTimer = null;
     const updateApplesForNode = (target = document.body) => {
-        if (_ypIsUpdatingApples) return;
-        _ypIsUpdatingApples = true;
-        
-        try {
-            const $target = jQuery(target);
-            const selectSels = "#settings_preset_openai, #active_preset, select[id*='preset']";
+        // Debounce: If called rapidly, wait until things settle
+        clearTimeout(_ypAppleDebounceTimer);
+        _ypAppleDebounceTimer = setTimeout(() => {
+            if (_ypIsUpdatingApples) return;
+            _ypIsUpdatingApples = true;
             
-            // --- 1. HANDLE MAIN PRESET SELECTOR OVERLAY ---
-            const allSelects = jQuery(selectSels);
-            allSelects.each(function() {
-                const selectEl = jQuery(this);
-                const text = selectEl.find("option:selected").text() || selectEl.text() || "";
-                const isApple = /[🍏🍎]/.test(text);
-                const appleType = /🍏/.test(text) ? "green" : "red";
-                let overlay = selectEl.siblings(".yp-native-select-fake");
+            try {
+                const selectSels = "#settings_preset_openai, #active_preset, select[id*='preset']";
                 
-                if (isApple && selectEl.is(":visible")) {
-                    if (overlay.length === 0) {
-                        const wrapper = selectEl.parent();
-                        if (wrapper.css("position") === "static") wrapper.css("position", "relative");
-                        selectEl.css("color", "transparent");
-                        overlay = jQuery('<div class="yp-native-select-fake">').css({
-                            position: "absolute", left: "0", top: "0", bottom: "0", right: "20px",
-                            display: "flex", alignItems: "center", pointerEvents: "none", zIndex: 10,
-                            paddingLeft: selectEl.css("padding-left") || "10px",
-                            paddingRight: selectEl.css("padding-right") || "10px", gap: "6px"
-                        });
-                        selectEl.after(overlay);
+                // --- 1. HANDLE MAIN PRESET SELECTOR OVERLAY ---
+                jQuery(selectSels).each(function() {
+                    const selectEl = jQuery(this);
+                    const text = selectEl.find("option:selected").text() || selectEl.text() || "";
+                    const isApple = /[🍏🍎]/.test(text);
+                    const appleType = /🍏/.test(text) ? "green" : "red";
+                    let overlay = selectEl.siblings(".yp-native-select-fake");
+                    
+                    if (isApple && selectEl.is(":visible")) {
+                        if (overlay.length === 0) {
+                            const wrapper = selectEl.parent();
+                            if (wrapper.css("position") === "static") wrapper.css("position", "relative");
+                            selectEl.css("color", "transparent");
+                            overlay = jQuery('<div class="yp-native-select-fake">').css({
+                                position: "absolute", left: "0", top: "0", bottom: "0", right: "20px",
+                                display: "flex", alignItems: "center", pointerEvents: "none", zIndex: 10,
+                                paddingLeft: selectEl.css("padding-left") || "10px",
+                                paddingRight: selectEl.css("padding-right") || "10px", gap: "6px"
+                            });
+                            selectEl.after(overlay);
+                        }
+                        const src = appleType === "green" ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png";
+                        const cleanText = text.replace(/[\ud83c\udf4f\ud83c\udf4e🍏🍎]/g, '').trim();
+                        const colorClass = appleType === "green" ? "yp-apple-green" : "yp-apple-red";
+                        const styles = window.getComputedStyle(selectEl[0]);
+                        overlay.html(`
+                            <img src="${src}" class="yp-custom-apple ${colorClass}" style="width:19px;min-width:19px;height:19px;vertical-align:middle;">
+                            <span style="color: ${styles.color !== 'rgba(0, 0, 0, 0)' && styles.color !== 'transparent' ? styles.color : 'var(--SmartThemeBodyColor, #ccc)'}; font-family: ${styles.fontFamily}; font-size: ${styles.fontSize}; font-weight: ${styles.fontWeight}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9;">${cleanText}</span>
+                        `);
+                    } else if (overlay.length > 0) {
+                        overlay.remove();
+                        if (!isApple) selectEl.css("color", "");
                     }
-                    const src = appleType === "green" ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png";
-                    const cleanText = text.replace(/[\ud83c\udf4f\ud83c\udf4e🍏🍎]/g, '').trim();
-                    const colorClass = appleType === "green" ? "yp-apple-green" : "yp-apple-red";
-                    const styles = window.getComputedStyle(selectEl[0]);
-                    overlay.html(`
-                        <img src="${src}" class="yp-custom-apple ${colorClass}" style="width:19px;min-width:19px;height:19px;vertical-align:middle;">
-                        <span style="color: ${styles.color !== 'rgba(0, 0, 0, 0)' && styles.color !== 'transparent' ? styles.color : 'var(--SmartThemeBodyColor, #ccc)'}; font-family: ${styles.fontFamily}; font-size: ${styles.fontSize}; font-weight: ${styles.fontWeight}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9;">${cleanText}</span>
-                    `);
-                } else if (overlay.length > 0) {
-                    overlay.remove();
-                    if (!isApple) selectEl.css("color", "");
-                }
-            });
+                });
 
-            // --- 2. HANDLE SELECT2 & OTHER TEXT ELEMENTS ---
-            const searchSels = ".select2-selection__rendered, .select2-results__option, .inline-drawer-header, .yp-prompt-name, [class*='prompt_name']";
-            const nodes = $target.is(searchSels) ? $target : $target.find(searchSels);
-            nodes.each(function() {
-                replaceEmojisInNode(this);
-            });
-        } finally {
-            _ypIsUpdatingApples = false;
-        }
+                // --- 2. HANDLE SELECT2 & OTHER TEXT ELEMENTS ---
+                // Only scan common containers to avoid heavy processing
+                const searchSels = ".select2-selection__rendered, .select2-results__option, .inline-drawer-header, .yp-prompt-name, [class*='prompt_name']";
+                jQuery(searchSels).each(function() {
+                    replaceEmojisInNode(this);
+                });
+            } finally {
+                _ypIsUpdatingApples = false;
+            }
+        }, 150); // 150ms debounce is safe for ST
     };
 
-    const observer = new MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-            if (mutation.type === 'childList') {
-                for (const node of mutation.addedNodes) {
-                    if (node.nodeType === 1) updateApplesForNode(node);
-                }
-            } else if (mutation.type === 'characterData') {
-                updateApplesForNode(mutation.target.parentNode);
-            }
-        }
-    });
+    // --- 1. OBSERVER REPLACED WITH SAFE POLL ---
+    // The previous MutationObserver on document.body was too heavy for ST's busy UI.
+    // We'll use a conservative 1s poll for most things and event markers for speed.
+    setInterval(() => updateApplesForNode(), 1000);
 
-    observer.observe(document.body, { 
-        childList: true, 
-        subtree: true,
-        characterData: true
-    });
-
-    // Initial run
-    updateApplesForNode();
-
-    // Listen for changes that don't trigger Mutations (like value selection or programmatic updates)
-    // ST often triggers these, but doesn't always perform a DOM insertion that MutationObserver catches.
+    const selectSels = "#settings_preset_openai, #active_preset, select[id*='preset']";
     jQuery(document).on('change input', selectSels, function() {
-        const refresh = () => {
-            updateApplesForNode();
-        };
-        // Run immediately AND with a slight delay to ensure ST/Select2 has finished its DOM work.
-        refresh();
-        setTimeout(refresh, 80);
-        setTimeout(refresh, 300);
+        updateApplesForNode();
     });
 }
 
