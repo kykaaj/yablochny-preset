@@ -5603,6 +5603,15 @@ function replaceEmojisInNode(node) {
             span.style.width = "100%";
             span.style.textAlign = "center";
             
+            // Force the PARENT container (<a class="prompt-manager-inspect-action"> or <span>) to expand and center
+            // Otherwise, it shrinks to its content and prevents our span from centering!
+            if (node.parentNode && node.parentNode.classList && !node.parentNode.classList.contains("prompt_manager_prompt_name")) {
+                node.parentNode.style.setProperty("flex-grow", "1", "important");
+                node.parentNode.style.setProperty("display", "flex", "important");
+                node.parentNode.style.setProperty("justify-content", "center", "important");
+                node.parentNode.style.setProperty("align-items", "center", "important");
+            }
+            
             // Just replace the emojis natively and add spacing via inline styles
             let html = text.replace(/🍏[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" style="margin: 0 10px;" alt="🍏">');
             html = html.replace(/🍎[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" style="margin: 0 10px;" alt="🍎">');
