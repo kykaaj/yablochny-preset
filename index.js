@@ -5675,28 +5675,38 @@ function bindAppleIconObserver() {
             if (text.includes("\ud83c\udf4f")) appleType = "green";
             else if (text.includes("\ud83c\udf4e")) appleType = "red";
             
+            let blocker = selectEl.siblings(".yp-native-select-blocker");
             let overlay = selectEl.siblings(".yp-native-select-overlay");
             
             if (appleType) {
-                if (overlay.length === 0) {
+                if (blocker.length === 0) {
                     const wrapper = selectEl.parent();
                     if (wrapper.css("position") === "static") {
                         wrapper.css("position", "relative");
                     }
+                    // Blocker: covers the native OS emoji with matching background
+                    let bgColor = getComputedStyle(selectEl[0]).backgroundColor;
+                    if (!bgColor || bgColor === "rgba(0, 0, 0, 0)" || bgColor === "transparent") {
+                        bgColor = "var(--SmartThemeBlurTintColor, #1a1a1d)";
+                    }
+                    blocker = jQuery('<div class="yp-native-select-blocker">').css({
+                        position: "absolute", left: "6px", top: "4px", bottom: "4px", width: "22px",
+                        background: bgColor, pointerEvents: "none", zIndex: 9, borderRadius: "2px"
+                    });
+                    // Our custom apple on top
                     overlay = jQuery('<img class="yp-native-select-overlay yp-custom-apple">').css({
                         position: "absolute", left: "8px", top: "50%", transform: "translateY(-50%)",
                         width: "16px", height: "16px", pointerEvents: "none", zIndex: 10
                     });
-                    selectEl.after(overlay);
-                    selectEl.css("padding-left", "28px");
+                    selectEl.after(blocker).after(overlay);
                 }
                 const src = appleType === "green" 
                     ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" 
                     : "/scripts/extensions/third-party/yablochny-preset/img/red.png";
                 overlay.attr("src", src);
             } else {
+                blocker.remove();
                 overlay.remove();
-                selectEl.css("padding-left", "");
             }
         });
 
