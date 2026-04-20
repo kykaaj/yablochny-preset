@@ -5597,7 +5597,7 @@ function updateSectionCss() {
 function replaceEmojisInNode(node) {
     if (node.nodeType === 3) { // Text node
         let text = node.nodeValue;
-        if (text && (text.includes("🍏") || text.includes("🍎"))) {
+        if (text && /[🍏🍎]/.test(text)) {
             const span = document.createElement("span");
             span.style.verticalAlign = "middle";
             
@@ -5705,8 +5705,8 @@ function bindAppleIconObserver() {
 
     // Listen for changes that don't trigger Mutations (like value selection)
     jQuery(document).on('change input', selectSels, function() {
-        // Run a broad update because Select2 UI elements are outside the native <select>
-        updateApplesForNode();
+        // Run a broad update after a tiny delay because Select2 UI elements take a tick to update
+        setTimeout(() => updateApplesForNode(), 10);
     });
 }
 
