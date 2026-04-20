@@ -5819,12 +5819,12 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.25) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.05), transparent) !important; }\n`;
-        css += `${cBeforeDisabled} { color: #5c9e67 !important; opacity: 0.5 !important; }\n`;
+        css += `${lisDisabled} { opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.15) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.03), transparent) !important; }\n`;
+        css += `${cBeforeDisabled} { color: #4e8a59 !important; opacity: 0.4 !important; }\n`;
         
         // Enabled State
-        css += `${lisEnabled} { opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.7) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.15), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(107, 203, 119, 0.1) !important; }\n`;
-        css += `${cBeforeEnabled} { color: #6bcb77 !important; opacity: 0.9 !important; }\n`;
+        css += `${lisEnabled} { opacity: 1 !important; border-left: 3px solid rgba(107, 203, 119, 0.85) !important; background: linear-gradient(90deg, rgba(107, 203, 119, 0.07), transparent) !important; box-shadow: inset 15px 0 20px -15px rgba(107, 203, 119, 0.2) !important; }\n`;
+        css += `${cBeforeEnabled} { color: #7fdb8a !important; opacity: 0.9 !important; }\n`;
     }
 
     const goldIds = Object.keys(REGEX_PROMPT_MAP);
@@ -5845,12 +5845,12 @@ function injectDynamicStyles() {
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.25) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.05), transparent) !important; }\n`;
-        css += `${cBeforeDisabled} { color: #a4843b !important; opacity: 0.5 !important; }\n`;
+        css += `${lisDisabled} { opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.15) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.03), transparent) !important; }\n`;
+        css += `${cBeforeDisabled} { color: #8e7330 !important; opacity: 0.4 !important; }\n`;
         
         // Enabled State
-        css += `${lisEnabled} { opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.7) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.15), transparent) !important; box-shadow: inset 20px 0 25px -15px rgba(241, 196, 15, 0.1) !important; }\n`;
-        css += `${cBeforeEnabled} { color: #f1c40f !important; opacity: 0.9 !important; }\n`;
+        css += `${lisEnabled} { opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.85) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.07), transparent) !important; box-shadow: inset 15px 0 20px -15px rgba(241, 196, 15, 0.2) !important; }\n`;
+        css += `${cBeforeEnabled} { color: #f1c40f !important; opacity: 1 !important; }\n`;
     }
 
     css += ".yp-overlay-green { box-shadow: 0 0 15px 5px rgba(107, 203, 119, 0.4), inset 0 0 20px 2px rgba(107, 203, 119, 0.1); background-color: rgba(107, 203, 119, 0.05); } ";
