@@ -5631,23 +5631,25 @@ function bindAppleIconObserver() {
     _ypAppleObserverBound = true;
     
     // Efficient update function to replace emojis logic
-    const updateApples = (targetNode = document.body) => {
-        // Handle main preset selector overlay (only if targetNode is document.body or the selector itself)
-        jQuery("#settings_preset_openai, #active_preset, select[id*='preset']").each(function() {
+    const updateApplesForNode = (target = document.body) => {
+        const $target = jQuery(target);
+        
+        // Handle main preset selector overlay
+        const selectSels = "#settings_preset_openai, #active_preset, select[id*='preset']";
+        const selects = $target.is(selectSels) ? $target : $target.find(selectSels);
+        
+        selects.each(function() {
             const selectEl = jQuery(this);
             const text = selectEl.find("option:selected").text() || selectEl.text() || "";
             const appleType = text.includes("🍏") ? "green" : (text.includes("🍎") ? "red" : null);
-            
             let overlay = selectEl.siblings(".yp-native-select-fake");
             
             if (appleType) {
                 if (overlay.length === 0) {
                     const wrapper = selectEl.parent();
                     if (wrapper.css("position") === "static") wrapper.css("position", "relative");
-                    
                     selectEl.css("color", "transparent");
                     selectEl.find("option").css("color", "var(--SmartThemeBodyColor, #ccc)");
-                    
                     overlay = jQuery('<div class="yp-native-select-fake">').css({
                         position: "absolute", left: "0", top: "0", bottom: "0", right: "20px",
                         display: "flex", alignItems: "center", pointerEvents: "none", zIndex: 10,
@@ -5657,10 +5659,7 @@ function bindAppleIconObserver() {
                     });
                     selectEl.after(overlay);
                 }
-                
-                const src = appleType === "green" 
-                    ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" 
-                    : "/scripts/extensions/third-party/yablochny-preset/img/red.png";
+                const src = appleType === "green" ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png";
                 const cleanText = text.replace(/[\ud83c\udf4f\ud83c\udf4e🍏🍎]/g, '').trim();
                 const colorClass = appleType === "green" ? "yp-apple-green" : "yp-apple-red";
                 const styles = window.getComputedStyle(selectEl[0]);
@@ -5676,28 +5675,21 @@ function bindAppleIconObserver() {
         });
 
         // Prompt headers, list items, and Select2 results
-        // We use a more targeted search to keep it fast
-        const searchNodes = jQuery(targetNode).find(".select2-selection__rendered, .select2-results__option, .inline-drawer-header, .yp-prompt-name, [class*='prompt_name']");
-        searchNodes.each(function() {
+        const searchSels = ".select2-selection__rendered, .select2-results__option, .inline-drawer-header, .yp-prompt-name, [class*='prompt_name']";
+        const nodes = $target.is(searchSels) ? $target : $target.find(searchSels);
+        nodes.each(function() {
             replaceEmojisInNode(this);
         });
-        
-        // Also check targetNode itself
-        if (jQuery(targetNode).is(".select2-selection__rendered, .select2-results__option, .inline-drawer-header, .yp-prompt-name, [class*='prompt_name']")) {
-            replaceEmojisInNode(targetNode);
-        }
     };
 
     const observer = new MutationObserver((mutations) => {
-        let throttleTimer = null;
         for (const mutation of mutations) {
-            if (mutation.addedNodes.length > 0 || mutation.type === 'characterData') {
-                if (!throttleTimer) {
-                    throttleTimer = setTimeout(() => {
-                        updateApples();
-                        throttleTimer = null;
-                    }, 5); // Micro-delay to batch rapid updates
+            if (mutation.type === 'childList') {
+                for (const node of mutation.addedNodes) {
+                    if (node.nodeType === 1) updateApplesForNode(node);
                 }
+            } else if (mutation.type === 'characterData') {
+                updateApplesForNode(mutation.target.parentNode);
             }
         }
     });
@@ -5709,7 +5701,7 @@ function bindAppleIconObserver() {
     });
 
     // Initial run
-    updateApples();
+    updateApplesForNode();
 }
 
 function applySectionCollapse() {
