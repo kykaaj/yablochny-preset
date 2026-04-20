@@ -5665,48 +5665,55 @@ function bindAppleIconObserver() {
     
     // Check select2 every half second for the preset text
     setInterval(() => {
-        // Native <select> visual overlay: cover the OS emoji with our custom apple
-        // We do NOT touch option.text() to avoid breaking ST's preset lookup
         jQuery("#settings_preset_openai").each(function() {
             const selectEl = jQuery(this);
             const text = selectEl.find("option:selected").text() || "";
             
             let appleType = null;
-            if (text.includes("\ud83c\udf4f")) appleType = "green";
-            else if (text.includes("\ud83c\udf4e")) appleType = "red";
+            if (text.includes("\ud83c\udf4f") || text.includes("🍏")) appleType = "green";
+            else if (text.includes("\ud83c\udf4e") || text.includes("🍎")) appleType = "red";
             
-            let blocker = selectEl.siblings(".yp-native-select-blocker");
-            let overlay = selectEl.siblings(".yp-native-select-overlay");
+            let overlay = selectEl.siblings(".yp-native-select-fake");
             
             if (appleType) {
-                if (blocker.length === 0) {
+                if (overlay.length === 0) {
                     const wrapper = selectEl.parent();
                     if (wrapper.css("position") === "static") {
                         wrapper.css("position", "relative");
                     }
-                    // Blocker: covers the native OS emoji with matching background
-                    let bgColor = getComputedStyle(selectEl[0]).backgroundColor;
-                    if (!bgColor || bgColor === "rgba(0, 0, 0, 0)" || bgColor === "transparent") {
-                        bgColor = "var(--SmartThemeBlurTintColor, #1a1a1d)";
-                    }
-                    blocker = jQuery('<div class="yp-native-select-blocker">').css({
-                        position: "absolute", left: "4px", top: "3px", bottom: "3px", width: "28px",
-                        background: bgColor, pointerEvents: "none", zIndex: 9, borderRadius: "2px"
+                    
+                    // Make native text invisible, but keep options visible in dropdown
+                    selectEl.css("color", "transparent");
+                    selectEl.find("option").css("color", "var(--SmartThemeBodyColor, #ccc)");
+                    
+                    // Create fake overlay for our custom text and apple
+                    overlay = jQuery('<div class="yp-native-select-fake">').css({
+                        position: "absolute", left: "0", top: "0", bottom: "0", right: "20px",
+                        display: "flex", alignItems: "center", pointerEvents: "none", zIndex: 10,
+                        paddingLeft: selectEl.css("padding-left") || "10px",
+                        paddingRight: selectEl.css("padding-right") || "10px",
+                        gap: "6px"
                     });
-                    // Our custom apple on top
-                    overlay = jQuery('<img class="yp-native-select-overlay yp-custom-apple">').css({
-                        position: "absolute", left: "8px", top: "50%", transform: "translateY(-50%)",
-                        width: "16px", height: "16px", pointerEvents: "none", zIndex: 10
-                    });
-                    selectEl.after(blocker).after(overlay);
+                    
+                    selectEl.after(overlay);
                 }
+                
                 const src = appleType === "green" 
                     ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" 
                     : "/scripts/extensions/third-party/yablochny-preset/img/red.png";
-                overlay.attr("src", src);
+                    
+                const cleanText = text.replace(/[\ud83c\udf4f\ud83c\udf4e🍏🍎]/g, '').trim();
+                
+                // Copy font styles dynamically
+                const styles = window.getComputedStyle(selectEl[0]);
+                overlay.html(`
+                    <img src="${src}" class="yp-custom-apple" style="width:16px;min-width:16px;height:16px;vertical-align:middle;">
+                    <span style="color: ${styles.color !== 'rgba(0, 0, 0, 0)' && styles.color !== 'transparent' ? styles.color : 'var(--SmartThemeBodyColor, #ccc)'}; font-family: ${styles.fontFamily}; font-size: ${styles.fontSize}; font-weight: ${styles.fontWeight}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9;">${cleanText}</span>
+                `);
             } else {
-                blocker.remove();
                 overlay.remove();
+                selectEl.css("color", "");
+                selectEl.find("option").css("color", "");
             }
         });
 
