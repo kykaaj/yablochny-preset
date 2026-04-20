@@ -5601,8 +5601,8 @@ function replaceEmojisInNode(node) {
             const span = document.createElement("span");
             span.style.verticalAlign = "middle";
             
-            let html = text.replace(/🍏[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" style="margin: 0 4px; vertical-align: middle;" alt="🍏">');
-            html = html.replace(/🍎[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" style="margin: 0 4px; vertical-align: middle;" alt="🍎">');
+            let html = text.replace(/🍏[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple yp-apple-green" style="margin: 0 4px; vertical-align: middle;" alt="🍏">');
+            html = html.replace(/🍎[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple yp-apple-red" style="margin: 0 4px; vertical-align: middle;" alt="🍎">');
             
             span.innerHTML = html;
             node.parentNode.replaceChild(span, node);
@@ -5704,10 +5704,12 @@ function bindAppleIconObserver() {
                     
                 const cleanText = text.replace(/[\ud83c\udf4f\ud83c\udf4e🍏🍎]/g, '').trim();
                 
+                const colorClass = appleType === "green" ? "yp-apple-green" : "yp-apple-red";
+                    
                 // Copy font styles dynamically
                 const styles = window.getComputedStyle(selectEl[0]);
                 overlay.html(`
-                    <img src="${src}" class="yp-custom-apple" style="width:16px;min-width:16px;height:16px;vertical-align:middle;">
+                    <img src="${src}" class="yp-custom-apple ${colorClass}" style="width:16px;min-width:16px;height:16px;vertical-align:middle;margin-right:4px;">
                     <span style="color: ${styles.color !== 'rgba(0, 0, 0, 0)' && styles.color !== 'transparent' ? styles.color : 'var(--SmartThemeBodyColor, #ccc)'}; font-family: ${styles.fontFamily}; font-size: ${styles.fontSize}; font-weight: ${styles.fontWeight}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9;">${cleanText}</span>
                 `);
             } else {
