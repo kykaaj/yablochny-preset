@@ -5585,6 +5585,8 @@ function updateSectionCss() {
         document.head.appendChild(styleEl);
     }
     styleEl.textContent = css;
+}
+
 function replaceEmojisInNode(node) {
     if (node.nodeType === 3) { // Text node
         let text = node.nodeValue;
