@@ -5727,12 +5727,15 @@ function bindAppleIconObserver() {
 
     // Listen for changes that don't trigger Mutations (like value selection)
     jQuery(document).on('change input', selectSels, function() {
-        // Broad forced update to clear stale overlays and fix Select2 items
-        setTimeout(() => {
+        // Multi-stage update to reliably catch Select2 rendering
+        const refresh = () => {
             updateApplesForNode();
-            // Specifically push another update for Select2 specifically
-            jQuery(".select2-selection__rendered").each(function() { replaceEmojisInNode(this); });
-        }, 50);
+            jQuery(".select2-selection__rendered, .select2-results__option").each(function() { 
+                replaceEmojisInNode(this); 
+            });
+        };
+        setTimeout(refresh, 50);
+        setTimeout(refresh, 250); // Safety fallback
     });
 }
 
