@@ -5583,7 +5583,67 @@ function updateSectionCss() {
     }
     styleEl.textContent = css;
 }
+
+function injectCustomAppleIcons(target) {
+    if (!target) return;
+    
+    // Process Prompt Manager Nodes
+    const pmNodes = jQuery(target).find("[class*='prompt_manager_prompt_name']");
+    pmNodes.each(function() {
+        const el = jQuery(this);
+        let html = el.html();
+        if (html && (html.includes("🍏") || html.includes("🍎")) && !html.includes("yp-custom-apple")) {
+            html = html.replace(/🍏/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" alt="🍏">');
+            html = html.replace(/🍎/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" alt="🍎">');
+            el.html(html);
+        }
+    });
+}
+
+let _ypAppleObserverBound = false;
+function bindAppleIconObserver() {
+    if (_ypAppleObserverBound) return;
+    _ypAppleObserverBound = true;
+    
+    const observer = new MutationObserver((mutations) => {
+        let shouldProcessSelect2 = false;
+        
+        for (const mutation of mutations) {
+            if (mutation.addedNodes.length) {
+                for (const node of mutation.addedNodes) {
+                    if (node.nodeType === 1) { 
+                        if (node.classList && (node.classList.contains("select2-results__option") || node.classList.contains("select2-container") || node.classList.contains("select2-results"))) {
+                            shouldProcessSelect2 = true;
+                        }
+                        if (node.id === "select2-settings_preset_openai-results" || node.className && typeof node.className === 'string' && node.className.includes("select2")) {
+                            shouldProcessSelect2 = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (shouldProcessSelect2 || jQuery(".select2-selection__rendered").text().includes("🍎")) {
+            // Wait a tiny bit for Select2 to finish rendering options
+            setTimeout(() => {
+                jQuery(".select2-results__option, .select2-selection__rendered").each(function() {
+                    let textHtml = jQuery(this).html();
+                    if (textHtml && (textHtml.includes("🍎") || textHtml.includes("🍏")) && !textHtml.includes("yp-custom-apple")) {
+                        textHtml = textHtml.replace(/🍏/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" alt="🍏">');
+                        textHtml = textHtml.replace(/🍎/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" alt="🍎">');
+                        jQuery(this).html(textHtml);
+                    }
+                });
+            }, 5);
+        }
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
 function applySectionCollapse() {
+    bindAppleIconObserver();
+    
     const pmList = jQuery("#completion_prompt_manager_list");
     if (pmList.length === 0) return;
 
@@ -5665,6 +5725,8 @@ function applySectionCollapse() {
             }
         }, true); // true = Use capture phase!
     }
+
+    injectCustomAppleIcons(pmList);
 
     setTimeout(() => { _ypSectionObserverPaused = false; }, 150);
 }

@@ -1,5 +1,16 @@
 .yablochny-settings {
   margin-bottom: 12px;
+  flex-direction: column;
+}
+
+.yp-custom-apple {
+    width: 1.25em;
+    height: 1.25em;
+    vertical-align: text-bottom;
+    margin: 0 4px;
+    object-fit: contain;
+    display: inline-block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .yablochny-header {
