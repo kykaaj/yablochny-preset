@@ -5696,7 +5696,7 @@ function bindAppleIconObserver() {
                     overlay = jQuery('<img class="yp-native-select-overlay yp-custom-apple">');
                     overlay.css({
                         position: "absolute",
-                        left: "12px", 
+                        left: "10px", 
                         top: "50%",
                         transform: "translateY(-50%)",
                         pointerEvents: "none",
@@ -5709,7 +5709,7 @@ function bindAppleIconObserver() {
                 }
                 
                 overlay.attr("src", appleType === "green" ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png");
-                selectEl.css("padding-left", "32px"); // Shift the text out of the way
+                selectEl.css("padding-left", "38px"); // Increased padding so text doesn't hit apple
             } else {
                 if (overlay.length > 0) overlay.remove();
                 selectEl.css("padding-left", "");

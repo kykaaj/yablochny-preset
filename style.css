@@ -51,16 +51,6 @@
     transform: rotate(-15deg) scale(1.15);
 }
 
-.yp-title-text-styled {
-    font-weight: 800; 
-    font-size: 19px; 
-    letter-spacing: 0.5px; 
-    text-transform: uppercase; 
-    background: linear-gradient(135deg, #a8e063, #56ab2f); 
-    -webkit-background-clip: text; 
-    -webkit-text-fill-color: transparent;
-}
-
 .yablochny-header {
   display: flex;
   align-items: center;
