@@ -211,7 +211,7 @@
 }
 
 .yablochny-controls .menu_button.primary {
-  background: linear-gradient(135deg, rgba(107, 203, 119, 0.1) 0%, rgba(241, 196, 15, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.1) 0%, rgba(232, 228, 201, 0.1) 100%);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   border: 1px solid rgba(107, 203, 119, 0.2);
@@ -220,17 +220,17 @@
 }
 
 .yablochny-controls .menu_button.primary:hover {
-  background: linear-gradient(135deg, rgba(107, 203, 119, 0.15) 0%, rgba(241, 196, 15, 0.15) 100%);
-  border-color: rgba(241, 196, 15, 0.3);
-  box-shadow: 0 0 8px rgba(241, 196, 15, 0.1);
+  background: linear-gradient(135deg, rgba(107, 203, 119, 0.15) 0%, rgba(232, 228, 201, 0.15) 100%);
+  border-color: rgba(232, 228, 201, 0.3);
+  box-shadow: 0 0 8px rgba(232, 228, 201, 0.1);
 }
 
 .yp-model-btn.active {
   opacity: 1;
   font-weight: 700;
-  border-bottom-color: #f1c40f;
-  color: #f1c40f;
-  text-shadow: 0 0 5px rgba(241, 196, 15, 0.3);
+  border-bottom-color: #e8e4c9;
+  color: #e8e4c9;
+  text-shadow: 0 0 5px rgba(232, 228, 201, 0.3);
 }
 
 .yablochny-info-link {

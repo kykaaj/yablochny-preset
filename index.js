@@ -5838,23 +5838,23 @@ function injectDynamicStyles() {
         const cBeforeDisabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'].completion_prompt_manager_prompt_disabled [class*='prompt_manager_prompt_controls']::before`).join(",");
         const cBeforeEnabled = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}']:not(.completion_prompt_manager_prompt_disabled) [class*='prompt_manager_prompt_controls']::before`).join(",");
         
-        css += `${lis} { border-left: 4px solid #f1c40f !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.1), transparent) !important; opacity: 1 !important; }\n`;
+        css += `${lis} { border-left: 4px solid #e8e4c9 !important; background: linear-gradient(90deg, rgba(232, 228, 201, 0.1), transparent) !important; opacity: 1 !important; }\n`;
         css += `${controls} { position: relative; padding-left: 28px !important; }\n`;
         
         const controlsBefore = goldIds.map(id => `${prefix} li[data-pm-identifier='${id}'] [class*='prompt_manager_prompt_controls']::before`).join(",");
         css += `${controlsBefore} { content: '\\f1de'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 15px; cursor: pointer; transition: all 0.2s; }\n`;
         
         // Disabled State
-        css += `${lisDisabled} { opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.15) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.03), transparent) !important; }\n`;
-        css += `${cBeforeDisabled} { color: #8e7330 !important; opacity: 0.4 !important; }\n`;
+        css += `${lisDisabled} { opacity: 1 !important; border-left: 4px solid rgba(232, 228, 201, 0.15) !important; background: linear-gradient(90deg, rgba(232, 228, 201, 0.03), transparent) !important; }\n`;
+        css += `${cBeforeDisabled} { color: #8a8670 !important; opacity: 0.4 !important; }\n`;
         
         // Enabled State
-        css += `${lisEnabled} { opacity: 1 !important; border-left: 4px solid rgba(241, 196, 15, 0.85) !important; background: linear-gradient(90deg, rgba(241, 196, 15, 0.07), transparent) !important; box-shadow: inset 15px 0 20px -15px rgba(241, 196, 15, 0.2) !important; }\n`;
-        css += `${cBeforeEnabled} { color: #f1c40f !important; opacity: 1 !important; }\n`;
+        css += `${lisEnabled} { opacity: 1 !important; border-left: 4px solid rgba(232, 228, 201, 0.85) !important; background: linear-gradient(90deg, rgba(232, 228, 201, 0.07), transparent) !important; box-shadow: inset 15px 0 20px -15px rgba(232, 228, 201, 0.2) !important; }\n`;
+        css += `${cBeforeEnabled} { color: #e8e4c9 !important; opacity: 1 !important; }\n`;
     }
 
     css += ".yp-overlay-green { box-shadow: 0 0 15px 5px rgba(107, 203, 119, 0.4), inset 0 0 20px 2px rgba(107, 203, 119, 0.1); background-color: rgba(107, 203, 119, 0.05); } ";
-    css += ".yp-overlay-gold { box-shadow: 0 0 15px 5px rgba(241, 196, 15, 0.4), inset 0 0 20px 2px rgba(241, 196, 15, 0.1); background-color: rgba(241, 196, 15, 0.05); } ";
+    css += ".yp-overlay-gold { box-shadow: 0 0 15px 5px rgba(232, 228, 201, 0.4), inset 0 0 20px 2px rgba(232, 228, 201, 0.1); background-color: rgba(232, 228, 201, 0.05); } ";
     
     const defaultSTPrompts = ['nsfw', 'enhanceDefinitions', 'charDescription', 'charPersonality', 'scenario', 'personaDescription'];
     const hiddenSelectors = defaultSTPrompts.map(id => `${prefix} li[data-pm-identifier='${id}']`).join(",");
