@@ -5514,6 +5514,9 @@ function updateSectionCss() {
         if (isOpen) {
             css += `${hSel} [class*='prompt_manager_prompt_name']::before { transform: rotate(90deg) !important; }\n`;
         }
+        
+        // Center the Header Text
+        css += `${hSel} [class*='prompt_manager_prompt_name'] { text-align: center; justify-content: center; font-weight: 600; }\n`;
 
         const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
         if (childIds.length > 0) {
@@ -5582,6 +5585,28 @@ function updateSectionCss() {
         document.head.appendChild(styleEl);
     }
     styleEl.textContent = css;
+function replaceEmojisInNode(node) {
+    if (node.nodeType === 3) { // Text node
+        let text = node.nodeValue;
+        if (text && (text.includes("🍏") || text.includes("🍎"))) {
+            const span = document.createElement("span");
+            // Use flexbox inside the span to ensure everything aligns on the same baseline perfectly
+            span.style.display = "inline-flex";
+            span.style.alignItems = "center";
+            span.style.verticalAlign = "middle";
+            
+            let html = text.replace(/🍏/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" alt="🍏">');
+            html = html.replace(/🍎/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" alt="🍎">');
+            span.innerHTML = html;
+            node.parentNode.replaceChild(span, node);
+        }
+    } else if (node.nodeType === 1) { // Element node
+        if (node.classList && node.classList.contains("yp-custom-apple")) return;
+        // Iterate backwards
+        for (let i = node.childNodes.length - 1; i >= 0; i--) {
+            replaceEmojisInNode(node.childNodes[i]);
+        }
+    }
 }
 
 function injectCustomAppleIcons(target) {
@@ -5590,13 +5615,7 @@ function injectCustomAppleIcons(target) {
     // Process Prompt Manager Nodes
     const pmNodes = jQuery(target).find("[class*='prompt_manager_prompt_name']");
     pmNodes.each(function() {
-        const el = jQuery(this);
-        let html = el.html();
-        if (html && (html.includes("🍏") || html.includes("🍎")) && !html.includes("yp-custom-apple")) {
-            html = html.replace(/🍏/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" alt="🍏">');
-            html = html.replace(/🍎/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" alt="🍎">');
-            el.html(html);
-        }
+        replaceEmojisInNode(this);
     });
 }
 
@@ -5623,16 +5642,11 @@ function bindAppleIconObserver() {
             }
         }
         
-        if (shouldProcessSelect2 || jQuery(".select2-selection__rendered").text().includes("🍎")) {
+        if (shouldProcessSelect2 || jQuery(".select2-selection__rendered").text().includes("🍎") || jQuery(".select2-selection__rendered").text().includes("🍏")) {
             // Wait a tiny bit for Select2 to finish rendering options
             setTimeout(() => {
                 jQuery(".select2-results__option, .select2-selection__rendered").each(function() {
-                    let textHtml = jQuery(this).html();
-                    if (textHtml && (textHtml.includes("🍎") || textHtml.includes("🍏")) && !textHtml.includes("yp-custom-apple")) {
-                        textHtml = textHtml.replace(/🍏/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" alt="🍏">');
-                        textHtml = textHtml.replace(/🍎/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" alt="🍎">');
-                        jQuery(this).html(textHtml);
-                    }
+                    replaceEmojisInNode(this);
                 });
             }, 5);
         }
