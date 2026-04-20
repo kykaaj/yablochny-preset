@@ -3198,10 +3198,15 @@ function buildMergedPreset(existingPreset, master, cfg) {
         }
     }
 
-    const result = existingPreset ? JSON.parse(JSON.stringify(existingPreset)) : JSON.parse(JSON.stringify(master));
-
-    if (!existingPreset) {
-        Object.assign(result, master);
+    let result;
+    if (existingPreset) {
+        result = JSON.parse(JSON.stringify(existingPreset));
+    } else {
+        // CRITICAL: When creating a fresh preset, start from the CURRENT oai_settings
+        // so that all ST-internal fields (mistralai_model, claude_model, etc.) are preserved.
+        // Then overlay with master's prompts/order/extensions.
+        const currentSettings = typeof oai_settings !== 'undefined' ? JSON.parse(JSON.stringify(oai_settings)) : {};
+        result = { ...currentSettings, ...JSON.parse(JSON.stringify(master)) };
     }
 
     result.prompts = filteredPrompts;
