@@ -5527,10 +5527,8 @@ function updateSectionCss() {
             const cSelNameList = cBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name']`).join(",");
             
             // CHILDREN STYLING
-            // Shrink the text slightly and ensure the child name container stretches to fill the row
-            css += `${cSelNameList} { display: flex !important; align-items: center !important; width: 100% !important; flex-wrap: nowrap !important; font-size: 0.9em !important; }\n`;
-            // Force the inner anchor tag of children ONLY to grow and center the text
-            css += `${cSelNameList} a.prompt-manager-inspect-action, ${cSelNameList} > span:not([class^="fa-"]) { display: flex !important; flex-grow: 1 !important; justify-content: center !important; align-items: center !important; }\n`;
+            // Slightly reduce font size of children, keep native alignment
+            css += `${cSelNameList} { font-size: 0.9em !important; }\n`;
             
             // Shift the ENTIRE child pill to the right, and reduce width so right controls stay aligned! Wait, no opacity.
             css += `${cSelList} { margin-left: 16px !important; width: calc(100% - 16px) !important; border-left: 2px solid rgba(255,255,255,0.1) !important; }\n`;
@@ -5604,15 +5602,6 @@ function replaceEmojisInNode(node) {
             span.style.flexGrow = "1";
             span.style.width = "100%";
             span.style.textAlign = "center";
-            
-            // Force the PARENT container (<a class="prompt-manager-inspect-action"> or <span>) to expand and center
-            // Otherwise, it shrinks to its content and prevents our span from centering!
-            if (node.parentNode && node.parentNode.classList && !node.parentNode.classList.contains("prompt_manager_prompt_name")) {
-                node.parentNode.style.setProperty("flex-grow", "1", "important");
-                node.parentNode.style.setProperty("display", "flex", "important");
-                node.parentNode.style.setProperty("justify-content", "center", "important");
-                node.parentNode.style.setProperty("align-items", "center", "important");
-            }
             
             // Just replace the emojis natively and add spacing via inline styles
             let html = text.replace(/🍏[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" style="margin: 0 10px;" alt="🍏">');
