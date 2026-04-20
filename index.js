@@ -5641,7 +5641,7 @@ function bindAppleIconObserver() {
         selects.each(function() {
             const selectEl = jQuery(this);
             const text = selectEl.find("option:selected").text() || selectEl.text() || "";
-            const appleType = text.includes("🍏") ? "green" : (text.includes("🍎") ? "red" : null);
+            const appleType = /🍏/.test(text) ? "green" : (/🍎/.test(text) ? "red" : null);
             let overlay = selectEl.siblings(".yp-native-select-fake");
             
             if (appleType) {
@@ -5705,7 +5705,8 @@ function bindAppleIconObserver() {
 
     // Listen for changes that don't trigger Mutations (like value selection)
     jQuery(document).on('change input', selectSels, function() {
-        updateApplesForNode(this);
+        // Run a broad update because Select2 UI elements are outside the native <select>
+        updateApplesForNode();
     });
 }
 
