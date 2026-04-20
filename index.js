@@ -5689,15 +5689,32 @@ function bindAppleIconObserver() {
         }, 150); // 150ms debounce is safe for ST
     };
 
-    // --- 1. OBSERVER REPLACED WITH SAFE POLL ---
-    // The previous MutationObserver on document.body was too heavy for ST's busy UI.
-    // We'll use a conservative 1s poll for most things and event markers for speed.
-    setInterval(() => updateApplesForNode(), 1000);
+    // --- 1. SURGICAL EVENT-DRIVEN UPDATES (ZERO BACKGROUND LOAD) ---
+    // Instead of a broad observer or interval, we only update when the user actually interacts.
+    
+    let _ypSyncTimer = null;
+    const triggerSync = (delay = 50) => {
+        clearTimeout(_ypSyncTimer);
+        _ypSyncTimer = setTimeout(() => updateApplesForNode(), delay);
+    };
 
     const selectSels = "#settings_preset_openai, #active_preset, select[id*='preset']";
-    jQuery(document).on('change input', selectSels, function() {
-        updateApplesForNode();
+    const interactionSels = ".select2-selection, .select2-results__option, .inline-drawer-toggle, .yp-drawer-toggle, #settings_preset_openai, #active_preset";
+
+    // Listen for clicks on anything that might change a preset or open a list
+    jQuery(document).on('click pointerup', interactionSels, function() {
+        triggerSync(50);
+        triggerSync(300); // Second pass for Select2 animations
     });
+
+    // Native changes
+    jQuery(document).on('change input', selectSels, function() {
+        triggerSync(0);
+        triggerSync(200);
+    });
+
+    // Run once on load
+    updateApplesForNode();
 }
 
 function applySectionCollapse() {
