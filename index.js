@@ -5515,8 +5515,8 @@ function updateSectionCss() {
             css += `${hSel} [class*='prompt_manager_prompt_name']::before { transform: rotate(90deg) !important; }\n`;
         }
         
-        // Center the Header Text
-        css += `${hSel} [class*='prompt_manager_prompt_name'] { text-align: center; justify-content: center; font-weight: 600; }\n`;
+        // Style the Header Text
+        css += `${hSel} [class*='prompt_manager_prompt_name'] { font-weight: 600; }\n`;
 
         const childIds = _ypSectionMap.childIdsByHeader[headerId] || [];
         if (childIds.length > 0) {
@@ -5668,21 +5668,26 @@ function bindAppleIconObserver() {
             selectEl.find("option").each(function() {
                 const opt = jQuery(this);
                 let text = opt.text();
+                // Store the kind of apple if it hasn't been parsed yet
+                if (text.includes("🍏")) opt.attr("data-yp-apple", "green");
+                else if (text.includes("🍎")) opt.attr("data-yp-apple", "red");
+                
                 if (text.includes("🍏") || text.includes("🍎")) {
                     opt.text(text.replace(/🍏/g, '    ').replace(/🍎/g, '    '));
                 }
             });
 
-            // Float overlay image based on actual chosen value
-            const val = selectEl.val() || "";
+            // Float overlay image based on the selected option's saved apple type
+            const selectedOpt = selectEl.find("option:selected");
+            const appleType = selectedOpt.attr("data-yp-apple");
             let overlay = selectEl.parent().find("> .yp-native-select-overlay");
             
-            if (val.includes("🍏") || val.includes("🍎")) {
+            if (appleType === "green" || appleType === "red") {
                 if (overlay.length === 0) {
                     overlay = jQuery('<img class="yp-native-select-overlay yp-custom-apple">');
                     overlay.css({
                         position: "absolute",
-                        left: "12px", // Safe margin to align nicely inside ST's padding
+                        left: "12px", 
                         top: "50%",
                         transform: "translateY(-50%)",
                         pointerEvents: "none",
@@ -5694,7 +5699,7 @@ function bindAppleIconObserver() {
                     selectEl.parent().append(overlay);
                 }
                 
-                overlay.attr("src", val.includes("🍏") ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png");
+                overlay.attr("src", appleType === "green" ? "/scripts/extensions/third-party/yablochny-preset/img/green.png" : "/scripts/extensions/third-party/yablochny-preset/img/red.png");
                 selectEl.css("padding-left", "32px"); // Shift the text out of the way
             } else {
                 if (overlay.length > 0) overlay.remove();
