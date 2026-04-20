@@ -4317,8 +4317,8 @@ function isYablochnyPresetActive() {
     const yablochnyName = cfg.presetName || DEFAULT_PRESET_NAME;
     const selector = jQuery("#settings_preset_openai");
     if (selector.length === 0) return true; // can't determine — assume active
-    const selectedText = selector.find("option:selected").text().trim();
-    return selectedText === yablochnyName;
+    const selectedVal = selector.val();
+    return selectedVal === yablochnyName;
 }
 
 /**
