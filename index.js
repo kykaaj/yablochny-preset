@@ -5527,8 +5527,8 @@ function updateSectionCss() {
             const cSelNameList = cBaseSels.map(sel => `${sel} [class*='prompt_manager_prompt_name']`).join(",");
             
             // CHILDREN STYLING
-            // Shrink the text slightly to emphasize it's a child element
-            css += `${cSelNameList} { font-size: 0.9em !important; }\n`;
+            // Shrink the text slightly and ensure it inherits the same flex-stretch to allow centering
+            css += `${cSelNameList} { display: flex; align-items: center; width: 100%; font-size: 0.9em !important; }\n`;
             
             // Shift the ENTIRE child pill to the right, and reduce width so right controls stay aligned! Wait, no opacity.
             css += `${cSelList} { margin-left: 16px !important; width: calc(100% - 16px) !important; border-left: 2px solid rgba(255,255,255,0.1) !important; }\n`;
