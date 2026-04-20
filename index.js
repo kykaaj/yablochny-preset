@@ -5599,25 +5599,16 @@ function replaceEmojisInNode(node) {
         let text = node.nodeValue;
         if (text && (text.includes("🍏") || text.includes("🍎"))) {
             const span = document.createElement("span");
-            span.style.display = "inline-flex";
-            span.style.alignItems = "center";
-            span.style.justifyContent = "center";
             span.style.verticalAlign = "middle";
-            span.style.margin = "0 auto";
-            span.style.flexGrow = "1";
-            span.style.width = "100%";
-            span.style.textAlign = "center";
             
-            // Just replace the emojis natively and add spacing via inline styles
-            let html = text.replace(/🍏[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" style="margin: 0 10px;" alt="🍏">');
-            html = html.replace(/🍎[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" style="margin: 0 10px;" alt="🍎">');
+            let html = text.replace(/🍏[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" style="margin: 0 4px; vertical-align: middle;" alt="🍏">');
+            html = html.replace(/🍎[\uFE0E\uFE0F]?/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" style="margin: 0 4px; vertical-align: middle;" alt="🍎">');
             
             span.innerHTML = html;
             node.parentNode.replaceChild(span, node);
         }
     } else if (node.nodeType === 1) { // Element node
-        if (node.classList && (node.classList.contains("yp-custom-apple") || node.style && node.style.margin === "0px auto")) return;
-        // Iterate backwards
+        if (node.classList && node.classList.contains("yp-custom-apple")) return;
         for (let i = node.childNodes.length - 1; i >= 0; i--) {
             replaceEmojisInNode(node.childNodes[i]);
         }
