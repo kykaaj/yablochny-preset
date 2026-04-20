@@ -5647,13 +5647,31 @@ function bindAppleIconObserver() {
         if (shouldProcessSelect2 || jQuery(".select2-selection__rendered").text().includes("🍎") || jQuery(".select2-selection__rendered").text().includes("🍏")) {
             // Wait a tiny bit for Select2 to finish rendering options
             setTimeout(() => {
-                jQuery(".select2-results__option, .select2-selection__rendered").each(function() {
-                    replaceEmojisInNode(this);
+                jQuery(".select2-results__option, #select2-settings_preset_openai-container").each(function() {
+                    let textHtml = jQuery(this).html();
+                    if (textHtml && (textHtml.includes("🍎") || textHtml.includes("🍏")) && !textHtml.includes("yp-custom-apple")) {
+                        textHtml = textHtml.replace(/🍏/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" alt="🍏">');
+                        textHtml = textHtml.replace(/🍎/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" alt="🍎">');
+                        jQuery(this).html(textHtml);
+                    }
                 });
             }, 5);
         }
     });
     
+    // Fallback: forcefully check select2 every half second for the preset text
+    setInterval(() => {
+        jQuery("#select2-settings_preset_openai-container").each(function() {
+            let el = jQuery(this);
+            let textHtml = el.html();
+            if (textHtml && (textHtml.includes("🍎") || textHtml.includes("🍏")) && !textHtml.includes("yp-custom-apple")) {
+                textHtml = textHtml.replace(/🍏/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/green.png" class="yp-custom-apple" alt="🍏">');
+                textHtml = textHtml.replace(/🍎/g, '<img src="/scripts/extensions/third-party/yablochny-preset/img/red.png" class="yp-custom-apple" alt="🍎">');
+                el.html(textHtml);
+            }
+        });
+    }, 500);
+
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
