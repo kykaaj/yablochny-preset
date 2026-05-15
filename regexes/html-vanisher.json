@@ -14,12 +14,12 @@
       "promptOnly": true,
       "runOnEdit": true,
       "substituteRegex": 0,
-      "minDepth": 2,
+      "minDepth": 10,
       "maxDepth": null
     },
     {
       "id": "34e298db-389d-4c36-8886-3c381a7f7a1f",
-      "scriptName": "├ html vanisher",
+      "scriptName": "├ html vanisher (styles)",
       "findRegex": "/@keyframes[\\s\\S]*?\\}\\s*\\}/g",
       "replaceString": "",
       "trimStrings": [],
@@ -29,12 +29,12 @@
       "promptOnly": true,
       "runOnEdit": true,
       "substituteRegex": 0,
-      "minDepth": 2,
+      "minDepth": 10,
       "maxDepth": null
     },
     {
       "id": "f301a341-6ac4-45cc-be3d-9b6db2a464d4",
-      "scriptName": "└ html vanisher (Fixed)",
+      "scriptName": "├ html vanisher (classes)",
       "findRegex": "/[#.][a-zA-Z0-9_-]+[^{}\\r\\n]*\\{[^}]+\\}/g",
       "replaceString": "",
       "trimStrings": [],
@@ -44,7 +44,22 @@
       "promptOnly": true,
       "runOnEdit": true,
       "substituteRegex": 0,
-      "minDepth": 2,
+      "minDepth": 10,
+      "maxDepth": null
+    },
+    {
+      "id": "b7c3a1d2-9f4e-4a8b-b5d6-e2f1c3a4b5d6",
+      "scriptName": "└ iig-instruction vanisher",
+      "findRegex": "/<img[\\s\\S]*?data-iig-instruction='[^']*'[\\s\\S]*?>/g",
+      "replaceString": "",
+      "trimStrings": [],
+      "placement": [1, 2, 3],
+      "disabled": false,
+      "markdownOnly": false,
+      "promptOnly": true,
+      "runOnEdit": true,
+      "substituteRegex": 0,
+      "minDepth": 10,
       "maxDepth": null
     }
   ]
